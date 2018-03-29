@@ -1464,10 +1464,9 @@ BRPeerManager *BRPeerManagerNew(/*const BRChainParams *params, */BRWallet *walle
     assert(wallet != NULL);
     assert(blocks != NULL || blocksCount == 0);
     assert(peers != NULL || peersCount == 0);
+    manager->params = &BRMainNetParams;
 #if BITCOIN_TESTNET
     manager->params = &BRTestNetParams;
-#else
-    manager->params = &BRMainNetParams;
 #endif
     manager->wallet = wallet;
     manager->earliestKeyTime = earliestKeyTime;
