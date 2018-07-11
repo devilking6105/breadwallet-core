@@ -42,7 +42,7 @@ extern "C" {
 typedef struct BRPeerManagerStruct BRPeerManager;
 
 // returns a newly allocated BRPeerManager struct that must be freed by calling BRPeerManagerFree()
-BRPeerManager *BRPeerManagerNew(/*const BRChainParams *params, */BRWallet *wallet, uint32_t earliestKeyTime,
+BRPeerManager *BRPeerManagerNew(const BRChainParams *params, BRWallet *wallet, uint32_t earliestKeyTime,
                                 BRMerkleBlock *blocks[], size_t blocksCount, const BRPeer peers[], size_t peersCount);
 
 // not thread-safe, set callbacks once before calling BRPeerManagerConnect()

@@ -1452,15 +1452,15 @@ static void _dummyThreadCleanup(void *info)
 }
 
 // returns a newly allocated BRPeerManager struct that must be freed by calling BRPeerManagerFree()
-BRPeerManager *BRPeerManagerNew(/*const BRChainParams *params, */BRWallet *wallet, uint32_t earliestKeyTime,
+BRPeerManager *BRPeerManagerNew(const BRChainParams *params, BRWallet *wallet, uint32_t earliestKeyTime,
                                 BRMerkleBlock *blocks[], size_t blocksCount, const BRPeer peers[], size_t peersCount)
 {
     BRPeerManager *manager = calloc(1, sizeof(*manager));
     BRMerkleBlock orphan, *block = NULL;
     
     assert(manager != NULL);
-    // assert(params != NULL);
-    // assert(params->standardPort != 0);
+    assert(params != NULL);
+    assert(params->standardPort != 0);
     assert(wallet != NULL);
     assert(blocks != NULL || blocksCount == 0);
     assert(peers != NULL || peersCount == 0);
