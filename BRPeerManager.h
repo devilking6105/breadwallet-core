@@ -42,6 +42,8 @@ extern "C" {
 typedef struct BRPeerManagerStruct BRPeerManager;
 
 // returns a newly allocated BRPeerManager struct that must be freed by calling BRPeerManagerFree()
+// BRChainParams was removed from being a parameter since we only need Bitcoin and Bitcoin Testnet
+// chain params. This data is taken statically from BRChainParams.h.
 BRPeerManager *BRPeerManagerNew(BRWallet *wallet, uint32_t earliestKeyTime,
                                 BRMerkleBlock *blocks[], size_t blocksCount,
                                 const BRPeer peers[], size_t peersCount);
