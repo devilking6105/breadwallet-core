@@ -1401,6 +1401,9 @@ BRPeerManager *BRPeerManagerNew(BRWallet *wallet, uint32_t earliestKeyTime,
     manager->params = &BRMainNetParams;
 #endif
 
+    assert(manager->params != NULL);
+    assert(manager->params->standardPort != 0);
+
     manager->wallet = wallet;
     manager->earliestKeyTime = earliestKeyTime;
     manager->averageTxPerBlock = 1400;
