@@ -1384,8 +1384,9 @@ static void _dummyThreadCleanup(void *info) {
 // returns a newly allocated BRPeerManager struct that must be freed by calling BRPeerManagerFree()
 // BRChainParams was removed from being a parameter since we only need Bitcoin and Bitcoin Testnet
 // chain params. This data is taken statically from BRChainParams.h.
-BRPeerManager *BRPeerManagerNew(BRWallet *wallet, uint32_t earliestKeyTime, BRMerkleBlock *blocks[],
-                                size_t blocksCount, const BRPeer peers[], size_t peersCount) {
+BRPeerManager *BRPeerManagerNew(BRWallet *wallet, uint32_t earliestKeyTime,
+                                BRMerkleBlock *blocks[], size_t blocksCount,
+                                const BRPeer peers[], size_t peersCount) {
     BRPeerManager *manager = calloc(1, sizeof(*manager));
     BRMerkleBlock orphan, *block = NULL;
 
@@ -1393,19 +1394,26 @@ BRPeerManager *BRPeerManagerNew(BRWallet *wallet, uint32_t earliestKeyTime, BRMe
     assert(wallet != NULL);
     assert(blocks != NULL || blocksCount == 0);
     assert(peers != NULL || peersCount == 0);
+
 #if BITCOIN_TESTNET
     manager->params = &BRTestNetParams;
 #else
     manager->params = &BRMainNetParams;
 #endif
+
     manager->wallet = wallet;
     manager->earliestKeyTime = earliestKeyTime;
     manager->averageTxPerBlock = 1400;
     manager->maxConnectCount = PEER_MAX_CONNECTIONS;
+
     array_new(manager->peers, peersCount);
+
     if (peers) array_add_array(manager->peers, peers, peersCount);
+
     qsort(manager->peers, array_count(manager->peers), sizeof(*manager->peers), _peerTimestampCompare);
+
     array_new(manager->connectedPeers, PEER_MAX_CONNECTIONS);
+
     manager->blocks = BRSetNew(BRMerkleBlockHash, BRMerkleBlockEq, blocksCount);
     manager->orphans = BRSetNew(_BRPrevBlockHash, _BRPrevBlockEq, blocksCount); // orphans are indexed by prevBlock
     manager->checkpoints = BRSetNew(_BRBlockHeightHash, _BRBlockHeightEq, 100); // checkpoints are indexed by height
@@ -1444,8 +1452,11 @@ BRPeerManager *BRPeerManagerNew(BRWallet *wallet, uint32_t earliestKeyTime, BRMe
     array_new(manager->txRequests, 10);
     array_new(manager->publishedTx, 10);
     array_new(manager->publishedTxHashes, 10);
+
     pthread_mutex_init(&manager->lock, NULL);
+
     manager->threadCleanup = _dummyThreadCleanup;
+
     return manager;
 }
 
