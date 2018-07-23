@@ -44,8 +44,8 @@ releaseEnv ();
  */
 extern void *
 getJNIReference (
-        JNIEnv *env,
-        jobject thisObject);
+    JNIEnv *env,
+    jobject thisObject);
 
 //
 // Support

@@ -41,22 +41,22 @@ public class BRCoreChainParams extends BRCoreJniReference {
     //
 
     public static BRCoreChainParams mainnetChainParams =
-            new BRCoreChainParams(createJniMainnetChainParams());
+        new BRCoreChainParams(createJniMainnetChainParams());
 
     private static native long createJniMainnetChainParams ();
 
     public static BRCoreChainParams testnetChainParams =
-            new BRCoreChainParams(createJniTestnetChainParams());
+        new BRCoreChainParams(createJniTestnetChainParams());
 
     private static native long createJniTestnetChainParams ();
 
     public static BRCoreChainParams mainnetBcashChainParams =
-            new BRCoreChainParams(createJniMainnetBcashChainParams());
+        new BRCoreChainParams(createJniMainnetBcashChainParams());
 
     private static native long createJniMainnetBcashChainParams();
 
     public static BRCoreChainParams testnetBcashChainParams =
-            new BRCoreChainParams(createJniTestnetBcashChainParams());
+        new BRCoreChainParams(createJniTestnetBcashChainParams());
 
     private static native long createJniTestnetBcashChainParams();
 }

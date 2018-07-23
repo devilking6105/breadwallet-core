@@ -113,7 +113,7 @@ public class BRCorePeerManager extends BRCoreJniReference {
         }
         BRPeerManagerConnect(cPtr)
     }
-*/
+    */
 
     //
     // Fixed Peer
@@ -188,7 +188,7 @@ public class BRCorePeerManager extends BRCoreJniReference {
         // Calling publishTransactionWithListener will 'give' transaction to the wallet.  Thus
         // it must be considered 'registered' if we are not copying.
         transaction.isRegistered = transaction.isRegistered
-                || !BRCoreTransaction.JNI_COPIES_TRANSACTIONS;
+                                   || !BRCoreTransaction.JNI_COPIES_TRANSACTIONS;
         publishTransactionWithListener(transaction, listener.get());
 
     }
@@ -205,7 +205,7 @@ public class BRCorePeerManager extends BRCoreJniReference {
      * @param listener
      */
     protected native void publishTransactionWithListener (BRCoreTransaction transaction,
-                                                          Listener listener);
+            Listener listener);
 
     /**
      * @param txHash
@@ -237,10 +237,10 @@ public class BRCorePeerManager extends BRCoreJniReference {
      * @return
      */
     private static native long createCorePeerManager(BRCoreChainParams params,
-                                                     BRCoreWallet wallet,
-                                                     double earliestKeyTime, // int
-                                                     BRCoreMerkleBlock[] blocks,
-                                                     BRCorePeer[] peers);
+            BRCoreWallet wallet,
+            double earliestKeyTime, // int
+            BRCoreMerkleBlock[] blocks,
+            BRCorePeer[] peers);
 
     protected native void installListener (BRCorePeerManager.Listener listener);
 
@@ -252,5 +252,7 @@ public class BRCorePeerManager extends BRCoreJniReference {
 
     protected static native void initializeNative ();
 
-    static { initializeNative(); }
+    static {
+        initializeNative();
+    }
 }

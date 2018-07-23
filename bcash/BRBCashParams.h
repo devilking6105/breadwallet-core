@@ -85,8 +85,7 @@ static const BRCheckPoint BRBCashCheckpoints[] = {
     { 504000, uint256("0000000000000000006cdeece5716c9c700f34ad98cb0ed0ad2c5767bbe0bc8c"), 1510516839, 0x18021abd }
 };
 
-static const BRMerkleBlock *_medianBlock(const BRMerkleBlock *b0, const BRSet *blockSet)
-{
+static const BRMerkleBlock *_medianBlock(const BRMerkleBlock *b0, const BRSet *blockSet) {
     const BRMerkleBlock *b, *b1 = NULL, *b2 = NULL;
 
     b1 = (b0) ? BRSetGet(blockSet, &b0->prevBlock) : NULL;
@@ -97,8 +96,7 @@ static const BRMerkleBlock *_medianBlock(const BRMerkleBlock *b0, const BRSet *b
     return (b0 && b1 && b2) ? b1 : NULL;
 }
 
-static int BRBCashVerifyDifficulty(const BRMerkleBlock *block, const BRSet *blockSet)
-{
+static int BRBCashVerifyDifficulty(const BRMerkleBlock *block, const BRSet *blockSet) {
     int size, i, r = 1;
     const BRMerkleBlock *b, *first, *last;
     uint64_t target = 0, work = 0;
@@ -106,11 +104,11 @@ static int BRBCashVerifyDifficulty(const BRMerkleBlock *block, const BRSet *bloc
 
     assert(block != NULL);
     assert(blockSet != NULL);
-    
+
     if (block->height >= 504032) { // D601 hard fork height: https://reviews.bitcoinabc.org/D601
         first = (block) ? BRSetGet(blockSet, &block->prevBlock) : NULL;
         first = _medianBlock(first, blockSet);
-        
+
         for (i = 0, last = block; last && i < 144; i++) {
             last = BRSetGet(blockSet, &last->prevBlock);
         }
@@ -122,7 +120,7 @@ static int BRBCashVerifyDifficulty(const BRMerkleBlock *block, const BRSet *bloc
 
         for (b = first; b && b != last;) {
             b = BRSetGet(blockSet, &b->prevBlock);
-            
+
             // work += 2^256/(target + 1)
             size = (b) ? b->target >> 24 : 0;
             target = (b) ? b->target & 0x007fffff : 0;
@@ -137,16 +135,15 @@ static int BRBCashVerifyDifficulty(const BRMerkleBlock *block, const BRSet *bloc
         while (((work + 1) >> size*8) != 0) size++;
         target = (1ULL << (32 - size)*8) - (work + 1);
         target |= ((32 - size) << 24);
-        
+
         if (target > 0x1d00ffff) target = 0x1d00ffff; // max proof-of-work
         if (first && last && block->target != target) r = 1;
     }
-        
+
     return r;
 }
 
-static int BRBCashTestNetVerifyDifficulty(const BRMerkleBlock *block, const BRSet *blockSet)
-{
+static int BRBCashTestNetVerifyDifficulty(const BRMerkleBlock *block, const BRSet *blockSet) {
     return 1; // XXX skip testnet difficulty check for now
 }
 

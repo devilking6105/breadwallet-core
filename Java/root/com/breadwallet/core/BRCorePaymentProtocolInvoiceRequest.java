@@ -30,9 +30,9 @@ public class BRCorePaymentProtocolInvoiceRequest extends BRCoreJniReference {
     }
 
     public BRCorePaymentProtocolInvoiceRequest (BRCoreKey senderPublicKey, long amount,
-                                                String pkiType, byte[] pkiData,
-                                                String memo, String notifyURL,
-                                                byte[] signature) {
+            String pkiType, byte[] pkiData,
+            String memo, String notifyURL,
+            byte[] signature) {
         super (createPaymentProtocolInvoiceRequestFull(senderPublicKey, amount,
                 pkiType, pkiData,
                 memo, notifyURL,
@@ -60,9 +60,9 @@ public class BRCorePaymentProtocolInvoiceRequest extends BRCoreJniReference {
     private static native long createPaymentProtocolInvoiceRequest(byte[] data);
 
     private static native long createPaymentProtocolInvoiceRequestFull(BRCoreKey senderPublicKey, long amount,
-                                                                        String pkiType, byte[] pkiData,
-                                                                        String memo, String notifyURL,
-                                                                        byte[] signature);
+            String pkiType, byte[] pkiData,
+            String memo, String notifyURL,
+            byte[] signature);
 
     public native byte[] serialize ();
 

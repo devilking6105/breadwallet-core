@@ -32,7 +32,7 @@
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCorePeer_getAddress
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
 
     jsize addressLen = sizeof(peer->address.u8);
@@ -50,7 +50,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCorePeer_getAddress
  */
 JNIEXPORT jint
 JNICALL Java_com_breadwallet_core_BRCorePeer_getPort
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     return peer->port;
 }
@@ -61,7 +61,7 @@ JNICALL Java_com_breadwallet_core_BRCorePeer_getPort
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeer_getTimestamp
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     return peer->timestamp;
 }
@@ -73,7 +73,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeer_getTimestamp
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeer_setEarliestKeyTime
-        (JNIEnv *env, jobject thisObject, jlong earliestKeyTime) {
+(JNIEnv *env, jobject thisObject, jlong earliestKeyTime) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     BRPeerSetEarliestKeyTime (peer, (uint32_t) earliestKeyTime);
 }
@@ -85,7 +85,7 @@ Java_com_breadwallet_core_BRCorePeer_setEarliestKeyTime
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeer_setCurrentBlockHeight
-        (JNIEnv *env, jobject thisObject, jlong currentBlockHeight) {
+(JNIEnv *env, jobject thisObject, jlong currentBlockHeight) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     BRPeerSetCurrentBlockHeight (peer, (uint32_t) currentBlockHeight);
 }
@@ -97,7 +97,7 @@ Java_com_breadwallet_core_BRCorePeer_setCurrentBlockHeight
  */
 JNIEXPORT jint JNICALL
 Java_com_breadwallet_core_BRCorePeer_getConnectStatusValue
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     return BRPeerConnectStatus (peer);
 }
@@ -109,7 +109,7 @@ Java_com_breadwallet_core_BRCorePeer_getConnectStatusValue
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeer_connect
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     BRPeerConnect (peer);
 }
@@ -121,7 +121,7 @@ Java_com_breadwallet_core_BRCorePeer_connect
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeer_disconnect
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     BRPeerDisconnect (peer);
 }
@@ -133,7 +133,7 @@ Java_com_breadwallet_core_BRCorePeer_disconnect
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeer_scheduleDisconnect
-        (JNIEnv *env, jobject thisObject, jdouble time) {
+(JNIEnv *env, jobject thisObject, jdouble time) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     BRPeerScheduleDisconnect (peer, time);
 }
@@ -145,7 +145,7 @@ Java_com_breadwallet_core_BRCorePeer_scheduleDisconnect
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeer_setNeedsFilterUpdate
-        (JNIEnv *env, jobject thisObject, jboolean needsFilterUpdate) {
+(JNIEnv *env, jobject thisObject, jboolean needsFilterUpdate) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     BRPeerSetNeedsFilterUpdate (peer, needsFilterUpdate);
 }
@@ -157,7 +157,7 @@ Java_com_breadwallet_core_BRCorePeer_setNeedsFilterUpdate
  */
 JNIEXPORT jstring JNICALL
 Java_com_breadwallet_core_BRCorePeer_getHost
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     const char *host = BRPeerHost(peer);
     return (*env)->NewStringUTF (env, host);
@@ -170,7 +170,7 @@ Java_com_breadwallet_core_BRCorePeer_getHost
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeer_getVersion
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     return (jlong) BRPeerVersion (peer);
 }
@@ -182,7 +182,7 @@ Java_com_breadwallet_core_BRCorePeer_getVersion
  */
 JNIEXPORT jstring JNICALL
 Java_com_breadwallet_core_BRCorePeer_getUserAgent
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     const char *host = BRPeerUserAgent(peer);
     return (*env)->NewStringUTF (env, host);
@@ -195,7 +195,7 @@ Java_com_breadwallet_core_BRCorePeer_getUserAgent
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeer_getLastBlock
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     return (jlong) BRPeerLastBlock (peer);
 }
@@ -207,7 +207,7 @@ Java_com_breadwallet_core_BRCorePeer_getLastBlock
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeer_getFeePerKb
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     return (jlong) BRPeerFeePerKb (peer);
 }
@@ -219,7 +219,7 @@ Java_com_breadwallet_core_BRCorePeer_getFeePerKb
  */
 JNIEXPORT jdouble JNICALL
 Java_com_breadwallet_core_BRCorePeer_getPingTime
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeer *peer = (BRPeer *) getJNIReference (env, thisObject);
     return (jdouble) BRPeerPingTime (peer);
 }
@@ -230,10 +230,10 @@ Java_com_breadwallet_core_BRCorePeer_getPingTime
  * Signature: ([BIJ)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeer_createJniCorePeerNatural
-        (JNIEnv *env, jclass thisClass,
-         jbyteArray peerAddress,
-         jint peerPort,
-         jlong peerTimestamp) {
+(JNIEnv *env, jclass thisClass,
+ jbyteArray peerAddress,
+ jint peerPort,
+ jlong peerTimestamp) {
     BRPeer *result = (BRPeer *) calloc (1, sizeof (BRPeer));
 
     jbyte *byteAddr  = (*env)->GetByteArrayElements(env, peerAddress, 0);
@@ -255,10 +255,10 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeer_createJniCorePeerNa
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeer_createJniCorePeer
-        (JNIEnv *env, jclass thisClass,
-         jbyteArray peerAddress,
-         jbyteArray peerPort,
-         jbyteArray peerTimeStamp ) {
+(JNIEnv *env, jclass thisClass,
+ jbyteArray peerAddress,
+ jbyteArray peerPort,
+ jbyteArray peerTimeStamp ) {
     BRPeer *result = (BRPeer *) calloc (1, sizeof (BRPeer));
 
     jbyte *byteAddr  = (*env)->GetByteArrayElements(env, peerAddress, 0);
@@ -281,8 +281,8 @@ Java_com_breadwallet_core_BRCorePeer_createJniCorePeer
  */
 JNIEXPORT jlong
 JNICALL Java_com_breadwallet_core_BRCorePeer_createJniCorePeerMagic
-        (JNIEnv *env, jclass thisClass,
-         jlong magicNumber) {
+(JNIEnv *env, jclass thisClass,
+ jlong magicNumber) {
     BRPeer *result = BRPeerNew((uint32_t) magicNumber);
     return (jlong) result;
 }

@@ -13,7 +13,7 @@ extern "C" {
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCorePeerManager_getConnectStatusValue
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -21,7 +21,7 @@ JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCorePeerManager_getConnectSta
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_connect
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -29,7 +29,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_connect
  * Signature: (Ljava/lang/String;I)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCorePeerManager_jniUseFixedPeer
-  (JNIEnv *, jobject, jstring, jint);
+(JNIEnv *, jobject, jstring, jint);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -37,7 +37,7 @@ JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCorePeerManager_jniUseFix
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCorePeerManager_getCurrentPeerName
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -45,7 +45,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCorePeerManager_getCurrent
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_disconnect
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -53,7 +53,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_disconnect
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_rescan
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_rescan
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_getEstimatedBlockHeight
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -69,7 +69,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_getEstimated
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_getLastBlockHeight
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -77,7 +77,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_getLastBlock
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_getLastBlockTimestamp
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -85,7 +85,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_getLastBlock
  * Signature: (J)D
  */
 JNIEXPORT jdouble JNICALL Java_com_breadwallet_core_BRCorePeerManager_getSyncProgress
-  (JNIEnv *, jobject, jlong);
+(JNIEnv *, jobject, jlong);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -93,7 +93,7 @@ JNIEXPORT jdouble JNICALL Java_com_breadwallet_core_BRCorePeerManager_getSyncPro
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCorePeerManager_getPeerCount
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -101,7 +101,7 @@ JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCorePeerManager_getPeerCount
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCorePeerManager_getDownloadPeerName
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -109,7 +109,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCorePeerManager_getDownloa
  * Signature: (Lcom/breadwallet/core/BRCoreTransaction;Lcom/breadwallet/core/BRCorePeerManager/Listener;)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_publishTransactionWithListener
-  (JNIEnv *, jobject, jobject, jobject);
+(JNIEnv *, jobject, jobject, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -117,7 +117,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_publishTransa
  * Signature: ([B)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_getRelayCount
-  (JNIEnv *, jobject, jbyteArray);
+(JNIEnv *, jobject, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -125,7 +125,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_getRelayCoun
  * Signature: (Z[Lcom/breadwallet/core/BRCoreMerkleBlock;)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_testSaveBlocksCallback
-  (JNIEnv *, jobject, jboolean, jobjectArray);
+(JNIEnv *, jobject, jboolean, jobjectArray);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -133,7 +133,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_testSaveBlock
  * Signature: (Z[Lcom/breadwallet/core/BRCorePeer;)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_testSavePeersCallback
-  (JNIEnv *, jobject, jboolean, jobjectArray);
+(JNIEnv *, jobject, jboolean, jobjectArray);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -141,7 +141,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_testSavePeers
  * Signature: (Lcom/breadwallet/core/BRCoreChainParams;Lcom/breadwallet/core/BRCoreWallet;D[Lcom/breadwallet/core/BRCoreMerkleBlock;[Lcom/breadwallet/core/BRCorePeer;)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_createCorePeerManager
-  (JNIEnv *, jclass, jobject, jobject, jdouble, jobjectArray, jobjectArray);
+(JNIEnv *, jclass, jobject, jobject, jdouble, jobjectArray, jobjectArray);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -149,7 +149,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePeerManager_createCorePe
  * Signature: (Lcom/breadwallet/core/BRCorePeerManager/Listener;)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_installListener
-  (JNIEnv *, jobject, jobject);
+(JNIEnv *, jobject, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -157,7 +157,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_installListen
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_disposeNative
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePeerManager
@@ -165,7 +165,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_disposeNative
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_initializeNative
-  (JNIEnv *, jclass);
+(JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

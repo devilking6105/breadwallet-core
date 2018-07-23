@@ -66,5 +66,7 @@ public class BRCorePaymentProtocolRequest extends BRCoreJniReference {
 
     protected static native void initializeNative ();
 
-    static { initializeNative(); }
+    static {
+        initializeNative();
+    }
 }

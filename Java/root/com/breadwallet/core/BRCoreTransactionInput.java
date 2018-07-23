@@ -50,9 +50,9 @@ public class BRCoreTransactionInput extends BRCoreJniReference {
     }
 
     protected static native long createTransactionInput (byte[] hash, long index, long amount,
-                                                         byte[] script,
-                                                         byte[] signature,
-                                                         long sequence);
+            byte[] script,
+            byte[] signature,
+            long sequence);
 
     public native String getAddress ();
 

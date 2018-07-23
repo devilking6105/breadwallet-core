@@ -33,8 +33,7 @@
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCoreChainParams_getJniMagicNumber
-        (JNIEnv *env, jobject thisObject)
-{
+(JNIEnv *env, jobject thisObject) {
     BRChainParams *params = (BRChainParams *) getJNIReference(env, thisObject);
     return params->magicNumber;
 }
@@ -45,7 +44,7 @@ JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCoreChainParams_getJniMagicNu
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniMainnetChainParams
-        (JNIEnv *env, jclass thisClass) {
+(JNIEnv *env, jclass thisClass) {
     BRChainParams *result = (BRChainParams *) calloc (1, sizeof (BRChainParams));
     memcpy (result, &BRMainNetParams, sizeof (BRChainParams));
     return (jlong) result;
@@ -57,7 +56,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniMai
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniTestnetChainParams
-        (JNIEnv *env, jclass thisClass) {
+(JNIEnv *env, jclass thisClass) {
     BRChainParams *result = (BRChainParams *) calloc (1, sizeof (BRChainParams));
     memcpy (result, &BRTestNetParams, sizeof (BRChainParams));
     return (jlong) result;
@@ -69,7 +68,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniTes
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniMainnetBcashChainParams
-        (JNIEnv *env, jclass thisClass) {
+(JNIEnv *env, jclass thisClass) {
     BRChainParams *result = (BRChainParams *) calloc (1, sizeof (BRChainParams));
     memcpy (result, &BRBCashParams, sizeof (BRChainParams));
     return (jlong) result;
@@ -81,7 +80,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniMai
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniTestnetBcashChainParams
-        (JNIEnv *env, jclass thisClass) {
+(JNIEnv *env, jclass thisClass) {
     BRChainParams *result = (BRChainParams *) calloc(1, sizeof(BRChainParams));
     memcpy(result, &BRBCashTestNetParams, sizeof(BRChainParams));
     return (jlong) result;

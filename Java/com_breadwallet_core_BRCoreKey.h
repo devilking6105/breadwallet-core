@@ -13,7 +13,7 @@ extern "C" {
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_getSecret
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -21,7 +21,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_getSecret
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_getPubKey
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -29,7 +29,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_getPubKey
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCoreKey_getCompressed
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -37,7 +37,7 @@ JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCoreKey_getCompressed
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreKey_getPrivKey
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -45,7 +45,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreKey_getPrivKey
  * Signature: ([B)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_getSeedFromPhrase
-  (JNIEnv *, jclass, jbyteArray);
+(JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -53,7 +53,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_getSeedFromPhra
  * Signature: ([B)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_getAuthPrivKeyForAPI
-  (JNIEnv *, jclass, jbyteArray);
+(JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -61,7 +61,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_getAuthPrivKeyF
  * Signature: ([B)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreKey_getAuthPublicKeyForAPI
-  (JNIEnv *, jclass, jbyteArray);
+(JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -69,7 +69,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreKey_getAuthPublicKeyFo
  * Signature: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreKey_decryptBip38Key
-  (JNIEnv *, jclass, jstring, jstring);
+(JNIEnv *, jclass, jstring, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -77,7 +77,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreKey_decryptBip38Key
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreKey_createJniCoreKey
-  (JNIEnv *, jclass);
+(JNIEnv *, jclass);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -85,7 +85,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreKey_createJniCoreKey
  * Signature: ([BJJ)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreKey_createCoreKeyForBIP32
-  (JNIEnv *, jclass, jbyteArray, jlong, jlong);
+(JNIEnv *, jclass, jbyteArray, jlong, jlong);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -93,7 +93,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreKey_createCoreKeyForBIP3
  * Signature: (Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_setPrivKey
-  (JNIEnv *, jobject, jstring);
+(JNIEnv *, jobject, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -101,7 +101,7 @@ JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_setPrivKey
  * Signature: ([BZ)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_setSecret
-  (JNIEnv *, jobject, jbyteArray, jboolean);
+(JNIEnv *, jobject, jbyteArray, jboolean);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -109,7 +109,7 @@ JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_setSecret
  * Signature: ([B)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_compactSign
-  (JNIEnv *, jobject, jbyteArray);
+(JNIEnv *, jobject, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -117,7 +117,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_compactSign
  * Signature: ([B[B)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_encryptNative
-  (JNIEnv *, jobject, jbyteArray, jbyteArray);
+(JNIEnv *, jobject, jbyteArray, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -125,7 +125,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_encryptNative
  * Signature: ([B[B)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_decryptNative
-  (JNIEnv *, jobject, jbyteArray, jbyteArray);
+(JNIEnv *, jobject, jbyteArray, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -133,7 +133,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_decryptNative
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreKey_address
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -141,7 +141,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreKey_address
  * Signature: (Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_isValidBitcoinPrivateKey
-  (JNIEnv *, jclass, jstring);
+(JNIEnv *, jclass, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -149,7 +149,7 @@ JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_isValidBitcoinPri
  * Signature: (Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_isValidBitcoinBIP38Key
-  (JNIEnv *, jclass, jstring);
+(JNIEnv *, jclass, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -157,7 +157,7 @@ JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_isValidBitcoinBIP
  * Signature: (Ljava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_encodeSHA256
-  (JNIEnv *, jclass, jstring);
+(JNIEnv *, jclass, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -165,7 +165,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_encodeSHA256
  * Signature: ([B)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_sign
-  (JNIEnv *, jobject, jbyteArray);
+(JNIEnv *, jobject, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreKey
@@ -173,7 +173,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_sign
  * Signature: ([B[B)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_verify
-  (JNIEnv *, jobject, jbyteArray, jbyteArray);
+(JNIEnv *, jobject, jbyteArray, jbyteArray);
 
 #ifdef __cplusplus
 }

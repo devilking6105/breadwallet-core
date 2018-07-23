@@ -74,7 +74,7 @@ void BRPeerManagerSetFixedPeer(BRPeerManager *manager, UInt128 address, uint16_t
 
 // true if currently connected to at least one peer
 int BRPeerManagerIsConnected(BRPeerManager *manager);
-    
+
 // current connect status
 BRPeerStatus BRPeerManagerConnectStatus(BRPeerManager *manager);
 

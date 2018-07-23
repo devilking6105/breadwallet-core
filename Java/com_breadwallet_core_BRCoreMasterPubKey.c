@@ -35,7 +35,7 @@
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_serialize
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRMasterPubKey *key = (BRMasterPubKey *) getJNIReference (env, thisObject);
 
     jbyteArray result = (*env)->NewByteArray (env, (jsize) sizeof(BRMasterPubKey));
@@ -51,7 +51,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_serial
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_getPubKey
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRMasterPubKey *key = (BRMasterPubKey *) getJNIReference (env, thisObject);
 
     jsize      pubKeyLen = sizeof(key->pubKey);
@@ -68,7 +68,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_getPub
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreMasterPubKey_createPubKey
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRMasterPubKey *mpk = (BRMasterPubKey *) getJNIReference (env, thisObject);
 
     // Fill pubKey from MPK
@@ -84,8 +84,8 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_createPubKey
 
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromPhrase
-        (JNIEnv *env, jclass thisClass,
-         jbyteArray phrase) {
+(JNIEnv *env, jclass thisClass,
+ jbyteArray phrase) {
 
     // Get the phraseBytes
     jsize phraseLength = (*env)->GetArrayLength (env, phrase);
@@ -148,8 +148,8 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromPhrase
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromSerialization
-        (JNIEnv *env, jclass thisClass,
-         jbyteArray serialization) {
+(JNIEnv *env, jclass thisClass,
+ jbyteArray serialization) {
     jsize serializationLength = (*env)->GetArrayLength (env, serialization);
     jbyte *serializationBytes = (*env)->GetByteArrayElements (env, serialization, 0);
     assert (serializationLength == sizeof(BRMasterPubKey));
@@ -167,7 +167,7 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromSerial
  */
 JNIEXPORT jbyteArray JNICALL
 Java_com_breadwallet_core_BRCoreMasterPubKey_bip32BitIDKey
-        (JNIEnv *env, jclass thisClass, jbyteArray seed, jint index, jstring strUri) {
+(JNIEnv *env, jclass thisClass, jbyteArray seed, jint index, jstring strUri) {
     int seedLength = (*env)->GetArrayLength(env, seed);
     const char *uri = (*env)->GetStringUTFChars(env, strUri, NULL);
     jbyte *byteSeed = (*env)->GetByteArrayElements(env, seed, 0);
@@ -192,7 +192,7 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_bip32BitIDKey
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreMasterPubKey_validateRecoveryPhrase
-        (JNIEnv *env, jclass thisClass, jobjectArray stringArray, jstring jPhrase) {
+(JNIEnv *env, jclass thisClass, jobjectArray stringArray, jstring jPhrase) {
     int wordsCount = (*env)->GetArrayLength(env, stringArray);
     char *wordList[wordsCount];
 
@@ -221,7 +221,7 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_validateRecoveryPhrase
  */
 JNIEXPORT jbyteArray JNICALL
 Java_com_breadwallet_core_BRCoreMasterPubKey_generatePaperKey
-        (JNIEnv *env, jclass thisClass, jbyteArray seed, jobjectArray stringArray) {
+(JNIEnv *env, jclass thisClass, jbyteArray seed, jobjectArray stringArray) {
 
     int wordsCount = (*env)->GetArrayLength(env, stringArray);
     int seedLength = (*env)->GetArrayLength(env, seed);

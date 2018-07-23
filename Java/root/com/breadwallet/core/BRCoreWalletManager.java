@@ -33,8 +33,8 @@ import java.util.concurrent.Executor;
  *
  */
 public class BRCoreWalletManager implements
-        BRCorePeerManager.Listener,
-        BRCoreWallet.Listener {
+    BRCorePeerManager.Listener,
+    BRCoreWallet.Listener {
 
     protected static boolean SHOW_CALLBACK = true;
     protected static boolean SHOW_CALLBACK_DETAIL = false;
@@ -51,7 +51,7 @@ public class BRCoreWalletManager implements
     BRCoreWallet wallet; // Optional<BRCoreWallet>
 
     BRCorePeerManager peerManager; // Optional<BRCorePeerManager>
-    
+
     //
     //
     //
@@ -81,7 +81,7 @@ public class BRCoreWalletManager implements
 
     protected BRCoreWallet createWallet () {
         return new BRCoreWallet (loadTransactions(), masterPubKey,
-                createWalletListener());
+                                 createWalletListener());
     }
 
     /**
@@ -131,7 +131,7 @@ public class BRCoreWalletManager implements
      */
     protected BRCorePeerManager createPeerManager (BRCoreWallet wallet) {
         return new BRCorePeerManager(chainParams, wallet, earliestPeerTime, loadBlocks(), loadPeers(),
-                createPeerManagerListener());
+                                     createPeerManagerListener());
     }
 
     /**
@@ -169,7 +169,7 @@ public class BRCoreWalletManager implements
                 || chainParams == BRCoreChainParams.testnetChainParams)
             return 0x00;
         else if (chainParams == BRCoreChainParams.mainnetBcashChainParams
-                || chainParams == BRCoreChainParams.testnetBcashChainParams)
+                 || chainParams == BRCoreChainParams.testnetBcashChainParams)
             return 0x40;
         else return -1;
     }
@@ -178,18 +178,15 @@ public class BRCoreWalletManager implements
     // Support
     //
 
-    protected BRCoreTransaction[] loadTransactions ()
-    {
+    protected BRCoreTransaction[] loadTransactions () {
         return new BRCoreTransaction[0];
     }
 
-    protected BRCoreMerkleBlock[] loadBlocks ()
-    {
+    protected BRCoreMerkleBlock[] loadBlocks () {
         return new BRCoreMerkleBlock[0];
     }
 
-    protected BRCorePeer[] loadPeers ()
-    {
+    protected BRCorePeer[] loadPeers () {
         return new BRCorePeer[0];
     }
 
@@ -201,9 +198,9 @@ public class BRCoreWalletManager implements
         for (BRCoreTransaction transaction : wallet.getTransactions()) {
             System.out.println("    tx: " + transaction.toString());
             System.out.println("        : " +
-                    (transaction.isSigned() ? "SIGNED" : "NOT-SIGNED") + " " +
-                    (transaction.isSigned() ? (wallet.transactionIsValid(transaction) ? "VALID" : "NOT-VALID") : "N/A") + " " +
-                    "balance: " + (transaction.isSigned() ? wallet.getBalanceAfterTransaction(transaction) : "N/A"));
+                               (transaction.isSigned() ? "SIGNED" : "NOT-SIGNED") + " " +
+                               (transaction.isSigned() ? (wallet.transactionIsValid(transaction) ? "VALID" : "NOT-VALID") : "N/A") + " " +
+                               "balance: " + (transaction.isSigned() ? wallet.getBalanceAfterTransaction(transaction) : "N/A"));
 
             if (SHOW_CALLBACK_DETAIL_TX_IO) {
                 for (BRCoreTransactionInput input : transaction.getInputs())
@@ -320,16 +317,15 @@ public class BRCoreWalletManager implements
     @Override
     public String toString() {
         return "BRCoreWalletManager {" +
-                "\n  masterPubKey      : " + masterPubKey +
-                "\n  chainParams       : " + chainParams +
-                "\n  earliest peer time: " + earliestPeerTime +
-                "\n  wallet rcv addr   : " + (wallet != null ? wallet.getReceiveAddress().stringify() : "") +
-                "\n  peerManager status: " + (peerManager != null ? peerManager.getConnectStatus().name() : "") +
-                '}';
+               "\n  masterPubKey      : " + masterPubKey +
+               "\n  chainParams       : " + chainParams +
+               "\n  earliest peer time: " + earliestPeerTime +
+               "\n  wallet rcv addr   : " + (wallet != null ? wallet.getReceiveAddress().stringify() : "") +
+               "\n  peerManager status: " + (peerManager != null ? peerManager.getConnectStatus().name() : "") +
+               '}';
     }
 
-    private String getChainDescriptiveName ()
-    {
+    private String getChainDescriptiveName () {
         if (chainParams == BRCoreChainParams.mainnetChainParams)
             return "Bitcoin Mainnet";
         else if (chainParams == BRCoreChainParams.testnetChainParams)
@@ -365,48 +361,54 @@ public class BRCoreWalletManager implements
 
         @Override
         public void syncStarted() {
-            try { listener.syncStarted(); }
-            catch (Exception ex) {
+            try {
+                listener.syncStarted();
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
 
         @Override
         public void syncStopped(String error) {
-            try { listener.syncStopped(error); }
-            catch (Exception ex) {
+            try {
+                listener.syncStopped(error);
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
 
         @Override
         public void txStatusUpdate() {
-            try { listener.txStatusUpdate(); }
-            catch (Exception ex) {
+            try {
+                listener.txStatusUpdate();
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
 
         @Override
         public void saveBlocks(boolean replace, BRCoreMerkleBlock[] blocks) {
-            try { listener.saveBlocks(replace, blocks); }
-            catch (Exception ex) {
+            try {
+                listener.saveBlocks(replace, blocks);
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
 
         @Override
         public void savePeers(boolean replace, BRCorePeer[] peers) {
-            try { listener.savePeers(replace, peers); }
-            catch (Exception ex) {
+            try {
+                listener.savePeers(replace, peers);
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
 
         @Override
         public boolean networkIsReachable() {
-            try { return listener.networkIsReachable(); }
-            catch (Exception ex) {
+            try {
+                return listener.networkIsReachable();
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
                 return false;
             }
@@ -414,8 +416,9 @@ public class BRCoreWalletManager implements
 
         @Override
         public void txPublished(String error) {
-            try { listener.txPublished(error); }
-            catch (Exception ex) {
+            try {
+                listener.txPublished(error);
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
@@ -519,32 +522,36 @@ public class BRCoreWalletManager implements
 
         @Override
         public void balanceChanged(long balance) {
-            try { listener.balanceChanged(balance); }
-            catch (Exception ex) {
+            try {
+                listener.balanceChanged(balance);
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
 
         @Override
         public void onTxAdded(BRCoreTransaction transaction) {
-            try { listener.onTxAdded(transaction); }
-            catch (Exception ex) {
+            try {
+                listener.onTxAdded(transaction);
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
 
         @Override
         public void onTxUpdated(String hash, int blockHeight, int timeStamp) {
-            try { listener.onTxUpdated(hash, blockHeight, timeStamp); }
-            catch (Exception ex) {
+            try {
+                listener.onTxUpdated(hash, blockHeight, timeStamp);
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }
 
         @Override
         public void onTxDeleted(String hash, int notifyUser, int recommendRescan) {
-            try { listener.onTxDeleted (hash, notifyUser, recommendRescan); }
-            catch (Exception ex) {
+            try {
+                listener.onTxDeleted (hash, notifyUser, recommendRescan);
+            } catch (Exception ex) {
                 ex.printStackTrace(System.err);
             }
         }

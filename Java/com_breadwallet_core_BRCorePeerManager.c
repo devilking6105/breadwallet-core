@@ -33,8 +33,7 @@ static BRTransaction *
 JNI_COPY_TRANSACTION (BRTransaction *tx) {
     if (com_breadwallet_core_BRCoreTransaction_JNI_COPIES_TRANSACTIONS && NULL != tx) {
         return BRTransactionCopy(tx);
-    }
-    else {
+    } else {
 #if defined (__ANDROID_NDK__)
         __android_log_print(ANDROID_LOG_DEBUG, "JNI", "FAILED TO COPY: %p", tx);
 #endif
@@ -69,7 +68,7 @@ static jmethodID peerConstructor;
  */
 JNIEXPORT jint
 JNICALL Java_com_breadwallet_core_BRCorePeerManager_getConnectStatusValue
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     return BRPeerManagerConnectStatus(peerManager);
 }
@@ -82,7 +81,7 @@ JNICALL Java_com_breadwallet_core_BRCorePeerManager_getConnectStatusValue
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_connect
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     BRPeerManagerConnect(peerManager);
 }
@@ -93,9 +92,9 @@ Java_com_breadwallet_core_BRCorePeerManager_connect
  * Signature: (Ljava/lang/String;I)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCorePeerManager_jniUseFixedPeer
-        (JNIEnv *env, jobject thisObject,
-         jstring nodeString,
-         jint port) {
+(JNIEnv *env, jobject thisObject,
+ jstring nodeString,
+ jint port) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     const BRChainParams *chainParams = BRPeerManagerChainParams(peerManager);
 
@@ -125,7 +124,7 @@ JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCorePeerManager_jniUseFix
  */
 JNIEXPORT jstring JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_getCurrentPeerName
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     return (*env)->NewStringUTF (env, BRPeerManagerDownloadPeerName(peerManager));
 }
@@ -137,7 +136,7 @@ Java_com_breadwallet_core_BRCorePeerManager_getCurrentPeerName
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_disconnect
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     BRPeerManagerDisconnect (peerManager);
 }
@@ -149,7 +148,7 @@ Java_com_breadwallet_core_BRCorePeerManager_disconnect
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_rescan
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     BRPeerManagerRescan (peerManager);
 }
@@ -161,7 +160,7 @@ Java_com_breadwallet_core_BRCorePeerManager_rescan
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_getEstimatedBlockHeight
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     return BRPeerManagerEstimatedBlockHeight (peerManager);
 }
@@ -173,7 +172,7 @@ Java_com_breadwallet_core_BRCorePeerManager_getEstimatedBlockHeight
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_getLastBlockHeight
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     return BRPeerManagerLastBlockHeight (peerManager);
 }
@@ -185,7 +184,7 @@ Java_com_breadwallet_core_BRCorePeerManager_getLastBlockHeight
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_getLastBlockTimestamp
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     return BRPeerManagerLastBlockTimestamp (peerManager);
 }
@@ -197,7 +196,7 @@ Java_com_breadwallet_core_BRCorePeerManager_getLastBlockTimestamp
  */
 JNIEXPORT jdouble
 JNICALL Java_com_breadwallet_core_BRCorePeerManager_getSyncProgress
-        (JNIEnv *env, jobject thisObject, jlong startHeight) {
+(JNIEnv *env, jobject thisObject, jlong startHeight) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     return BRPeerManagerSyncProgress(peerManager, (uint32_t) startHeight);
 }
@@ -208,8 +207,8 @@ JNICALL Java_com_breadwallet_core_BRCorePeerManager_getSyncProgress
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL
-        Java_com_breadwallet_core_BRCorePeerManager_getPeerCount
-        (JNIEnv *env, jobject thisObject) {
+Java_com_breadwallet_core_BRCorePeerManager_getPeerCount
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     return BRPeerManagerPeerCount (peerManager);
 }
@@ -221,7 +220,7 @@ JNIEXPORT jint JNICALL
  */
 JNIEXPORT jstring JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_getDownloadPeerName
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
 
     const char *name = BRPeerManagerDownloadPeerName(peerManager);
@@ -235,7 +234,7 @@ Java_com_breadwallet_core_BRCorePeerManager_getDownloadPeerName
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_publishTransactionWithListener
-        (JNIEnv *env, jobject thisObject, jobject transitionObject, jobject listenerObject) {
+(JNIEnv *env, jobject thisObject, jobject transitionObject, jobject listenerObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference(env, transitionObject);
     // It is (perhaps) possible that the listenerObject is NULL.  It came in via a WeakReference
@@ -258,7 +257,7 @@ Java_com_breadwallet_core_BRCorePeerManager_publishTransactionWithListener
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_getRelayCount
-        (JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
+(JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
 
     uint8_t *hashData = (uint8_t *) (*env)->GetByteArrayElements(env, hashByteArray, 0);
@@ -273,7 +272,7 @@ Java_com_breadwallet_core_BRCorePeerManager_getRelayCount
  * Signature: (Z[Lcom/breadwallet/core/BRCoreMerkleBlock;)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_testSaveBlocksCallback
-        (JNIEnv *env, jobject thisObject, jboolean replace, jobjectArray blockObjectArray) {
+(JNIEnv *env, jobject thisObject, jboolean replace, jobjectArray blockObjectArray) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
 
     size_t blockCount = (size_t) (*env)->GetArrayLength (env, blockObjectArray);
@@ -302,9 +301,9 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_testSaveBlock
  * Method:    testSavePeersCallback
  * Signature: (Z[Lcom/breadwallet/core/BRCorePeer;)V
  */
-JNIEXPORT void JNICALL 
+JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_testSavePeersCallback
-        (JNIEnv *env, jobject thisObject, jboolean replace, jobjectArray peerObjectArray) {
+(JNIEnv *env, jobject thisObject, jboolean replace, jobjectArray peerObjectArray) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
 
     size_t peerCount = (size_t) (*env)->GetArrayLength (env, peerObjectArray);
@@ -335,12 +334,12 @@ Java_com_breadwallet_core_BRCorePeerManager_testSavePeersCallback
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_createCorePeerManager
-        (JNIEnv *env, jclass thisClass,
-         jobject objParams,
-         jobject objWallet,
-         jdouble dblEarliestKeyTime,
-         jobjectArray objBlocksArray,
-         jobjectArray objPeersArray) {
+(JNIEnv *env, jclass thisClass,
+ jobject objParams,
+ jobject objWallet,
+ jdouble dblEarliestKeyTime,
+ jobjectArray objBlocksArray,
+ jobjectArray objPeersArray) {
 
     BRChainParams *params = (BRChainParams *) getJNIReference(env, objParams);
     BRWallet *wallet = (BRWallet *) getJNIReference(env, objWallet);
@@ -379,8 +378,8 @@ Java_com_breadwallet_core_BRCorePeerManager_createCorePeerManager
     }
 
     BRPeerManager *result = BRPeerManagerNew(params, wallet, earliestKeyTime,
-                                             blocks, blocksCount,
-                                             peers, peersCount);
+                            blocks, blocksCount,
+                            peers, peersCount);
 
     if (NULL != blocks) free(blocks);
     if (NULL != peers ) free(peers);
@@ -395,7 +394,7 @@ Java_com_breadwallet_core_BRCorePeerManager_createCorePeerManager
  */
 JNIEXPORT void
 JNICALL Java_com_breadwallet_core_BRCorePeerManager_installListener
-        (JNIEnv *env, jobject thisObject, jobject listenerObject) {
+(JNIEnv *env, jobject thisObject, jobject listenerObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
 
     // Get a WeakGlobalRef - 'weak' to allow for GC; 'global' to allow BRCore thread access
@@ -420,7 +419,7 @@ JNICALL Java_com_breadwallet_core_BRCorePeerManager_installListener
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCorePeerManager_disposeNative
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRPeerManager *peerManager = (BRPeerManager *) getJNIReference(env, thisObject);
 
     if (NULL != peerManager) {
@@ -436,7 +435,7 @@ Java_com_breadwallet_core_BRCorePeerManager_disposeNative
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePeerManager_initializeNative
-        (JNIEnv *env, jclass thisClass) {
+(JNIEnv *env, jclass thisClass) {
     blockClass = (*env)->FindClass(env, "com/breadwallet/core/BRCoreMerkleBlock");
     assert (NULL != blockClass);
     blockClass = (*env)->NewGlobalRef (env, blockClass);
@@ -472,9 +471,9 @@ syncStarted(void *info) {
     if ((*env)->IsSameObject (env, listener, NULL)) return; // GC reclaimed
 
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "syncStarted",
-                                 "()V");
+        lookupListenerMethod(env, listener,
+                             "syncStarted",
+                             "()V");
     (*env)->CallVoidMethod(env, listener, listenerMethod);
     (*env)->DeleteLocalRef (env, listener);
 }
@@ -488,9 +487,9 @@ syncStopped(void *info, int error) {
     if ((*env)->IsSameObject (env, listener, NULL)) return; // GC reclaimed
 
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "syncStopped",
-                                 "(Ljava/lang/String;)V");
+        lookupListenerMethod(env, listener,
+                             "syncStopped",
+                             "(Ljava/lang/String;)V");
 
     jstring errorString = (*env)->NewStringUTF (env, (error == 0 ? "" : strerror (error)));
 
@@ -508,9 +507,9 @@ txStatusUpdate(void *info) {
     if ((*env)->IsSameObject (env, listener, NULL)) return; // GC reclaimed
 
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "txStatusUpdate",
-                                 "()V");
+        lookupListenerMethod(env, listener,
+                             "txStatusUpdate",
+                             "()V");
 
     (*env)->CallVoidMethod(env, listener, listenerMethod);
     (*env)->DeleteLocalRef (env, listener);
@@ -526,9 +525,9 @@ saveBlocks(void *info, int replace, BRMerkleBlock *blocks[], size_t blockCount) 
 
     // The saveBlocks callback
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "saveBlocks",
-                                 "(Z[Lcom/breadwallet/core/BRCoreMerkleBlock;)V");
+        lookupListenerMethod(env, listener,
+                             "saveBlocks",
+                             "(Z[Lcom/breadwallet/core/BRCoreMerkleBlock;)V");
     assert (NULL != listenerMethod);
 
     // Create the Java BRCoreMerkleBlock array
@@ -558,9 +557,9 @@ savePeers(void *info, int replace, const BRPeer peers[], size_t count) {
 
     // The savePeers callback
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "savePeers",
-                                 "(Z[Lcom/breadwallet/core/BRCorePeer;)V");
+        lookupListenerMethod(env, listener,
+                             "savePeers",
+                             "(Z[Lcom/breadwallet/core/BRCorePeer;)V");
     assert (NULL != listenerMethod);
 
     jobjectArray peerArray = (*env)->NewObjectArray(env, count, peerClass, 0);
@@ -570,7 +569,7 @@ savePeers(void *info, int replace, const BRPeer peers[], size_t count) {
         *peer = peers[index];
 
         jobject peerObject =
-                (*env)->NewObject (env, peerClass, peerConstructor, (jlong) peer);
+            (*env)->NewObject (env, peerClass, peerConstructor, (jlong) peer);
 
         (*env)->SetObjectArrayElement(env, peerArray, index, peerObject);
         (*env)->DeleteLocalRef (env, peerObject);
@@ -591,9 +590,9 @@ networkIsReachable(void *info) {
     if ((*env)->IsSameObject (env, listener, NULL)) return 0; // GC reclaimed
 
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "networkIsReachable",
-                                 "()Z");
+        lookupListenerMethod(env, listener,
+                             "networkIsReachable",
+                             "()Z");
     assert (NULL != listenerMethod);
 
     int networkIsOn = (*env)->CallBooleanMethod(env, listener, listenerMethod);
@@ -618,9 +617,9 @@ txPublished (void *info, int error) {
     if ((*env)->IsSameObject (env, listener, NULL)) return;
 
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "txPublished",
-                                 "(Ljava/lang/String;)V");
+        lookupListenerMethod(env, listener,
+                             "txPublished",
+                             "(Ljava/lang/String;)V");
     assert (NULL != listenerMethod);
 
     jstring errorString = (*env)->NewStringUTF (env, (error == 0 ? "" : strerror (error)));

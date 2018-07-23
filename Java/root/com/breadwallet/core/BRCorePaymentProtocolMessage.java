@@ -56,8 +56,8 @@ public class BRCorePaymentProtocolMessage extends BRCoreJniReference {
     private static native long createPaymentProtocolMessage (byte[] data);
 
     private static native long createPaymentProtocolMessageFull (int type, byte[] message,
-                                                                 long statusCode, String statusMsg,
-                                                                 byte[] identifier);
+            long statusCode, String statusMsg,
+            byte[] identifier);
 
     public native byte[] serialize ();
 
