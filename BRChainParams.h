@@ -47,8 +47,8 @@ typedef struct {
 } BRChainParams;
 
 static const char *BRMainNetDNSSeeds[] = {
-    "seed.bitcoin.sipa.be.", "dnsseed.bluematt.me.", "dnsseed.bitcoin.dashjr.org.", "seed.bitcoinstats.com.",
-    "seed.bitcoin.jonasschnelli.ch.", "seed.btc.petertodd.org.", NULL
+    "dnsseed.bluematt.me.", "seed.btc.petertodd.org.", "seed.bitcoin.jonasschnelli.ch.", "seed.bitcoinstats.com.",
+    "dnsseed.bitcoin.dashjr.org.", "seed.bitcoin.sipa.be.", NULL
 };
 
 static const char *BRTestNetDNSSeeds[] = {
