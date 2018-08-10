@@ -713,3 +713,15 @@ void BRTransactionFree(BRTransaction *tx) {
         free(tx);
     }
 }
+
+char* BRTransactionHex(BRTransaction *tx) {
+    uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
+    size_t bufLen = BRTransactionSerialize(tx, buf, sizeof(buf));
+    char* txHex = malloc((sizeof(char) * bufLen) + 1);
+
+    for (size_t j = 0; j < bufLen; j++) {
+        sprintf(&txHex[j*2], "%02x", buf[j]);
+    }
+
+    return txHex;
+}

@@ -172,6 +172,9 @@ inline static int BRTransactionEq(const void *tx, const void *otherTx) {
 // frees memory allocated for tx
 void BRTransactionFree(BRTransaction *tx);
 
+// returns the hex for tx
+char* BRTransactionHex(BRTransaction *tx);
+
 #ifdef __cplusplus
 }
 #endif
