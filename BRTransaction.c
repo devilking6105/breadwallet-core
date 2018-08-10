@@ -511,30 +511,84 @@ void BRTransactionShuffleOutputs(BRTransaction *tx) {
 // size in bytes if signed, or estimated size assuming compact pubkey sigs
 size_t BRTransactionSize(const BRTransaction *tx) {
     BRTxInput *input;
-    size_t size;
+    size_t size, witSize = 0;
 
     assert(tx != NULL);
     size = (tx) ? 8 + BRVarIntSize(tx->inCount) + BRVarIntSize(tx->outCount) : 0;
 
-    for (size_t i = 0; tx && i < tx->inCount; i++) {
+    for (size_t i = 0; i < tx->inCount; i++) {
         input = &tx->inputs[i];
 
-        if (input->signature) {
+        if (input->signature && input->witness) {
             size += sizeof(UInt256) + sizeof(uint32_t) + BRVarIntSize(input->sigLen) + input->sigLen + sizeof(uint32_t);
-        } else size += TX_INPUT_SIZE;
+            witSize += input->witLen;
+        } else if (input->script && input->scriptLen > 0 && input->script[0] == OP_0) { // estimated P2WPKH signature size
+            witSize += TX_INPUT_SIZE;
+        } else if (input->script && input->scriptLen > 0 && input->script[0] == OP_HASH160) { // est. P2SH-P2WPKH sig size
+            size += 23;
+            witSize += TX_INPUT_SIZE;
+        } else size += TX_INPUT_SIZE; // estimated signature size
     }
 
-    for (size_t i = 0; tx && i < tx->outCount; i++) {
+    for (size_t i = 0; i < tx->outCount; i++) {
         size += sizeof(uint64_t) + BRVarIntSize(tx->outputs[i].scriptLen) + tx->outputs[i].scriptLen;
     }
 
-    return size;
+    if (witSize > 0) witSize += 2 + tx->inCount;
+    return size + witSize;
+}
+
+// virtual transaction size as defined by BIP141: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki
+size_t BRTransactionVSize(const BRTransaction *tx) {
+    BRTxInput *input;
+
+    size_t baseTxSize = 0,
+           witSize = 0,
+           totalTxSize = 0,
+           txWeight = 0,
+           virtualTxSize = 0,
+           witnessScaleFactor = 4;
+
+    size_t versionSize = 4;
+    size_t witnessMarkerSize = 1;
+    size_t witnessFlagSize = 1;
+    size_t lockTimeSize = 4;
+
+    baseTxSize = versionSize;
+    baseTxSize += lockTimeSize;
+
+    for (size_t i = 0; i < tx->inCount; i++) {
+        input = &tx->inputs[i];
+
+        baseTxSize += TX_INPUT_SIZE_BIP144;
+        baseTxSize += input->scriptLen;
+        baseTxSize += input->sigLen;
+        baseTxSize += sizeof(uint32_t); // input->sequence;
+
+        if (input->witLen > 0) {
+            witSize += input->witLen;
+        }
+    }
+
+    for (size_t i = 0; i < tx->outCount; i++) {
+        baseTxSize += TX_OUTPUT_SIZE_BIP144;
+        baseTxSize += sizeof(uint32_t); // Size of the index
+    }
+
+    if (witSize > 0) witSize += witnessMarkerSize + witnessFlagSize;
+
+    // BIP 141 calculations
+    totalTxSize = baseTxSize + witSize;
+    txWeight = (baseTxSize * 3) + totalTxSize;
+    virtualTxSize = (txWeight + witnessScaleFactor - 1) / witnessScaleFactor;
+
+    return virtualTxSize;
 }
 
 // minimum transaction fee needed for tx to relay across the bitcoin network
 uint64_t BRTransactionStandardFee(const BRTransaction *tx) {
     assert(tx != NULL);
-    return ((BRTransactionSize(tx) + 999)/1000)*TX_FEE_PER_KB;
+    return ((BRTransactionVSize(tx) + 999)/1000)*TX_FEE_PER_KB;
 }
 
 // checks if all signatures exist, but does not verify them

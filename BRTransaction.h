@@ -30,19 +30,34 @@
 #include <stddef.h>
 #include <inttypes.h>
 
+#define tx_log(...) _tx_log(__VA_ARGS__)
+
+#if defined(TARGET_OS_MAC)
+#include <Foundation/Foundation.h>
+#define _tx_log(...) NSLog(__VA_ARGS__)
+#elif defined(__ANDROID__)
+#include <android/log.h>
+#define _tx_log(...) __android_log_print(ANDROID_LOG_INFO, "bread", __VA_ARGS__)
+#else
+#include <stdio.h>
+#define _tx_log(...) printf(__VA_ARGS__)
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define TX_FEE_PER_KB        191ULL     // standard tx fee per kb of tx size, rounded up to nearest kb, 1 satoshi per kb
-#define TX_OUTPUT_SIZE       34          // estimated size for a typical transaction output
-#define TX_INPUT_SIZE        148         // estimated size for a typical compact pubkey transaction input
-#define TX_MIN_OUTPUT_AMOUNT (TX_FEE_PER_KB*3*(TX_OUTPUT_SIZE + TX_INPUT_SIZE)/1000) //no txout can be below this amount
-#define TX_MAX_SIZE          100000      // no tx can be larger than this size in bytes
-#define TX_FREE_MAX_SIZE     1000        // tx must not be larger than this size in bytes without a fee
-#define TX_FREE_MIN_PRIORITY 57600000ULL // tx must not have a priority below this value without a fee
-#define TX_UNCONFIRMED       INT32_MAX   // block height indicating transaction is unconfirmed
-#define TX_MAX_LOCK_HEIGHT   500000000   // a lockTime below this value is a block height, otherwise a timestamp
+#define TX_FEE_PER_KB         191ULL     // standard tx fee per kb of tx size, rounded up to nearest kb, 1 satoshi per kb
+#define TX_OUTPUT_SIZE        34          // estimated size for a typical transaction output
+#define TX_OUTPUT_SIZE_BIP144 32          // estimated size for a typical transaction output
+#define TX_INPUT_SIZE         148         // estimated size for a typical compact pubkey transaction input
+#define TX_INPUT_SIZE_BIP144  36
+#define TX_MIN_OUTPUT_AMOUNT  (TX_FEE_PER_KB*3*(TX_OUTPUT_SIZE + TX_INPUT_SIZE)/1000) //no txout can be below this amount
+#define TX_MAX_SIZE           100000      // no tx can be larger than this size in bytes
+#define TX_FREE_MAX_SIZE      1000        // tx must not be larger than this size in bytes without a fee
+#define TX_FREE_MIN_PRIORITY  57600000ULL // tx must not have a priority below this value without a fee
+#define TX_UNCONFIRMED        INT32_MAX   // block height indicating transaction is unconfirmed
+#define TX_MAX_LOCK_HEIGHT    500000000   // a lockTime below this value is a block height, otherwise a timestamp
 
 #define TXIN_SEQUENCE        UINT32_MAX  // sequence number for a finalized tx input
 
@@ -126,6 +141,9 @@ void BRTransactionShuffleOutputs(BRTransaction *tx);
 
 // size in bytes if signed, or estimated size assuming compact pubkey sigs
 size_t BRTransactionSize(const BRTransaction *tx);
+
+// virtual transaction size as defined by BIP141: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki
+size_t BRTransactionVSize(const BRTransaction *tx);
 
 // minimum transaction fee needed for tx to relay across the bitcoin network
 uint64_t BRTransactionStandardFee(const BRTransaction *tx);
