@@ -18,6 +18,7 @@ JNI_SRCS=com_breadwallet_core_BRCoreAddress.c \
 	com_breadwallet_core_BRCoreTransactionInput.c \
 	com_breadwallet_core_BRCoreTransactionOutput.c \
 	com_breadwallet_core_BRCoreWallet.c \
+	com_breadwallet_core_BRCoreTest.c \
 	BRCoreJni.c
 
 JNI_OBJS=$(JNI_SRCS:.c=.o)
@@ -43,6 +44,7 @@ JAVA_SRCS=root/com/breadwallet/core/BRCoreAddress.java \
 	root/com/breadwallet/core/BRCoreTransactionInput.java \
 	root/com/breadwallet/core/BRCoreTransactionOutput.java \
 	root/com/breadwallet/core/BRCoreWallet.java \
+	root/com/breadwallet/core/BRCoreTest.java \
 	root/com/breadwallet/core/BRCoreWalletManager.java \
 	root/com/breadwallet/core/test/BRWalletManager.java
 
@@ -64,6 +66,7 @@ CORE_SRCS=../BRAddress.c \
 	../BRSet.c \
 	../BRTransaction.c \
 	../BRWallet.c \
+	../BRTest.c \
 	../bcash/BRBCashAddr.c
 
 CORE_OBJS=$(CORE_SRCS:.c=.o)

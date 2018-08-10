@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (Ljava/lang/String;)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreAddress_createCoreAddress
-(JNIEnv *, jclass, jstring);
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreAddress
@@ -21,7 +21,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreAddress_createCoreAddres
  * Signature: ([B)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreAddress_createCoreAddressFromScriptPubKey
-(JNIEnv *, jclass, jbyteArray);
+  (JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreAddress
@@ -29,7 +29,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreAddress_createCoreAddres
  * Signature: ([B)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreAddress_createCoreAddressFromScriptSignature
-(JNIEnv *, jclass, jbyteArray);
+  (JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreAddress
@@ -37,7 +37,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreAddress_createCoreAddres
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreAddress_stringify
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreAddress
@@ -45,7 +45,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreAddress_stringify
  * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreAddress_isValid
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreAddress
@@ -53,7 +53,7 @@ JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreAddress_isValid
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreAddress_getPubKeyScript
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreAddress
@@ -61,7 +61,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreAddress_getPubKeySc
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreAddress_bcashDecodeBitcoin
-(JNIEnv *, jclass, jstring);
+  (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreAddress
@@ -69,7 +69,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreAddress_bcashDecodeBit
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreAddress_bcashEncodeBitcoin
-(JNIEnv *, jclass, jstring);
+  (JNIEnv *, jclass, jstring);
 
 #ifdef __cplusplus
 }

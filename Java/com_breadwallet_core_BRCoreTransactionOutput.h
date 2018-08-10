@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (J[B)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_createTransactionOutput
-(JNIEnv *, jclass, jlong, jbyteArray);
+  (JNIEnv *, jclass, jlong, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreTransactionOutput
@@ -21,7 +21,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_create
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_getAddress
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreTransactionOutput
@@ -29,7 +29,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_getA
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_setAddress
-(JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreTransactionOutput
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_setAddr
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_getAmount
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreTransactionOutput
@@ -45,7 +45,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_getAmo
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_setAmount
-(JNIEnv *, jobject, jlong);
+  (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     com_breadwallet_core_BRCoreTransactionOutput
@@ -53,7 +53,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_setAmou
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_getScript
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

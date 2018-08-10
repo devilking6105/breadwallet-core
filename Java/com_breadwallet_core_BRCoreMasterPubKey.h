@@ -13,7 +13,7 @@ extern "C" {
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_serialize
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreMasterPubKey
@@ -21,7 +21,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_serial
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_getPubKey
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreMasterPubKey
@@ -29,7 +29,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_getPub
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_createPubKey
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCoreMasterPubKey
@@ -37,7 +37,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_createPubKe
  * Signature: ([B)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromPhrase
-(JNIEnv *, jclass, jbyteArray);
+  (JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreMasterPubKey
@@ -45,7 +45,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCo
  * Signature: ([B)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromSerialization
-(JNIEnv *, jclass, jbyteArray);
+  (JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCoreMasterPubKey
@@ -53,7 +53,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCo
  * Signature: ([BILjava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_bip32BitIDKey
-(JNIEnv *, jclass, jbyteArray, jint, jstring);
+  (JNIEnv *, jclass, jbyteArray, jint, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreMasterPubKey
@@ -61,7 +61,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_bip32B
  * Signature: ([Ljava/lang/String;Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_validateRecoveryPhrase
-(JNIEnv *, jclass, jobjectArray, jstring);
+  (JNIEnv *, jclass, jobjectArray, jstring);
 
 /*
  * Class:     com_breadwallet_core_BRCoreMasterPubKey
@@ -69,7 +69,7 @@ JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_validate
  * Signature: ([B[Ljava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_generatePaperKey
-(JNIEnv *, jclass, jbyteArray, jobjectArray);
+  (JNIEnv *, jclass, jbyteArray, jobjectArray);
 
 #ifdef __cplusplus
 }

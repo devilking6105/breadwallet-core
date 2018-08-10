@@ -13,7 +13,7 @@ extern "C" {
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_getMerchantData
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePaymentProtocolPayment
@@ -21,7 +21,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPaym
  * Signature: ()[Lcom/breadwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobjectArray JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_getTransactions
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePaymentProtocolPayment
@@ -29,7 +29,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPa
  * Signature: ()[Lcom/breadwallet/core/BRCoreTransactionOutput;
  */
 JNIEXPORT jobjectArray JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_getRefundTo
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePaymentProtocolPayment
@@ -37,7 +37,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPa
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_getMerchantMemo
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePaymentProtocolPayment
@@ -45,7 +45,7 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment
  * Signature: ([B)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_createPaymentProtocolPayment
-(JNIEnv *, jclass, jbyteArray);
+  (JNIEnv *, jclass, jbyteArray);
 
 /*
  * Class:     com_breadwallet_core_BRCorePaymentProtocolPayment
@@ -53,7 +53,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_c
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_serialize
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePaymentProtocolPayment
@@ -61,7 +61,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPaym
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_disposeNative
-(JNIEnv *, jobject);
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_breadwallet_core_BRCorePaymentProtocolPayment
@@ -69,7 +69,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_di
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCorePaymentProtocolPayment_initializeNative
-(JNIEnv *, jclass);
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }
