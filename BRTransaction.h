@@ -63,12 +63,15 @@ typedef struct {
     size_t scriptLen;
     uint8_t *signature;
     size_t sigLen;
+    uint8_t *witness;
+    size_t witLen;
     uint32_t sequence;
 } BRTxInput;
 
 void BRTxInputSetAddress(BRTxInput *input, const char *address);
 void BRTxInputSetScript(BRTxInput *input, const uint8_t *script, size_t scriptLen);
 void BRTxInputSetSignature(BRTxInput *input, const uint8_t *signature, size_t sigLen);
+void BRTxInputSetWitness(BRTxInput *input, const uint8_t *witness, size_t witLen);
 
 typedef struct {
     char address[75];
@@ -85,6 +88,7 @@ void BRTxOutputSetScript(BRTxOutput *output, const uint8_t *script, size_t scrip
 
 typedef struct {
     UInt256 txHash;
+    UInt256 wtxHash;
     uint32_t version;
     BRTxInput *inputs;
     size_t inCount;
@@ -102,7 +106,7 @@ BRTransaction *BRTransactionNew(void);
 BRTransaction *BRTransactionCopy(const BRTransaction *tx);
 
 // buf must contain a serialized tx
-// retruns a transaction that must be freed by calling BRTransactionFree()
+// returns a transaction that must be freed by calling BRTransactionFree()
 BRTransaction *BRTransactionParse(const uint8_t *buf, size_t bufLen);
 
 // returns number of bytes written to buf, or total bufLen needed if buf is NULL
@@ -112,7 +116,7 @@ size_t BRTransactionSerialize(const BRTransaction *tx, uint8_t *buf, size_t bufL
 // adds an input to tx
 void BRTransactionAddInput(BRTransaction *tx, UInt256 txHash, uint32_t index, uint64_t amount,
                            const uint8_t *script, size_t scriptLen, const uint8_t *signature, size_t sigLen,
-                           uint32_t sequence);
+                           const uint8_t *witness, size_t witLen, uint32_t sequence);
 
 // adds an output to tx
 void BRTransactionAddOutput(BRTransaction *tx, uint64_t amount, const uint8_t *script, size_t scriptLen);
