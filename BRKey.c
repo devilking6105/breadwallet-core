@@ -285,7 +285,7 @@ size_t BRKeyAddress(BRKey *key, char *addr, size_t addrLen) {
 }
 
 // writes the pay-to-witness-pubkey-hash nested in pay-to-script-hash (P2SH-P2WPKH) bitcoin address for key to addr:
-// https://bitcoincore.org/en/segwit_wallet_dev/#creation-of-p2sh-p2wsh-address
+// https://bitcoincore.org/en/segwit_wallet_dev/#creation-of-p2sh-p2wpkh-address
 // returns the number of bytes written, or addrLen needed if addr is NULL
 size_t BRKeyWitnessAddress(BRKey *key, char *addr, size_t addrLen) {
     // Only create witness addresses of compressed public keys
