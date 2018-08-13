@@ -740,14 +740,15 @@ BRTransaction *BRWalletCreateTxForOutputs(BRWallet *wallet, const BRTxOutput out
 // seed is the master private key (wallet seed) corresponding to the master public key given when the wallet was created
 // returns true if all inputs were signed, or false if there was an error or not all inputs were able to be signed
 int BRWalletSignTransaction(BRWallet *wallet, BRTransaction *tx, int forkId, const void *seed, size_t seedLen) {
-    uint32_t j, internalIdx[tx->inCount], externalIdx[tx->inCount];
-    size_t i, internalCount = 0, externalCount = 0;
+    uint32_t j, internalIdx[tx->inCount], externalIdx[tx->inCount], internalLegacyIdx[tx->inCount], externalLegacyIdx[tx->inCount];
+    size_t i, internalCount = 0, externalCount = 0, internalLegacyCount = 0, externalLegacyCount = 0;
     int r = 0;
 
     assert(wallet != NULL);
     assert(tx != NULL);
     pthread_mutex_lock(&wallet->lock);
 
+    // First we check the witness address chain
     for (i = 0; tx && i < tx->inCount; i++) {
         for (j = (uint32_t)array_count(wallet->internalWitnessChain); j > 0; j--) {
             if (BRAddressEq(tx->inputs[i].address, &wallet->internalWitnessChain[j - 1])) internalIdx[internalCount++] = j - 1;
@@ -757,29 +758,31 @@ int BRWalletSignTransaction(BRWallet *wallet, BRTransaction *tx, int forkId, con
             if (BRAddressEq(tx->inputs[i].address, &wallet->externalWitnessChain[j - 1])) externalIdx[externalCount++] = j - 1;
         }
 
+    }
+
+    // Then we check the legacy address chain
+    for (i = 0; tx && i < tx->inCount; i++) {
         for (j = (uint32_t)array_count(wallet->internalChain); j > 0; j--) {
-            if (BRAddressEq(tx->inputs[i].address, &wallet->internalChain[j - 1])) internalIdx[internalCount++] = j - 1;
+            if (BRAddressEq(tx->inputs[i].address, &wallet->internalChain[j - 1])) internalLegacyIdx[internalLegacyCount++] = j - 1;
         }
 
         for (j = (uint32_t)array_count(wallet->externalChain); j > 0; j--) {
-            if (BRAddressEq(tx->inputs[i].address, &wallet->externalChain[j - 1])) externalIdx[externalCount++] = j - 1;
+            if (BRAddressEq(tx->inputs[i].address, &wallet->externalChain[j - 1])) externalLegacyIdx[externalLegacyCount++] = j - 1;
         }
     }
 
     pthread_mutex_unlock(&wallet->lock);
 
-    BRKey keys[internalCount + externalCount];
-
     if (seed) {
+        BRKey keys[internalCount + externalCount + internalLegacyCount + externalLegacyCount];
+
         BRBIP32PrivKeyList(keys, internalCount, seed, seedLen, SEQUENCE_INTERNAL_WITNESS_CHAIN, internalIdx);
         BRBIP32PrivKeyList(&keys[internalCount], externalCount, seed, seedLen, SEQUENCE_EXTERNAL_WITNESS_CHAIN, externalIdx);
-        if (tx) r = BRTransactionSign(tx, forkId, keys, internalCount + externalCount);
-        for (i = 0; i < internalCount + externalCount; i++) BRKeyClean(&keys[i]);
+        BRBIP32PrivKeyList(&keys[internalCount + externalCount], internalLegacyCount, seed, seedLen, SEQUENCE_INTERNAL_CHAIN, internalLegacyIdx);
+        BRBIP32PrivKeyList(&keys[internalCount + externalCount + internalLegacyCount], externalLegacyCount, seed, seedLen, SEQUENCE_EXTERNAL_CHAIN, externalLegacyIdx);
 
-        BRBIP32PrivKeyList(keys, internalCount, seed, seedLen, SEQUENCE_INTERNAL_CHAIN, internalIdx);
-        BRBIP32PrivKeyList(&keys[internalCount], externalCount, seed, seedLen, SEQUENCE_EXTERNAL_CHAIN, externalIdx);
-        if (tx) r = BRTransactionSign(tx, forkId, keys, internalCount + externalCount);
-        for (i = 0; i < internalCount + externalCount; i++) BRKeyClean(&keys[i]);
+        if (tx) r = BRTransactionSign(tx, forkId, keys, internalCount + externalCount + internalLegacyCount + externalLegacyCount);
+        for (i = 0; i < internalCount + externalCount + internalLegacyCount + externalLegacyCount; i++) BRKeyClean(&keys[i]);
 
         // TODO: XXX wipe seed callback
         seed = NULL;
