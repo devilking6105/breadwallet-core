@@ -1821,6 +1821,42 @@ int BRTransactionTests() {
     return r;
 }
 
+int BRSegwitAddressTests() {
+    int r = 1;
+
+    /* Test found here: http://aaronjaramillo.org/libbitcoin-generating-a-segwit-address
+     *
+     * Since there's no address generation tests and i am paranoid.
+     *
+     */
+    const char *phrase = "barely code tiny evidence behave candy purity gallery canoe spawn donkey echo";
+    UInt512 seed;
+
+    BRBIP39DeriveKey(&seed, phrase, NULL);
+
+    BRMasterPubKey mpk = BRBIP32MasterPubKey(&seed, sizeof(seed));
+    BRWallet *w = BRWalletNew(NULL, 0, mpk);
+    BRAddress recvAddr = BRWalletReceiveAddress(w);
+
+    if (strcmp("2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", recvAddr.s) != 0)
+        r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be %s", __func__, recvAddr.s, "2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d");
+
+    BRKey key;
+    BRAddress addr;
+
+    if (! BRPrivKeyIsValid("cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs"))
+        r = 0, test_error_log("***FAILED*** %s: cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs is not a valid format", __func__);
+
+    BRKeySetPrivKey(&key, "cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs");
+
+    BRKeyWitnessAddress(&key, addr.s, sizeof(addr));
+
+    if (strcmp("2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", addr.s) != 0)
+        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be %s", __func__, addr.s, "2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd");
+
+    return r;
+}
+
 int BRSegwitTransactionTests() {
     int r = 1;
 
@@ -2788,6 +2824,7 @@ int BRCoreTests() {
     r = BRMerkleBlockTests();
     r = BRPaymentProtocolTests();
     r = BRPaymentProtocolTests();
+    r = BRSegwitAddressTests();
     r = BRSegwitTransactionTests();
 
     if (r == 1) {

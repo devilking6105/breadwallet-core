@@ -29,20 +29,26 @@ extern "C" {
 #endif
 
 #if BITCOIN_TESTNET
-#pragma message "testnet tests"
+#pragma message "Testnet Tests"
+#else
+#pragma message "Mainnet Tests (should not work)"
 #endif
 
 #define test_log(...) _test_log(__VA_ARGS__)
+#define test_error_log(...) _test_error_log(__VA_ARGS__)
 
 #if defined(TARGET_OS_MAC)
 #include <Foundation/Foundation.h>
 #define _test_log(...) NSLog(__VA_ARGS__)
+#define _test_error_log(...) NSLog(__VA_ARGS__)
 #elif defined(__ANDROID__)
 #include <android/log.h>
 #define _test_log(...) __android_log_print(ANDROID_LOG_INFO, "brcore", __VA_ARGS__)
+#define _test_error_log(...) __android_log_print(ANDROID_LOG_ERROR, "brcore:error", __VA_ARGS__)
 #else
 #include <stdio.h>
 #define _test_log(...) printf(__VA_ARGS__)
+#define _test_error_log(...) printf(__VA_ARGS__)
 #endif
 
 #if BITCOIN_TESTNET
