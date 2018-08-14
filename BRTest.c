@@ -2084,7 +2084,7 @@ int BRWalletTests() {
     if (BRWalletBalance(w) != SATOSHIS)
         r = 0, test_log("***FAILED*** %s: BRWalletNew() test\n", __func__);
 
-    if (BRWalletAllAddrs(w, NULL, 0) != SEQUENCE_GAP_LIMIT_EXTERNAL + SEQUENCE_GAP_LIMIT_INTERNAL + 1)
+    if (BRWalletAllAddrs(w, NULL, 0) != SEQUENCE_GAP_LIMIT_EXTERNAL*2 + SEQUENCE_GAP_LIMIT_INTERNAL*2 + 1) // 2 external chains, 2 internal chains (witness and legacy)
         r = 0, test_log("***FAILED*** %s: BRWalletAllAddrs() test\n", __func__);
 
     UInt256 hash = tx->txHash;
