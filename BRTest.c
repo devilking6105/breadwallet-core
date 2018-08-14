@@ -1838,21 +1838,38 @@ int BRSegwitAddressTests() {
     BRWallet *w = BRWalletNew(NULL, 0, mpk);
     BRAddress recvAddr = BRWalletReceiveAddress(w);
 
+#if BITCOIN_TESTNET
     if (strcmp("2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", recvAddr.s) != 0)
-        r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be %s", __func__, recvAddr.s, "2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d");
+        r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", __func__, recvAddr.s);
+#else
+    if (strcmp("35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", recvAddr.s) != 0)
+        r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", __func__, recvAddr.s);
+#endif
 
     BRKey key;
     BRAddress addr;
 
+#if BITCOIN_TESTNET
     if (! BRPrivKeyIsValid("cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs"))
         r = 0, test_error_log("***FAILED*** %s: cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs is not a valid format", __func__);
 
     BRKeySetPrivKey(&key, "cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs");
+#else
+    if (! BRPrivKeyIsValid("KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw"))
+        r = 0, test_error_log("***FAILED*** %s: KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw is not a valid format", __func__);
+
+    BRKeySetPrivKey(&key, "KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw");
+#endif
 
     BRKeyWitnessAddress(&key, addr.s, sizeof(addr));
 
+#if BITCOIN_TESTNET
     if (strcmp("2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", addr.s) != 0)
-        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be %s", __func__, addr.s, "2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd");
+        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", __func__, addr.s);
+#else
+    if (strcmp("3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", addr.s) != 0)
+        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", __func__, addr.s);
+#endif
 
     return r;
 }
@@ -1892,17 +1909,23 @@ int BRSegwitTransactionTests() {
 
     test_log("Ouput Address 1 is: %s", tx->outputs[0].address);
 
+#if BITCOIN_TESTNET
     if (strcmp(tx->outputs[0].address, "mvVvBvBpq5f51q8bPygkcSAoVabq5heFTr") != 0)
         r = 0, test_error_log("\n***FAILED*** %s: Output 1 addrs don't match! Expected %s, got %s", __func__, "mvVvBvBpq5f51q8bPygkcSAoVabq5heFTr", tx->outputs[0].address);
+#else
+    if (strcmp(tx->outputs[0].address, "1Fyxts6r24DpEieygQiNnWxUdb18ANa5p7") != 0)
+        r = 0, test_error_log("\n***FAILED*** %s: Output 1 addrs don't match! Expected %s, got %s", __func__, "1Fyxts6r24DpEieygQiNnWxUdb18ANa5p7", tx->outputs[0].address);
+#endif
 
     test_log("Ouput Address 2 is: %s", tx->outputs[1].address);
 
+#if BITCOIN_TESTNET
     if (strcmp(tx->outputs[1].address, "n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ") != 0)
         r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ", tx->outputs[1].address);
-
-    if (tx->lockTime != 1170)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->lockTime, expected %i got %i", __func__,
-                        1170, tx->lockTime);
+#else
+    if (strcmp(tx->outputs[1].address, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8") != 0)
+        r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8", tx->outputs[1].address);
+#endif
 
     /*if ((int) BRTransactionSize(tx) != 119) {*/
     /*r = 0, test_log("\n***FAILED*** %s: P2SH-P2WPKH incorrect tx size, expected %i got %i", __func__,*/
@@ -1956,13 +1979,31 @@ int BRSegwitTransactionTests() {
 
     test_log("Address 1: %s", tx->outputs[0].address);
 
+#if BITCOIN_TESTNET
     if (strcmp(tx->outputs[0].address, "mvVvBvBpq5f51q8bPygkcSAoVabq5heFTr") != 0)
         r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH output address should be mvVvBvBpq5f51q8bPygkcSAoVabq5heFTr got: %s", __func__, tx->outputs[0].address);
+#else
+    if (strcmp(tx->outputs[0].address, "1Fyxts6r24DpEieygQiNnWxUdb18ANa5p7") != 0)
+        r = 0, test_error_log("\n***FAILED*** %s: Output 1 addrs don't match! Expected %s, got %s", __func__, "1Fyxts6r24DpEieygQiNnWxUdb18ANa5p7", tx->outputs[0].address);
+#endif
 
     test_log("Address 2: %s", tx->outputs[1].address);
 
+#if BITCOIN_TESTNET
     if (strcmp(tx->outputs[1].address, "n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH output address should be n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ got: %s", __func__, tx->outputs[1].address);
+        r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ", tx->outputs[1].address);
+#else
+    if (strcmp(tx->outputs[1].address, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8") != 0)
+        r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8", tx->outputs[1].address);
+#endif
+
+#if BITCOIN_TESTNET
+    if (tx->lockTime != 92040000)
+        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->lockTime, expected 92040000 got %i", __func__, tx->lockTime);
+#else
+    if (tx->lockTime != 92040000)
+        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->lockTime, expected 92040000 got %i", __func__, tx->lockTime);
+#endif
 
     if ((int) BRTransactionSize(tx) != 251) {
         r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH incorrect tx size, expected %i got %i", __func__,
@@ -1973,6 +2014,50 @@ int BRSegwitTransactionTests() {
         r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH incorrect tx vsize, expected %i got %i", __func__,
                         170, (int) BRTransactionVSize(tx));
     }
+
+#if BITCOIN_TESTNET
+    // The following are mainnet only tests, since they are created with the test vectors...
+    return r;
+#endif
+
+    /*
+     * Valid p2sh-p2wpkh tx
+     */
+    BRKey key;
+    BRAddress addr;
+
+    // On tests private keys are in format of L5AQtV2HDm4xGsseLokK2VAT2EtYKcTm3c7HwqnJBFt9LdaQULsM
+    // That's the compressed WIF format, we need uncompressed
+    if (!BRPrivKeyIsValid("5KcfVRvm1Az5pYvANFfp8b2EbifQryyMrXcQn3tx6VkJkWokgDz"))
+        r = 0, test_error_log("***FAILED*** %s: is not a valid format", __func__);
+
+    BRKeySetPrivKey(&key, "5KcfVRvm1Az5pYvANFfp8b2EbifQryyMrXcQn3tx6VkJkWokgDz");
+
+    // Valid P2SH(P2WPKH)
+    const char* prevOutHash = "0000000000000000000000000000000000000000000000000000000000000100";
+    uint32_t prevOutIndex = 0;
+    const char* scriptPubKey = "HASH160 0x14 0xfe9c7dacc9fcfbf7e3b7d5ad06aa2b28c5a7b7e3 EQUAL";
+    uint64_t amount = 1000;
+
+    const char* serializedTx = "01000000000101000100000000000000000000000000000000000000000000000000000000000000000000171600144c9c3dfac4207d5d8cb89df5722cb3d712385e3fffffffff01e8030000000000001976a9144c9c3dfac4207d5d8cb89df5722cb3d712385e3f88ac02483045022100cfb07164b36ba64c1b1e8c7720a56ad64d96f6ef332d3d37f9cb3c96477dc44502200a464cd7a9cf94cd70f66ce4f4f0625ef650052c7afcfe29d7d7e01830ff91ed012103596d3451025c19dbbdeb932d6bf8bfb4ad499b95b6f88db8899efac102e5fc7100000000";
+    txLen = strlen(serializedTx) + 1;
+    uint8_t* buf8 = BRHexToUint8(serializedTx);
+
+    BRTransactionFree(tx);
+    tx = BRTransactionParse(buf8, txLen);
+
+    const char* parsedPrevOutHash = u256hex(UInt256Reverse(tx->inputs[0].txHash));
+    if (strcmp(parsedPrevOutHash, prevOutHash) != 0)
+        r = 0, test_error_log("***FAILED*** %s: got an invalid prev out tx hash, expected %s, got %s", __func__, prevOutHash, parsedPrevOutHash);
+
+    if (tx->inputs[0].index != 0)
+        r = 0, test_error_log("***FAILED*** %s: invalid index, got %i, expected 0", __func__, tx->inputs[0].index);
+
+    if (tx->inputs[0].amount != amount)
+        r = 0, test_error_log("***FAILED*** %s: Incorrect amount, got %zu, expected %zi", __func__, tx->inputs[0].amount, amount);
+
+    if (tx->inputs)
+        r = 0, test_error_log("***FAILED*** %s: ", __func__);
 
     return r;
 }
