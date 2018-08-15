@@ -1997,13 +1997,8 @@ int BRSegwitTransactionTests() {
         r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8", tx->outputs[1].address);
 #endif
 
-#if BITCOIN_TESTNET
     if (tx->lockTime != 92040000)
         r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->lockTime, expected 92040000 got %i", __func__, tx->lockTime);
-#else
-    if (tx->lockTime != 92040000)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->lockTime, expected 92040000 got %i", __func__, tx->lockTime);
-#endif
 
     if ((int) BRTransactionSize(tx) != 251) {
         r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH incorrect tx size, expected %i got %i", __func__,
