@@ -117,16 +117,23 @@ void BRTxInputSetWitness(BRTxInput *input, const uint8_t *witness, size_t witLen
     }
 }
 
-static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataLen) {
+static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataLen, int useSegwit) {
     size_t off = 0;
 
     if (data && off + sizeof(UInt256) <= dataLen) memcpy(&data[off], &input->txHash, sizeof(UInt256)); // previous out
     off += sizeof(UInt256);
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], input->index);
     off += sizeof(uint32_t);
-    off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), input->sigLen);
-    if (data && off + input->sigLen <= dataLen) memcpy(&data[off], input->signature, input->sigLen); // scriptSig
-    off += input->sigLen;
+
+    if (useSegwit) {
+        off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), input->scriptLen);
+        if (data && off + input->scriptLen <= dataLen) memcpy(&data[off], input->script, input->scriptLen); // script
+        off += input->scriptLen;
+    } else {
+        off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), input->sigLen);
+        if (data && off + input->sigLen <= dataLen) memcpy(&data[off], input->signature, input->sigLen); // sig
+        off += input->sigLen;
+    }
 
     if (input->amount != 0) {
         if (data && off + sizeof(uint64_t) <= dataLen) UInt64SetLE(&data[off], input->amount);
@@ -277,7 +284,7 @@ static size_t _BRTransactionData(const BRTransaction *tx, uint8_t *data, size_t 
                 input.amount = 0;
             } else input.amount = 0;
 
-            off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0));
+            off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), 0);
         }
     } else {
         off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), 1);
@@ -285,7 +292,7 @@ static size_t _BRTransactionData(const BRTransaction *tx, uint8_t *data, size_t 
         input.signature = input.script; // TODO: handle OP_CODESEPARATOR
         input.sigLen = input.scriptLen;
         input.amount = 0;
-        off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0));
+        off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), 0);
     }
 
     if (sigHash != SIGHASH_SINGLE && sigHash != SIGHASH_NONE) { // SIGHASH_ALL outputs
