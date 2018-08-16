@@ -26,6 +26,7 @@
 #include "BRKey.h"
 #include "BRAddress.h"
 #include "BRArray.h"
+#include "BRInt.h"
 #include <stdlib.h>
 #include <inttypes.h>
 #include <limits.h>
@@ -203,10 +204,12 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
     int anyoneCanPay = (hashType & SIGHASH_ANYONECANPAY), sigHash = (hashType & 0x1f);
     size_t i, off = 0;
 
+    // Version
     if (index >= tx->inCount) return 0;
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], tx->version); // tx version
     off += sizeof(uint32_t);
 
+    // Hash Prevouts (txhash + index) then SHA256_2 them
     if (! anyoneCanPay) {
         uint8_t buf[(sizeof(UInt256) + sizeof(uint32_t))*tx->inCount];
 
@@ -217,22 +220,27 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
 
         if (data && off + sizeof(UInt256) <= dataLen) BRSHA256_2(&data[off], buf, sizeof(buf)); // inputs hash
     } else if (data && off + sizeof(UInt256) <= dataLen) UInt256Set(&data[off], UINT256_ZERO); // anyone-can-pay
-
     off += sizeof(UInt256);
 
+    // Hash Sequence
     if (! anyoneCanPay && sigHash != SIGHASH_SINGLE && sigHash != SIGHASH_NONE) {
         uint8_t buf[sizeof(uint32_t)*tx->inCount];
 
         for (i = 0; i < tx->inCount; i++) UInt32SetLE(&buf[sizeof(uint32_t)*i], tx->inputs[i].sequence);
         if (data && off + sizeof(UInt256) <= dataLen) BRSHA256_2(&data[off], buf, sizeof(buf)); // sequence hash
     } else if (data && off + sizeof(UInt256) <= dataLen) UInt256Set(&data[off], UINT256_ZERO);
-
     off += sizeof(UInt256);
-    input = tx->inputs[index];
-    input.signature = input.script; // TODO: handle OP_CODESEPARATOR
-    input.sigLen = input.scriptLen;
-    off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0));
 
+    // Get the input and it's data
+
+    input = tx->inputs[index];
+    input.signature = input.script;
+    input.sigLen = input.sigLen;
+
+    // Add prevout + scriptCode + amount + nSequence
+    off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), 1);
+
+    // Outputs
     if (sigHash != SIGHASH_SINGLE && sigHash != SIGHASH_NONE) {
         size_t bufLen = _BRTransactionOutputData(tx, NULL, 0, SIZE_MAX);
         uint8_t _buf[(bufLen <= 0x1000) ? bufLen : 0], *buf = (bufLen <= 0x1000) ? _buf : malloc(bufLen);
@@ -246,12 +254,16 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
 
         if (data && off + sizeof(UInt256) <= dataLen) BRSHA256_2(&data[off], buf, bufLen); //SIGHASH_SINGLE outputs hash
     } else if (data && off + sizeof(UInt256) <= dataLen) UInt256Set(&data[off], UINT256_ZERO); // SIGHASH_NONE
-
     off += sizeof(UInt256);
+
+    //  Locktime
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], tx->lockTime); // locktime
     off += sizeof(uint32_t);
+
+    // Hashtype
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], hashType); // hash type
     off += sizeof(uint32_t);
+
     return (! data || off <= dataLen) ? off : 0;
 }
 
@@ -264,6 +276,7 @@ static size_t _BRTransactionData(const BRTransaction *tx, uint8_t *data, size_t 
     size_t i, off = 0;
 
     if (hashType & SIGHASH_FORKID) return _BRTransactionWitnessData(tx, data, dataLen, index, hashType);
+
     if (anyoneCanPay && index >= tx->inCount) return 0;
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], tx->version); // tx version
     off += sizeof(uint32_t);
