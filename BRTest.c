@@ -54,14 +54,12 @@
 #include <time.h>
 #include <unistd.h>
 
-#define TO_UINT8_HEX_BUF_LEN 2048
+static uint8_t buffer_hex_to_uint8[TO_UINT8_HEX_BUF_LEN];
 
 /*
  * Utilities
  *
  */
-static uint8_t buffer_hex_to_uint8[TO_UINT8_HEX_BUF_LEN];
-
 uint8_t* BRHexToUInt8(const char* str) {
     uint8_t c;
     size_t i;
@@ -99,19 +97,24 @@ uint8_t* BRHexToUInt8(const char* str) {
     return buffer_hex_to_uint8;
 }
 
-char* BRUInt8ToHex(uint8_t* buf, size_t bufSize) {
-    char* buf2;
-    int i;
+unsigned char* BRUInt8ToHex(uint8_t *buf, unsigned int bufLen, unsigned char **result) {
+  unsigned char hex_str[]= "0123456789abcdef";
+  unsigned int i;
 
-    buf2 = malloc(bufSize + 1);
-    if (!buf2)
-        return NULL;
+  if (!(*result = (unsigned char *)malloc(bufLen * 2 + 1)))
+    return (NULL);
 
-    buf2[bufSize] = 0;
-    for (i = 0; i < bufSize; i++)
-        buf2[bufSize - i] = (((*buf) >> i) & (0x01)) + '0';
+  (*result)[bufLen * 2] = 0;
 
-    return buf2;
+  if (!bufLen)
+    return (NULL);
+
+  for (i = 0; i < bufLen; i++)
+    {
+      (*result)[i * 2 + 0] = hex_str[(buf[i] >> 4) & 0x0F];
+      (*result)[i * 2 + 1] = hex_str[(buf[i]     ) & 0x0F];
+    }
+  return (*result);
 }
 
 /*

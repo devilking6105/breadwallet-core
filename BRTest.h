@@ -58,8 +58,13 @@ extern "C" {
 #endif
 
 #define SKIP_BIP38 1
+#define TO_UINT8_HEX_BUF_LEN 2048
+
+#include <inttypes.h>
 
 int BRCoreTests();
+uint8_t* BRHexToUInt8(const char* str);
+unsigned char* BRUInt8ToHex(uint8_t *buf, unsigned int bufLen, unsigned char **result);
 
 #ifdef __cplusplus
 }
