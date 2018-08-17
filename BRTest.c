@@ -62,7 +62,7 @@
  */
 static uint8_t buffer_hex_to_uint8[TO_UINT8_HEX_BUF_LEN];
 
-uint8_t* BRHexToUint8(const char* str) {
+uint8_t* BRHexToUInt8(const char* str) {
     uint8_t c;
     size_t i;
 
@@ -97,6 +97,21 @@ uint8_t* BRHexToUint8(const char* str) {
     }
 
     return buffer_hex_to_uint8;
+}
+
+char* BRUInt8ToHex(uint8_t* buf, size_t bufSize) {
+    char* buf2;
+    int i;
+
+    buf2 = malloc(bufSize + 1);
+    if (!buf2)
+        return NULL;
+
+    buf2[bufSize] = 0;
+    for (i = 0; i < bufSize; i++)
+        buf2[bufSize - i] = (((*buf) >> i) & (0x01)) + '0';
+
+    return buf2;
 }
 
 /*
@@ -1883,7 +1898,7 @@ int BRSegwitTransactionTests() {
     // Test unsigned transaction, we get this ready for signing.
     const char* rawTx = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
     size_t txLen = strlen(rawTx) + 1;
-    uint8_t* buf6 = BRHexToUint8(rawTx);
+    uint8_t* buf6 = BRHexToUInt8(rawTx);
 
     BRTransactionFree(tx);
     tx = BRTransactionParse(buf6, txLen);
@@ -1958,7 +1973,7 @@ int BRSegwitTransactionTests() {
     rawTx = "01000000000101db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477010000001716001479091972186c449eb1ded22b78e40d009bdf0089feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac02473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb012103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a2687392040000";
 
     txLen = strlen(rawTx) + 1;
-    uint8_t* buf7 = BRHexToUint8(rawTx);
+    uint8_t* buf7 = BRHexToUInt8(rawTx);
 
     BRTransactionFree(tx);
     tx = BRTransactionParse(buf7, txLen);
@@ -2036,10 +2051,15 @@ int BRSegwitTransactionTests() {
 
     const char* serializedTx = "01000000000101000100000000000000000000000000000000000000000000000000000000000000000000171600144c9c3dfac4207d5d8cb89df5722cb3d712385e3fffffffff01e8030000000000001976a9144c9c3dfac4207d5d8cb89df5722cb3d712385e3f88ac02483045022100cfb07164b36ba64c1b1e8c7720a56ad64d96f6ef332d3d37f9cb3c96477dc44502200a464cd7a9cf94cd70f66ce4f4f0625ef650052c7afcfe29d7d7e01830ff91ed012103596d3451025c19dbbdeb932d6bf8bfb4ad499b95b6f88db8899efac102e5fc7100000000";
     txLen = strlen(serializedTx) + 1;
-    uint8_t* buf8 = BRHexToUint8(serializedTx);
+    uint8_t* buf8 = BRHexToUInt8(serializedTx);
+
+    /*BRKey keys[1];*/
+    /*keys[1] = key;*/
 
     BRTransactionFree(tx);
     tx = BRTransactionParse(buf8, txLen);
+
+    /*BRTransactionSign(tx, 0, keys, 1);*/
 
     const char* parsedPrevOutHash = u256hex(UInt256Reverse(tx->inputs[0].txHash));
     if (strcmp(parsedPrevOutHash, prevOutHash) != 0)

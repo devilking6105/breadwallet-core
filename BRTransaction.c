@@ -399,7 +399,7 @@ BRTransaction *BRTransactionParse(const uint8_t *buf, size_t bufLen) {
 
     array_set_count(tx->inputs, tx->inCount);
 
-    for (i = 0; off <= bufLen && i < tx->inCount; i++) {
+    for (i = 0; tx && off <= bufLen && i < tx->inCount; i++) {
         input = &tx->inputs[i];
         input->txHash = (off + sizeof(UInt256) <= bufLen) ? UInt256Get(&buf[off]) : UINT256_ZERO;
         off += sizeof(UInt256);
