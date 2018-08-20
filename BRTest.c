@@ -1616,13 +1616,13 @@ int BRBIP32SequenceTests() {
 
     printf("\n");
 
-    BRBIP32PrivKey(&key, &seed, sizeof(seed), SEQUENCE_INTERNAL_CHAIN, 2 | 0x80000000);
+    BRBIP32PrivKey(&key, &seed, sizeof(seed), SEQUENCE_CHANGE_CHAIN, 2 | 0x80000000);
     printf("000102030405060708090a0b0c0d0e0f/0H/1/2H prv = %s\n", u256hex(key.secret));
     if (! UInt256Eq(key.secret, uint256("cbce0d719ecf7431d88e6a89fa1483e02e35092af60c042b1df2ff59fa424dca")))
         r = 0, test_log("***FAILED*** %s: BRBIP32PrivKey() test 1\n", __func__);
 
     // test for correct zero padding of private keys
-    BRBIP32PrivKey(&key, &seed, sizeof(seed), SEQUENCE_EXTERNAL_CHAIN, 97);
+    BRBIP32PrivKey(&key, &seed, sizeof(seed), SEQUENCE_RECEIVE_CHAIN, 97);
     printf("000102030405060708090a0b0c0d0e0f/0H/0/97 prv = %s\n", u256hex(key.secret));
     if (! UInt256Eq(key.secret, uint256("00136c1ad038f9a00871895322a487ed14f1cdc4d22ad351cfa1a0d235975dd7")))
         r = 0, test_log("***FAILED*** %s: BRBIP32PrivKey() test 2\n", __func__);
@@ -1640,7 +1640,7 @@ int BRBIP32SequenceTests() {
 
     uint8_t pubKey[33];
 
-    BRBIP32PubKey(pubKey, sizeof(pubKey), mpk, SEQUENCE_EXTERNAL_CHAIN, 0);
+    BRBIP32PubKey(pubKey, sizeof(pubKey), mpk, SEQUENCE_RECEIVE_CHAIN, 0);
     printf("000102030405060708090a0b0c0d0e0f/0H/0/0 pub = %02x%s\n", pubKey[0], u256hex(*(UInt256 *)&pubKey[1]));
     if (pubKey[0] != 0x02 ||
             ! UInt256Eq(*(UInt256 *)&pubKey[1],
@@ -2189,7 +2189,7 @@ int BRWalletTests() {
     if (BRWalletBalance(w) != SATOSHIS)
         r = 0, test_log("***FAILED*** %s: BRWalletNew() test\n", __func__);
 
-    if (BRWalletAllAddrs(w, NULL, 0) != SEQUENCE_GAP_LIMIT_EXTERNAL*2 + SEQUENCE_GAP_LIMIT_INTERNAL*2 + 1) // 2 external chains, 2 internal chains (witness and legacy)
+    if (BRWalletAllAddrs(w, NULL, 0) != SEQUENCE_GAP_LIMIT_RECEIVE*2 + SEQUENCE_GAP_LIMIT_CHANGE*2 + 1) // 2 receive chains, 2 change chains (witness and legacy)
         r = 0, test_log("***FAILED*** %s: BRWalletAllAddrs() test\n", __func__);
 
     UInt256 hash = tx->txHash;

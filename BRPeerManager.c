@@ -257,11 +257,11 @@ static void _BRPeerManagerLoadBloomFilter(BRPeerManager *manager, BRPeer *peer) 
     // every time a new wallet address is added, the bloom filter has to be rebuilt, and each address is only used
     // for one transaction, so here we generate some spare addresses to avoid rebuilding the filter each time a
     // wallet transaction is encountered during the chain sync
-    BRWalletUnusedAddrs(manager->wallet, NULL, SEQUENCE_GAP_LIMIT_EXTERNAL + 100, 0, 1);
-    BRWalletUnusedAddrs(manager->wallet, NULL, SEQUENCE_GAP_LIMIT_INTERNAL + 100, 1, 1);
+    BRWalletUnusedAddrs(manager->wallet, NULL, SEQUENCE_GAP_LIMIT_RECEIVE + 100, 0, 1);
+    BRWalletUnusedAddrs(manager->wallet, NULL, SEQUENCE_GAP_LIMIT_CHANGE + 100, 1, 1);
 
-    BRWalletUnusedAddrs(manager->wallet, NULL, SEQUENCE_GAP_LIMIT_EXTERNAL + 100, 0, 0);
-    BRWalletUnusedAddrs(manager->wallet, NULL, SEQUENCE_GAP_LIMIT_INTERNAL + 100, 1, 0);
+    BRWalletUnusedAddrs(manager->wallet, NULL, SEQUENCE_GAP_LIMIT_RECEIVE + 100, 0, 0);
+    BRWalletUnusedAddrs(manager->wallet, NULL, SEQUENCE_GAP_LIMIT_CHANGE + 100, 1, 0);
 
     BRSetApply(manager->orphans, NULL, _setApplyFreeBlock);
     BRSetClear(manager->orphans); // clear out orphans that may have been received on an old filter
@@ -928,15 +928,15 @@ static void _peerRelayedTx(void *info, BRTransaction *tx) {
         _BRTxPeerListRemovePeer(manager->txRequests, tx->txHash, peer);
 
         if (manager->bloomFilter != NULL) { // check if bloom filter is already being updated
-            BRAddress addrs[SEQUENCE_GAP_LIMIT_EXTERNAL + SEQUENCE_GAP_LIMIT_INTERNAL];
+            BRAddress addrs[SEQUENCE_GAP_LIMIT_RECEIVE + SEQUENCE_GAP_LIMIT_CHANGE];
             UInt160 hash;
 
             // the transaction likely consumed one or more wallet addresses, so check that at least the next <gap limit>
             // unused addresses are still matched by the bloom filter
-            BRWalletUnusedAddrs(manager->wallet, addrs, SEQUENCE_GAP_LIMIT_EXTERNAL, 0, 1);
-            BRWalletUnusedAddrs(manager->wallet, addrs + SEQUENCE_GAP_LIMIT_EXTERNAL, SEQUENCE_GAP_LIMIT_INTERNAL, 1, 1);
+            BRWalletUnusedAddrs(manager->wallet, addrs, SEQUENCE_GAP_LIMIT_RECEIVE, 0, 1);
+            BRWalletUnusedAddrs(manager->wallet, addrs + SEQUENCE_GAP_LIMIT_RECEIVE, SEQUENCE_GAP_LIMIT_CHANGE, 1, 1);
 
-            for (size_t i = 0; i < SEQUENCE_GAP_LIMIT_EXTERNAL + SEQUENCE_GAP_LIMIT_INTERNAL; i++) {
+            for (size_t i = 0; i < SEQUENCE_GAP_LIMIT_RECEIVE + SEQUENCE_GAP_LIMIT_CHANGE; i++) {
                 if (! BRAddressHash160(&hash, addrs[i].str) ||
                         BRBloomFilterContainsData(manager->bloomFilter, hash.u8, sizeof(hash))) continue;
                 if (manager->bloomFilter) BRBloomFilterFree(manager->bloomFilter);

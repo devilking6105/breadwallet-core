@@ -76,10 +76,11 @@ void BRWalletSetCallbacks(BRWallet *wallet, void *info,
 // wallets are composed of chains of addresses
 // each chain is traversed until a gap of a number of addresses is found that haven't been used in any transactions
 // this function writes to addrs an array of <gapLimit> unused addresses following the last used address in the chain
-// the internal chain is used for change addresses and the external chain for receive addresses
+// change chain is used for change addresses and receive chain for receive addresses
+// segwit is used to generate addresses in the legacy chain or the witness chain
 // addrs may be NULL to only generate addresses for BRWalletContainsAddress()
 // returns the number addresses written to addrs
-size_t BRWalletUnusedAddrs(BRWallet *wallet, BRAddress addrs[], uint32_t gapLimit, int internal, int useSegwit);
+size_t BRWalletUnusedAddrs(BRWallet *wallet, BRAddress addrs[], uint32_t gapLimit, int change, int segwit);
 
 // returns the first unused external address
 BRAddress BRWalletReceiveAddress(BRWallet *wallet);
