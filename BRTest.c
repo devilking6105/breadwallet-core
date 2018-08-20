@@ -1842,11 +1842,6 @@ int BRTransactionTests() {
 int BRSegwitAddressTests() {
     int r = 1;
 
-    /* Test found here: http://aaronjaramillo.org/libbitcoin-generating-a-segwit-address
-     *
-     * Since there's no address generation tests and i am paranoid.
-     *
-     */
     const char *phrase = "barely code tiny evidence behave candy purity gallery canoe spawn donkey echo";
     UInt512 seed;
 
@@ -1863,6 +1858,13 @@ int BRSegwitAddressTests() {
     if (strcmp("35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", recvAddr.str) != 0)
         r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", __func__, recvAddr.str);
 #endif
+
+    /*
+     * Tests with a private key generated here: https://segwitaddress.org/
+     *
+     * Input this WIF private key: KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw
+     *                   (testnet: cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs)
+     */
 
     BRKey key;
     BRAddress addr;
