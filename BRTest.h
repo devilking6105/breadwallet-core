@@ -31,7 +31,7 @@ extern "C" {
 #if BITCOIN_TESTNET
 #pragma message "Testnet Tests"
 #else
-#pragma message "Mainnet Tests (should not work)"
+#pragma message "Mainnet Tests"
 #endif
 
 #define test_log(...) _test_log(__VA_ARGS__)
@@ -64,7 +64,7 @@ extern "C" {
 
 int BRCoreTests();
 uint8_t* BRHexToUInt8(const char* str);
-unsigned char* BRUInt8ToHex(uint8_t *buf, unsigned int bufLen, unsigned char **result);
+char* BRUInt8ToHex(uint8_t *buf, size_t bufLen);
 
 #ifdef __cplusplus
 }

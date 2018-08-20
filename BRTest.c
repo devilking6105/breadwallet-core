@@ -97,24 +97,14 @@ uint8_t* BRHexToUInt8(const char* str) {
     return buffer_hex_to_uint8;
 }
 
-unsigned char* BRUInt8ToHex(uint8_t *buf, unsigned int bufLen, unsigned char **result) {
-  unsigned char hex_str[]= "0123456789abcdef";
-  unsigned int i;
+char* BRUInt8ToHex(uint8_t *buf, size_t bufLen) {
+    char* hex = malloc((sizeof(char) * bufLen) + 1);
 
-  if (!(*result = (unsigned char *)malloc(bufLen * 2 + 1)))
-    return (NULL);
-
-  (*result)[bufLen * 2] = 0;
-
-  if (!bufLen)
-    return (NULL);
-
-  for (i = 0; i < bufLen; i++)
-    {
-      (*result)[i * 2 + 0] = hex_str[(buf[i] >> 4) & 0x0F];
-      (*result)[i * 2 + 1] = hex_str[(buf[i]     ) & 0x0F];
+    for (size_t j = 0; j < bufLen; j++) {
+        sprintf(&hex[j*2], "%02x", buf[j]);
     }
-  return (*result);
+
+    return hex;
 }
 
 /*
@@ -2051,7 +2041,7 @@ int BRSegwitTransactionTests() {
     // Valid P2SH(P2WPKH)
     const char* prevOutHash = "0000000000000000000000000000000000000000000000000000000000000100";
     uint32_t prevOutIndex = 0;
-    const char* scriptPubKey = "HASH160 0x14 0xfe9c7dacc9fcfbf7e3b7d5ad06aa2b28c5a7b7e3 EQUAL";
+    const char* scriptPubKey = "HASH160 0x14 0xfe9c7dacc9fcfbf7e3b7d5ad06aa2b28c5a7b7e3 EQUAL"; /*OP_HASH160 + 20 + BRHash160(Brhash) OP_EQUAL;*/
     uint64_t amount = 1000;
 
     const char* serializedTx = "01000000000101000100000000000000000000000000000000000000000000000000000000000000000000171600144c9c3dfac4207d5d8cb89df5722cb3d712385e3fffffffff01e8030000000000001976a9144c9c3dfac4207d5d8cb89df5722cb3d712385e3f88ac02483045022100cfb07164b36ba64c1b1e8c7720a56ad64d96f6ef332d3d37f9cb3c96477dc44502200a464cd7a9cf94cd70f66ce4f4f0625ef650052c7afcfe29d7d7e01830ff91ed012103596d3451025c19dbbdeb932d6bf8bfb4ad499b95b6f88db8899efac102e5fc7100000000";
