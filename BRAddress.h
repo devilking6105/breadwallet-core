@@ -80,7 +80,7 @@ const uint8_t *BRScriptData(const uint8_t *elem, size_t *dataLen);
 size_t BRScriptPushData(uint8_t *script, size_t scriptLen, const uint8_t *data, size_t dataLen);
 
 typedef struct {
-    char s[75];
+    char str[75];
 } BRAddress;
 
 #define BR_ADDRESS_NONE ((BRAddress) { "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"\

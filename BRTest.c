@@ -1083,8 +1083,8 @@ int BRKeyTests() {
 
     printf("\n");
     BRKeySetPrivKey(&key, "S6c56bnXQiBjk9mqSYE7ykVQ7NzrRy");
-    BRKeyAddress(&key, addr.s, sizeof(addr));
-    printf("privKey:S6c56bnXQiBjk9mqSYE7ykVQ7NzrRy = %s\n", addr.s);
+    BRKeyAddress(&key, addr.str, sizeof(addr));
+    printf("privKey:S6c56bnXQiBjk9mqSYE7ykVQ7NzrRy = %s\n", addr.str);
 #if BITCOIN_TESTNET
     if (! BRAddressEq(&addr, "ms8fwvXzrCoyatnGFRaLbepSqwGRxVJQF1"))
         r = 0, test_log("***FAILED*** %s: BRKeySetPrivKey() test 1\n", __func__);
@@ -1098,8 +1098,8 @@ int BRKeyTests() {
         r = 0, test_log("***FAILED*** %s: BRPrivKeyIsValid() test 2\n", __func__);
 
     BRKeySetPrivKey(&key, "SzavMBLoXU6kDrqtUVmffv");
-    BRKeyAddress(&key, addr.s, sizeof(addr));
-    printf("privKey:SzavMBLoXU6kDrqtUVmffv = %s\n", addr.s);
+    BRKeyAddress(&key, addr.str, sizeof(addr));
+    printf("privKey:SzavMBLoXU6kDrqtUVmffv = %s\n", addr.str);
 #if BITCOIN_TESTNET
     if (! BRAddressEq(&addr, "mrhzp5mstA4Midx85EeCjuaUAAGANMFmRP"))
         r = 0, test_log("***FAILED*** %s: BRKeySetPrivKey() test 2\n", __func__);
@@ -1114,8 +1114,8 @@ int BRKeyTests() {
         r = 0, test_log("***FAILED*** %s: BRPrivKeyIsValid() test 3\n", __func__);
 
     BRKeySetPrivKey(&key, "5Kb8kLf9zgWQnogidDA76MzPL6TsZZY36hWXMssSzNydYXYB9KF");
-    BRKeyAddress(&key, addr.s, sizeof(addr));
-    printf("privKey:5Kb8kLf9zgWQnogidDA76MzPL6TsZZY36hWXMssSzNydYXYB9KF = %s\n", addr.s);
+    BRKeyAddress(&key, addr.str, sizeof(addr));
+    printf("privKey:5Kb8kLf9zgWQnogidDA76MzPL6TsZZY36hWXMssSzNydYXYB9KF = %s\n", addr.str);
     if (! BRAddressEq(&addr, "1CC3X2gu58d6wXUWMffpuzN9JAfTUWu4Kj"))
         r = 0, test_log("***FAILED*** %s: BRKeySetPrivKey() test 3\n", __func__);
 
@@ -1132,8 +1132,8 @@ int BRKeyTests() {
         r = 0, test_log("***FAILED*** %s: BRPrivKeyIsValid() test 4\n", __func__);
 
     BRKeySetPrivKey(&key, "KyvGbxRUoofdw3TNydWn2Z78dBHSy2odn1d3wXWN2o3SAtccFNJL");
-    BRKeyAddress(&key, addr.s, sizeof(addr));
-    printf("privKey:KyvGbxRUoofdw3TNydWn2Z78dBHSy2odn1d3wXWN2o3SAtccFNJL = %s\n", addr.s);
+    BRKeyAddress(&key, addr.str, sizeof(addr));
+    printf("privKey:KyvGbxRUoofdw3TNydWn2Z78dBHSy2odn1d3wXWN2o3SAtccFNJL = %s\n", addr.str);
     if (! BRAddressEq(&addr, "1JMsC6fCtYWkTjPPdDrYX3we2aBrewuEM3"))
         r = 0, test_log("***FAILED*** %s: BRKeySetPrivKey() test 4\n", __func__);
 
@@ -1436,13 +1436,13 @@ int BRAddressTests() {
     BRAddress addr, addr2;
 
     BRKeySetSecret(&k, &secret, 1);
-    if (! BRKeyAddress(&k, addr.s, sizeof(addr)))
+    if (! BRKeyAddress(&k, addr.str, sizeof(addr)))
         r = 0, test_log("\n***FAILED*** %s: BRKeyAddress()", __func__);
 
-    uint8_t script[BRAddressScriptPubKey(NULL, 0, addr.s)];
-    size_t scriptLen = BRAddressScriptPubKey(script, sizeof(script), addr.s);
+    uint8_t script[BRAddressScriptPubKey(NULL, 0, addr.str)];
+    size_t scriptLen = BRAddressScriptPubKey(script, sizeof(script), addr.str);
 
-    BRAddressFromScriptPubKey(addr2.s, sizeof(addr2), script, scriptLen);
+    BRAddressFromScriptPubKey(addr2.str, sizeof(addr2), script, scriptLen);
     if (! BRAddressEq(&addr, &addr2))
         r = 0, test_log("\n***FAILED*** %s: BRAddressFromScriptPubKey() test 1", __func__);
 
@@ -1450,11 +1450,11 @@ int BRAddressTests() {
 
     BRAddress addr3;
     char script2[] = "\0\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
-    if (! BRAddressFromScriptPubKey(addr3.s, sizeof(addr3), (uint8_t *)script2, sizeof(script2)))
+    if (! BRAddressFromScriptPubKey(addr3.str, sizeof(addr3), (uint8_t *)script2, sizeof(script2)))
         r = 0, test_log("\n***FAILED*** %s: BRAddressFromScriptPubKey() test 2", __func__);
 
-    uint8_t script3[BRAddressScriptPubKey(NULL, 0, addr3.s)];
-    size_t script3Len = BRAddressScriptPubKey(script3, sizeof(script3), addr3.s);
+    uint8_t script3[BRAddressScriptPubKey(NULL, 0, addr3.str)];
+    size_t script3Len = BRAddressScriptPubKey(script3, sizeof(script3), addr3.str);
 
     if (script3Len != sizeof(script2) || memcmp(script2, script3, sizeof(script2)))
         r = 0, test_log("\n***FAILED*** %s: BRAddressScriptPubKey() test", __func__);
@@ -1653,12 +1653,12 @@ int BRBIP32SequenceTests() {
     BRBIP39DeriveKey(dk.u8, "inhale praise target steak garlic cricket paper better evil almost sadness crawl city "
                      "banner amused fringe fox insect roast aunt prefer hollow basic ladder", NULL);
     BRBIP32BitIDKey(&key, dk.u8, sizeof(dk), 0, "http://bitid.bitcoin.blue/callback");
-    BRKeyAddress(&key, addr.s, sizeof(addr));
+    BRKeyAddress(&key, addr.str, sizeof(addr));
 #if BITCOIN_TESTNET
     if (strncmp(addr.s, "mxZ2Dn9vcyNeKh9DNHZw6d6NrxeYCVNjc2", sizeof(addr)) != 0)
         r = 0, test_log("***FAILED*** %s: BRBIP32BitIDKey() test\n", __func__);
 #else
-    if (strncmp(addr.s, "1J34vj4wowwPYafbeibZGht3zy3qERoUM1", sizeof(addr)) != 0)
+    if (strncmp(addr.str, "1J34vj4wowwPYafbeibZGht3zy3qERoUM1", sizeof(addr)) != 0)
         r = 0, test_log("***FAILED*** %s: BRBIP32BitIDKey() test\n", __func__);
 #endif
 
@@ -1724,10 +1724,10 @@ int BRTransactionTests() {
 
     memset(&k[0], 0, sizeof(k[0])); // test with array of keys where first key is empty/invalid
     BRKeySetSecret(&k[1], &secret, 1);
-    BRKeyAddress(&k[1], address.s, sizeof(address));
+    BRKeyAddress(&k[1], address.str, sizeof(address));
 
-    uint8_t script[BRAddressScriptPubKey(NULL, 0, address.s)];
-    size_t scriptLen = BRAddressScriptPubKey(script, sizeof(script), address.s);
+    uint8_t script[BRAddressScriptPubKey(NULL, 0, address.str)];
+    size_t scriptLen = BRAddressScriptPubKey(script, sizeof(script), address.str);
     BRTransaction *tx = BRTransactionNew();
 
     BRTransactionAddInput(tx, inHash, 0, 1, script, scriptLen, NULL, 0, NULL, 0, TXIN_SEQUENCE);
@@ -1747,7 +1747,7 @@ int BRTransactionTests() {
     if (! tx) return r;
 
     BRTransactionSign(tx, 0, k, 2);
-    BRAddressFromScriptSig(addr.s, sizeof(addr), tx->inputs[0].signature, tx->inputs[0].sigLen);
+    BRAddressFromScriptSig(addr.str, sizeof(addr), tx->inputs[0].signature, tx->inputs[0].sigLen);
     if (! BRTransactionIsSigned(tx) || ! BRAddressEq(&address, &addr))
         r = 0, test_log("\n***FAILED*** %s: BRTransactionSign() test 1", __func__);
 
@@ -1790,7 +1790,7 @@ int BRTransactionTests() {
     BRTransactionAddOutput(tx, 1000000, script, scriptLen);
     BRTransactionAddOutput(tx, 1000000, script, scriptLen);
     BRTransactionSign(tx, 0, k, 2);
-    BRAddressFromScriptSig(addr.s, sizeof(addr), tx->inputs[tx->inCount - 1].signature,
+    BRAddressFromScriptSig(addr.str, sizeof(addr), tx->inputs[tx->inCount - 1].signature,
                            tx->inputs[tx->inCount - 1].sigLen);
     if (! BRTransactionIsSigned(tx) || ! BRAddressEq(&address, &addr))
         r = 0, test_log("\n***FAILED*** %s: BRTransactionSign() test 2", __func__);
@@ -1860,8 +1860,8 @@ int BRSegwitAddressTests() {
     if (strcmp("2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", recvAddr.s) != 0)
         r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", __func__, recvAddr.s);
 #else
-    if (strcmp("35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", recvAddr.s) != 0)
-        r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", __func__, recvAddr.s);
+    if (strcmp("35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", recvAddr.str) != 0)
+        r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", __func__, recvAddr.str);
 #endif
 
     BRKey key;
@@ -1879,14 +1879,14 @@ int BRSegwitAddressTests() {
     BRKeySetPrivKey(&key, "KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw");
 #endif
 
-    BRKeyWitnessAddress(&key, addr.s, sizeof(addr));
+    BRKeyWitnessAddress(&key, addr.str, sizeof(addr));
 
 #if BITCOIN_TESTNET
     if (strcmp("2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", addr.s) != 0)
         r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", __func__, addr.s);
 #else
-    if (strcmp("3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", addr.s) != 0)
-        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", __func__, addr.s);
+    if (strcmp("3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", addr.str) != 0)
+        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", __func__, addr.str);
 #endif
 
     return r;
@@ -2125,18 +2125,18 @@ int BRWalletTests() {
 
     BRWalletSetCallbacks(w, w, walletBalanceChanged, walletTxAdded, walletTxUpdated, walletTxDeleted);
     BRKeySetSecret(&k, &secret, 1);
-    BRKeyAddress(&k, addr.s, sizeof(addr));
+    BRKeyAddress(&k, addr.str, sizeof(addr));
 
-    tx = BRWalletCreateTransaction(w, 1, addr.s);
+    tx = BRWalletCreateTransaction(w, 1, addr.str);
     if (tx) r = 0, test_log("***FAILED*** %s: BRWalletCreateTransaction() test 0\n", __func__);
 
-    tx = BRWalletCreateTransaction(w, SATOSHIS, addr.s);
+    tx = BRWalletCreateTransaction(w, SATOSHIS, addr.str);
     if (tx) r = 0, test_log("***FAILED*** %s: BRWalletCreateTransaction() test 1\n", __func__);
 
-    uint8_t inScript[BRAddressScriptPubKey(NULL, 0, addr.s)];
-    size_t inScriptLen = BRAddressScriptPubKey(inScript, sizeof(inScript), addr.s);
-    uint8_t outScript[BRAddressScriptPubKey(NULL, 0, recvAddr.s)];
-    size_t outScriptLen = BRAddressScriptPubKey(outScript, sizeof(outScript), recvAddr.s);
+    uint8_t inScript[BRAddressScriptPubKey(NULL, 0, addr.str)];
+    size_t inScriptLen = BRAddressScriptPubKey(inScript, sizeof(inScript), addr.str);
+    uint8_t outScript[BRAddressScriptPubKey(NULL, 0, recvAddr.str)];
+    size_t outScriptLen = BRAddressScriptPubKey(outScript, sizeof(outScript), recvAddr.str);
 
     tx = BRTransactionNew();
     BRTransactionAddInput(tx, inHash, 0, 1, inScript, inScriptLen, NULL, 0, NULL, 0, TXIN_SEQUENCE);
@@ -2192,13 +2192,13 @@ int BRWalletTests() {
 
     UInt256 hash = tx->txHash;
 
-    tx = BRWalletCreateTransaction(w, SATOSHIS*2, addr.s);
+    tx = BRWalletCreateTransaction(w, SATOSHIS*2, addr.str);
     if (tx) r = 0, test_log("***FAILED*** %s: BRWalletCreateTransaction() test 3\n", __func__);
 
     if (BRWalletFeeForTxAmount(w, SATOSHIS/2) < 1000)
         r = 0, test_log("***FAILED*** %s: BRWalletFeeForTxAmount() test 1\n", __func__);
 
-    tx = BRWalletCreateTransaction(w, SATOSHIS/2, addr.s);
+    tx = BRWalletCreateTransaction(w, SATOSHIS/2, addr.str);
     if (! tx) r = 0, test_log("***FAILED*** %s: BRWalletCreateTransaction() test 4\n", __func__);
 
     if (tx) BRWalletSignTransaction(w, tx, 0, &seed, sizeof(seed));
@@ -2228,7 +2228,7 @@ int BRWalletTests() {
     if (BRWalletTransactions(w, NULL, 0) != 0)
         r = 0, test_log("***FAILED*** %s: BRWalletRemoveTransaction() test\n", __func__);
 
-    if (! BRAddressEq(BRWalletReceiveAddress(w).s, recvAddr.s)) // verify used addresses are correctly tracked
+    if (! BRAddressEq(BRWalletReceiveAddress(w).str, recvAddr.str)) // verify used addresses are correctly tracked
         r = 0, test_log("***FAILED*** %s: BRWalletReceiveAddress() test\n", __func__);
 
     if (BRWalletFeeForTxAmount(w, SATOSHIS) != 0)
@@ -2247,7 +2247,7 @@ int BRWalletTests() {
     BRWalletSetCallbacks(w, w, walletBalanceChanged, walletTxAdded, walletTxUpdated, walletTxDeleted);
     BRWalletSetFeePerKb(w, 65000);
     amt = BRWalletMaxOutputAmount(w);
-    tx = BRWalletCreateTransaction(w, amt, addr.s);
+    tx = BRWalletCreateTransaction(w, amt, addr.str);
 
     if (BRWalletAmountSentByTx(w, tx) - BRWalletFeeForTx(w, tx) != amt || BRWalletAmountReceivedFromTx(w, tx) != 0)
         r = 0, test_log("***FAILED*** %s: BRWalletMaxOutputAmount() test 1\n", __func__);
@@ -2961,7 +2961,7 @@ void BRPeerManagerTests() {
 
    wallet = BRWalletNew(NULL, 0, mpk);
    BRWalletSetCallbacks(wallet, wallet, walletBalanceChanged, walletTxAdded, walletTxUpdated, walletTxDeleted);
-   printf("wallet created with first receive address: %s\n", BRWalletReceiveAddress(wallet).s);
+   printf("wallet created with first receive address: %s\n", BRWalletReceiveAddress(wallet).str);
 
    // manager = BRPeerManagerNew(&BRMainNetParams, wallet, BIP39_CREATION_TIME, NULL, 0, NULL, 0);
    BRPeerManagerSetCallbacks(manager, manager, syncStarted, syncStopped, txStatusUpdate, NULL, NULL, NULL, NULL);

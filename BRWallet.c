@@ -372,9 +372,9 @@ size_t BRWalletUnusedAddrs(BRWallet *wallet, BRAddress addrs[], uint32_t gapLimi
 
         if (! BRKeySetPubKey(&key, pubKey, len)) break;
 
-        if ((chain & SEQUENCE_WITNESS_FLAG) && !BRKeyWitnessAddress(&key, address.s, sizeof(address))) break;
+        if ((chain & SEQUENCE_WITNESS_FLAG) && !BRKeyWitnessAddress(&key, address.str, sizeof(address))) break;
 
-        if ((chain & SEQUENCE_WITNESS_FLAG) == 0 && !BRKeyAddress(&key, address.s, sizeof(address))) break;
+        if ((chain & SEQUENCE_WITNESS_FLAG) == 0 && !BRKeyAddress(&key, address.str, sizeof(address))) break;
 
         if (BRAddressEq(&address, &BR_ADDRESS_NONE)) break;
 
@@ -725,8 +725,8 @@ BRTransaction *BRWalletCreateTxForOutputs(BRWallet *wallet, const BRTxOutput out
         transaction = NULL;
     } else if (transaction && balance - (amount + feeAmount) > minAmount) { // add change output
         BRWalletUnusedAddrs(wallet, &addr, 1, 1, 1);
-        uint8_t script[BRAddressScriptPubKey(NULL, 0, addr.s)];
-        size_t scriptLen = BRAddressScriptPubKey(script, sizeof(script), addr.s);
+        uint8_t script[BRAddressScriptPubKey(NULL, 0, addr.str)];
+        size_t scriptLen = BRAddressScriptPubKey(script, sizeof(script), addr.str);
 
         BRTransactionAddOutput(transaction, balance - (amount + feeAmount), script, scriptLen);
         BRTransactionShuffleOutputs(transaction);

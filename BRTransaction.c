@@ -633,14 +633,14 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
     assert(keys != NULL || keysCount == 0);
 
     for (i = 0; tx && i < keysCount; i++) {
-        if (! BRKeyAddress(&keys[i], addrs[i].s, sizeof(addrs[i]))) addrs[i] = BR_ADDRESS_NONE;
-        if (! BRKeyWitnessAddress(&keys[i], witAddrs[i].s, sizeof(witAddrs[i]))) witAddrs[i] = BR_ADDRESS_NONE;
+        if (! BRKeyAddress(&keys[i], addrs[i].str, sizeof(addrs[i]))) addrs[i] = BR_ADDRESS_NONE;
+        if (! BRKeyWitnessAddress(&keys[i], witAddrs[i].str, sizeof(witAddrs[i]))) witAddrs[i] = BR_ADDRESS_NONE;
     }
 
     for (i = 0; tx && i < tx->inCount; i++) {
         BRTxInput *input = &tx->inputs[i];
 
-        if (! BRAddressFromScriptPubKey(address.s, sizeof(address), input->script, input->scriptLen)) continue;
+        if (! BRAddressFromScriptPubKey(address.str, sizeof(address), input->script, input->scriptLen)) continue;
         j = 0;
         while (j < keysCount && ! BRAddressEq(&addrs[j], &address) && ! BRAddressEq(&witAddrs[j], &address)) j++;
         if (j >= keysCount) continue;

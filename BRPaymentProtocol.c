@@ -722,8 +722,8 @@ BRPaymentProtocolPayment *BRPaymentProtocolPaymentNew(const uint8_t *merchantDat
     array_new(payment->refundTo, refundToCount);
 
     for (size_t i = 0; i < refundToCount; i++) {
-        uint8_t script[BRAddressScriptPubKey(NULL, 0, refundToAddresses[i].s)];
-        size_t scriptLen = BRAddressScriptPubKey(script, sizeof(script), refundToAddresses[i].s);
+        uint8_t script[BRAddressScriptPubKey(NULL, 0, refundToAddresses[i].str)];
+        size_t scriptLen = BRAddressScriptPubKey(script, sizeof(script), refundToAddresses[i].str);
 
         array_add(payment->refundTo, _BRPaymentProtocolOutput(refundToAmounts[i], script, scriptLen));
     }

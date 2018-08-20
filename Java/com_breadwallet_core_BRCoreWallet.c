@@ -351,7 +351,7 @@ Java_com_breadwallet_core_BRCoreWallet_createTransaction
     // to cover the transaction amount
     BRTransaction *transaction = BRWalletCreateTransaction(wallet,
                                  (uint64_t) amount,
-                                 (const char *) address->s);
+                                 (const char *) address->str);
 
     return NULL == transaction
            ? NULL
