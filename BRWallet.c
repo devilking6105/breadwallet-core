@@ -749,7 +749,7 @@ int BRWalletSignTransaction(BRWallet *wallet, BRTransaction *tx, int forkId, con
     pthread_mutex_lock(&wallet->lock);
 
     // First we check the witness address chain
-    for (i = 0; tx && i < tx->inCount; i++) {
+    for (i = 0; i < tx->inCount; i++) {
         for (j = (uint32_t)array_count(wallet->changeWitnessAddrs); j > 0; j--) {
             if (BRAddressEq(tx->inputs[i].address, &wallet->changeWitnessAddrs[j - 1])) changeIdx[changeCount++] = j - 1;
         }
@@ -761,7 +761,7 @@ int BRWalletSignTransaction(BRWallet *wallet, BRTransaction *tx, int forkId, con
     }
 
     // Then we check the legacy address chain
-    for (i = 0; tx && i < tx->inCount; i++) {
+    for (i = 0; i < tx->inCount; i++) {
         for (j = (uint32_t)array_count(wallet->changeAddrs); j > 0; j--) {
             if (BRAddressEq(tx->inputs[i].address, &wallet->changeAddrs[j - 1])) changeLegacyIdx[changeLegacyCount++] = j - 1;
         }
