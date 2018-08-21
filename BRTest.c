@@ -2038,6 +2038,8 @@ int BRSegwitTransactionTests() {
 
     BRKeySetPrivKey(&key, "5KcfVRvm1Az5pYvANFfp8b2EbifQryyMrXcQn3tx6VkJkWokgDz");
 
+    test_log("Valid P2SH");
+
     // Valid P2SH(P2WPKH)
     const char* prevOutHash = "0000000000000000000000000000000000000000000000000000000000000100";
     uint32_t prevOutIndex = 0;
@@ -2047,6 +2049,8 @@ int BRSegwitTransactionTests() {
     const char* serializedTx = "01000000000101000100000000000000000000000000000000000000000000000000000000000000000000171600144c9c3dfac4207d5d8cb89df5722cb3d712385e3fffffffff01e8030000000000001976a9144c9c3dfac4207d5d8cb89df5722cb3d712385e3f88ac02483045022100cfb07164b36ba64c1b1e8c7720a56ad64d96f6ef332d3d37f9cb3c96477dc44502200a464cd7a9cf94cd70f66ce4f4f0625ef650052c7afcfe29d7d7e01830ff91ed012103596d3451025c19dbbdeb932d6bf8bfb4ad499b95b6f88db8899efac102e5fc7100000000";
     txLen = strlen(serializedTx) + 1;
     uint8_t* buf8 = BRHexToUInt8(serializedTx);
+
+    test_log("Parsing transaction: %s", serializedTx);
 
     /*BRKey keys[1];*/
     /*keys[1] = key;*/
