@@ -1881,6 +1881,21 @@ int BRSegwitAddressTests() {
         r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", __func__, addr.str);
 #endif
 
+#if BITCOIN_TESTNET
+#else
+    const char* rawPrivKey = "eb696a065ef48a2192da5b28b694f87544b30fae8327c4510137a922f32c6dcf";
+    const char* addrToCompare = "38BW8nqpHSWpkf5sXrQd2xYwvnPJwP59ic";
+
+    if (! BRPrivKeyIsValid(rawPrivKey))
+        r = 0, test_error_log("***FAILED*** %s: %s is not a valid format", __func__, rawPrivKey);
+
+    BRKeySetPrivKey(&key, rawPrivKey);
+    BRKeyWitnessAddress(&key, addr.str, sizeof(addr));
+
+    if (strcmp(addrToCompare, addr.str) != 0)
+        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be %s", __func__, addr.str, addrToCompare);
+#endif
+
     return r;
 }
 
