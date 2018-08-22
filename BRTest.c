@@ -1884,6 +1884,44 @@ int BRSegwitAddressTests() {
     return r;
 }
 
+int BRSegwitTransactionTests2() {
+    int r = 1;
+
+    BRTransaction *tx = BRTransactionNew();
+
+    test_log("Running tests for, segwit 2: %s", __func__);
+
+    // Test only for mainnet
+#if BITCOIN_TESTNET
+    return r;
+#endif
+
+    const char* rawTx = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
+    const char* rawPrivKey = "eb696a065ef48a2192da5b28b694f87544b30fae8327c4510137a922f32c6dcf";
+    size_t txLen = strlen(rawTx) + 1;
+    uint8_t* buf6 = BRHexToUInt8(rawTx);
+    BRKey keys[1];
+
+    BRTransactionFree(tx);
+    tx = BRTransactionParse(buf6, txLen);
+
+    /*int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCount) {*/
+    if (!BRPrivKeyIsValid(rawPrivKey))
+        r = 0, test_error_log("***FAILED*** %s: is not a valid format", __func__);
+
+    BRKeySetPrivKey(&keys[0], rawPrivKey);
+    BRTransactionSign(tx, 0, keys, 1);
+
+    uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
+    size_t len = BRTransactionSerialize(tx, buf, sizeof(buf));
+
+    const char* expectedSerialization = "01000000000101db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477010000001716001479091972186c449eb1ded22b78e40d009bdf0089feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac02473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb012103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a2687392040000";
+    if (strcmp(expectedSerialization, BRUInt8ToHex(buf, len)) != 0)
+        r = 0, test_error_log("***FAILED*** %s: result should be %s not %s", __func__, expectedSerialization, BRUInt8ToHex(buf, len));
+
+    return r;
+}
+
 int BRSegwitTransactionTests() {
     int r = 1;
 
@@ -2913,6 +2951,7 @@ int BRCoreTests() {
     r = BRPaymentProtocolTests();
     r = BRSegwitAddressTests();
     r = BRSegwitTransactionTests();
+    r = BRSegwitTransactionTests2();
 
     /* FIXME THESE TESTS DO NOT PASS */
     /*r = BRTransactionTests();*/
