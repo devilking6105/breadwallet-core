@@ -1925,7 +1925,9 @@ int BRSegwitTransactionTests2() {
         r = 0, test_error_log("***FAILED*** %s: is not a valid format", __func__);
 
     BRKeySetPrivKey(&keys[0], rawPrivKey);
-    BRTransactionSign(tx, 0, keys, 1);
+
+    if (! BRTransactionSign(tx, 0, keys, 1))
+        r = 0, test_error_log("***FAILED*** %s: failed to sign transaction with priv key %s", __func__, rawPrivKey);
 
     uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
     size_t len = BRTransactionSerialize(tx, buf, sizeof(buf));
