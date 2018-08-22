@@ -1858,38 +1858,60 @@ int BRSegwitAddressTests() {
 
     BRKey key;
     BRAddress addr;
+    size_t pkLen = 65;
+    uint8_t* pk[pkLen];
+
+    const char* rawPrivKey;
+    const char* expectedAddr;
+    const char* addrToCompare;
 
 #if BITCOIN_TESTNET
-    if (! BRPrivKeyIsValid("cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs"))
-        r = 0, test_error_log("***FAILED*** %s: cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs is not a valid format", __func__);
-
-    BRKeySetPrivKey(&key, "cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs");
+    rawPrivKey = "cNZQVV7i3R9Lj2zmT7YQFixfQS8cm2JuBaZsFezLyoXEREzKKoHs";
 #else
-    if (! BRPrivKeyIsValid("KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw"))
-        r = 0, test_error_log("***FAILED*** %s: KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw is not a valid format", __func__);
-
-    BRKeySetPrivKey(&key, "KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw");
+    rawPrivKey = "KxGSaiVpmakGJsnW95fDQSfDMNJwcYCPNxWCiXgVbXBWCGJBAyYw";
 #endif
+
+    // Compressed pubkeys are required for p2sh-p2pwpk
+    key.compressed = 1;
+
+    // If the privKey valid we set it
+    if (!BRPrivKeyIsValid(rawPrivKey))
+        r = 0, test_error_log("***FAILED*** %s: %s is not a valid format", __func__, rawPrivKey);
+    BRKeySetPrivKey(&key, rawPrivKey);
+
+    // Gen pubkey again
+    BRKeyPubKey(&key, pk, pkLen);
 
     BRKeyWitnessAddress(&key, addr.str, sizeof(addr));
 
 #if BITCOIN_TESTNET
-    if (strcmp("2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", addr.str) != 0)
-        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", __func__, addr.str);
+    expectedAddr = "2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd";
 #else
-    if (strcmp("3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", addr.str) != 0)
-        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", __func__, addr.str);
+    expectedAddr = "3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS";
 #endif
 
-#if BITCOIN_TESTNET
-#else
-    const char* rawPrivKey = "eb696a065ef48a2192da5b28b694f87544b30fae8327c4510137a922f32c6dcf";
-    const char* addrToCompare = "38BW8nqpHSWpkf5sXrQd2xYwvnPJwP59ic";
+    if (strcmp(expectedAddr, addr.str) != 0)
+        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be %s", __func__, addr.str, expectedAddr);
 
-    if (! BRPrivKeyIsValid(rawPrivKey))
+#if !BITCOIN_TESTNET
+
+    // Cleanup for 2nd test
+    BRKeyClean(&key);
+    *pk = '\0'; // Set pubkey to "NULL"
+
+    rawPrivKey = "eb696a065ef48a2192da5b28b694f87544b30fae8327c4510137a922f32c6dcf";
+    addrToCompare = "38BW8nqpHSWpkf5sXrQd2xYwvnPJwP59ic";
+
+    if (!BRPrivKeyIsValid(rawPrivKey))
         r = 0, test_error_log("***FAILED*** %s: %s is not a valid format", __func__, rawPrivKey);
 
     BRKeySetPrivKey(&key, rawPrivKey);
+
+    // Set the flag to compressed to add the pub key
+    key.compressed = 1;
+    BRKeyPubKey(&key, pk, pkLen);
+
+    // Generate the witness address
     BRKeyWitnessAddress(&key, addr.str, sizeof(addr));
 
     if (strcmp(addrToCompare, addr.str) != 0)
@@ -1916,6 +1938,8 @@ int BRSegwitTransactionTests2() {
     size_t txLen = strlen(rawTx) + 1;
     uint8_t* buf6 = BRHexToUInt8(rawTx);
     BRKey keys[1];
+    size_t pkLen = 65;
+    uint8_t* pk[pkLen];
 
     BRTransactionFree(tx);
     tx = BRTransactionParse(buf6, txLen);
@@ -1925,6 +1949,8 @@ int BRSegwitTransactionTests2() {
         r = 0, test_error_log("***FAILED*** %s: is not a valid format", __func__);
 
     BRKeySetPrivKey(&keys[0], rawPrivKey);
+    keys[0].compressed = 1;
+    BRKeyPubKey(&keys[0], pk, pkLen);
 
     if (! BRTransactionSign(tx, 0, keys, 1))
         r = 0, test_error_log("***FAILED*** %s: failed to sign transaction with priv key %s", __func__, rawPrivKey);
@@ -2085,6 +2111,8 @@ int BRSegwitTransactionTests() {
      */
     BRKey key;
     BRAddress addr;
+    size_t pkLen = 65;
+    uint8_t* pk[pkLen];
 
     // On tests private keys are in format of L5AQtV2HDm4xGsseLokK2VAT2EtYKcTm3c7HwqnJBFt9LdaQULsM
     // That's the compressed WIF format, we need uncompressed
@@ -2092,6 +2120,10 @@ int BRSegwitTransactionTests() {
         r = 0, test_error_log("***FAILED*** %s: is not a valid format", __func__);
 
     BRKeySetPrivKey(&key, "5KcfVRvm1Az5pYvANFfp8b2EbifQryyMrXcQn3tx6VkJkWokgDz");
+
+    // Set pubkey
+    key.compressed = 1;
+    BRKeyPubKey(&key, pk, pkLen);
 
     test_log("Valid P2SH");
 
