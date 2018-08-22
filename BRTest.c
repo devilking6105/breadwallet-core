@@ -1645,7 +1645,7 @@ int BRBIP32SequenceTests() {
     BRBIP32BitIDKey(&key, dk.u8, sizeof(dk), 0, "http://bitid.bitcoin.blue/callback");
     BRKeyAddress(&key, addr.str, sizeof(addr));
 #if BITCOIN_TESTNET
-    if (strncmp(addr.s, "mxZ2Dn9vcyNeKh9DNHZw6d6NrxeYCVNjc2", sizeof(addr)) != 0)
+    if (strncmp(addr.str, "mxZ2Dn9vcyNeKh9DNHZw6d6NrxeYCVNjc2", sizeof(addr)) != 0)
         r = 0, test_log("***FAILED*** %s: BRBIP32BitIDKey() test\n", __func__);
 #else
     if (strncmp(addr.str, "1J34vj4wowwPYafbeibZGht3zy3qERoUM1", sizeof(addr)) != 0)
@@ -1842,8 +1842,8 @@ int BRSegwitAddressTests() {
     BRAddress recvAddr = BRWalletReceiveAddress(w);
 
 #if BITCOIN_TESTNET
-    if (strcmp("2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", recvAddr.s) != 0)
-        r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", __func__, recvAddr.s);
+    if (strcmp("2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", recvAddr.str) != 0)
+        r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 2MvwnBjz5oGnobyts6hUC14YjmdcJxACv9d", __func__, recvAddr.str);
 #else
     if (strcmp("35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", recvAddr.str) != 0)
         r = 0, test_error_log("***FAILED*** %s: BRAddress, got %s, should be 35Pa8144BpHTQCGKRZrKP7ZUZHQ9CZVQgg", __func__, recvAddr.str);
@@ -1874,8 +1874,8 @@ int BRSegwitAddressTests() {
     BRKeyWitnessAddress(&key, addr.str, sizeof(addr));
 
 #if BITCOIN_TESTNET
-    if (strcmp("2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", addr.s) != 0)
-        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", __func__, addr.s);
+    if (strcmp("2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", addr.str) != 0)
+        r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 2NC4nz3a7FaX9P7QHWiqQ32fY2uY8swzdgd", __func__, addr.str);
 #else
     if (strcmp("3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", addr.str) != 0)
         r = 0, test_error_log("***FAILED*** %s: invalid segwit address, got %s, should be 3KCXchwWWJ72p24B7SFAWgSvyqZTzFosTS", __func__, addr.str);
