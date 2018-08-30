@@ -2199,8 +2199,8 @@ int BRSegwitTransactionTests() {
     if (tx->inputs[0].index != 0)
         r = 0, test_error_log("***FAILED*** %s: invalid index, got %i, expected 0", __func__, tx->inputs[0].index);
 
-    if (tx->inputs[0].amount != amount)
-        r = 0, test_error_log("***FAILED*** %s: Incorrect amount, got %llu, expected %llu", __func__, tx->inputs[0].amount, amount);
+    if ((size_t) tx->inputs[0].amount != (size_t) amount)
+        r = 0, test_error_log("***FAILED*** %s: Incorrect amount, got %zu, expected %zu", __func__, (size_t) tx->inputs[0].amount, (size_t) amount);
 
     if (tx->inputs)
         r = 0, test_error_log("***FAILED*** %s: ", __func__);
