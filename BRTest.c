@@ -1953,12 +1953,15 @@ int BRSegwitTransactionTests2() {
     BRKeyPubKey(&keys[0], pk, pkLen);
 
     if (!BRTransactionSign(tx, 0, keys, 1))
-        r = 0, test_error_log("***FAILED*** %s: failed to sign transaction with priv key %s", __func__, rawPrivKey);
+        r = 0, test_error_log("***FAILED*** %s: Failed to sign transaction with priv key %s", __func__, rawPrivKey);
 
     BRAddressFromScriptSig(address.str, sizeof(address), tx->inputs[0].signature, tx->inputs[0].sigLen);
 
     if (!BRTransactionIsSigned(tx))
         r = 0, test_error_log("***FAILED*** %s: Transaction isn't signed", __func__);
+
+    if (BRAddressEq(&BR_ADDRESS_NONE, &address))
+        r = 0, test_error_log("***FAILED*** %s: Failed to get ddress from script sig, got BR_ADDRESS_NONE", __func__);
 
     uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
     size_t len = BRTransactionSerialize(tx, buf, sizeof(buf));
@@ -1997,7 +2000,7 @@ int BRSegwitTransactionTests2() {
     if (!tx || !BRTransactionIsSigned(tx)) {
         r = 0;
         
-        test_log("\n***FAILED*** %s: BRTransactionParse() test 1", __func__);
+        test_log("\n***FAILED*** %s: BRTransactionIsSigned() or tx is null", __func__);
 
         return r; // with no tx there's no point on continuing
     }
