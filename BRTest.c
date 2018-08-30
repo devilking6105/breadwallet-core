@@ -1940,6 +1940,7 @@ int BRSegwitTransactionTests2() {
     BRKey keys[1];
     size_t pkLen = 65;
     uint8_t* pk[pkLen];
+    BRAddress address = BR_ADDRESS_NONE;
 
     BRTransactionFree(tx);
     tx = BRTransactionParse(buf6, txLen);
@@ -1953,6 +1954,12 @@ int BRSegwitTransactionTests2() {
 
     if (!BRTransactionSign(tx, 0, keys, 1))
         r = 0, test_error_log("***FAILED*** %s: failed to sign transaction with priv key %s", __func__, rawPrivKey);
+
+    BRAddressFromScriptSig(address.str, sizeof(address), tx->inputs[0].signature, tx->inputs[0].sigLen);
+
+    BRAddress expectedAddress = ((BRAddress) { "" });
+    if (! BRTransactionIsSigned(tx) || ! BRAddressEq(&address, &expectedAddress))
+        r = 0, test_error_log("***FAILED*** %s: We expected address %s, and got %s", __func__, expectedAddress.str, address.str);
 
     uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
     size_t len = BRTransactionSerialize(tx, buf, sizeof(buf));
@@ -1988,6 +1995,15 @@ int BRSegwitTransactionTests2() {
     if (strcmp(BRUInt8ToHex(tx->outputs[1].script, tx->outputs[1].scriptLen), expectedOutputScript) != 0)
         r = 0, test_error_log("***FAILED*** %s: expected output(0)'s script asm %s got %s", __func__, expectedOutputScript, BRUInt8ToHex(tx->outputs[1].script, tx->outputs[1].scriptLen));
 
+    if (!tx || !BRTransactionIsSigned(tx)) {
+        r = 0;
+        
+        test_log("\n***FAILED*** %s: BRTransactionParse() test 1", __func__);
+
+        return r; // with no tx there's no point on continuing
+    }
+
+    // Final test of signing. it should serialize
     const char* expectedSerialization = "01000000000101db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477010000001716001479091972186c449eb1ded22b78e40d009bdf0089feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac02473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb012103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a2687392040000";
     if (strcmp(expectedSerialization, BRUInt8ToHex(buf, len)) != 0)
         r = 0, test_error_log("***FAILED*** %s: Expected:\n %s\n Got:\n %s\n", __func__, expectedSerialization, BRUInt8ToHex(buf, len));
