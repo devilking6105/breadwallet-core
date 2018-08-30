@@ -1955,11 +1955,10 @@ int BRSegwitTransactionTests2() {
     if (!BRTransactionSign(tx, 0, keys, 1))
         r = 0, test_error_log("***FAILED*** %s: failed to sign transaction with priv key %s", __func__, rawPrivKey);
 
-    BRAddressFromScriptSig(&address.str, sizeof(address), tx->inputs[0].signature, tx->inputs[0].sigLen);
+    BRAddressFromScriptSig(address.str, sizeof(address), tx->inputs[0].signature, tx->inputs[0].sigLen);
 
-    BRAddress expectedAddress = ((BRAddress) { "" }); // XXX Who doesn't this fail???
-    if (! BRTransactionIsSigned(tx) || !BRAddressEq(&address, &expectedAddress))
-        r = 0, test_error_log("***FAILED*** %s: We expected address %s, and got %s", __func__, expectedAddress.str, address.str);
+    if (!BRTransactionIsSigned(tx))
+        r = 0, test_error_log("***FAILED*** %s: Transaction isn't signed", __func__);
 
     uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
     size_t len = BRTransactionSerialize(tx, buf, sizeof(buf));
