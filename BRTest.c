@@ -1944,7 +1944,6 @@ int BRSegwitTransactionTests2() {
     BRTransactionFree(tx);
     tx = BRTransactionParse(buf6, txLen);
 
-    /*int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCount) {*/
     if (!BRPrivKeyIsValid(rawPrivKey))
         r = 0, test_error_log("***FAILED*** %s: is not a valid format", __func__);
 
@@ -1952,15 +1951,46 @@ int BRSegwitTransactionTests2() {
     keys[0].compressed = 1;
     BRKeyPubKey(&keys[0], pk, pkLen);
 
-    if (! BRTransactionSign(tx, 0, keys, 1))
+    if (!BRTransactionSign(tx, 0, keys, 1))
         r = 0, test_error_log("***FAILED*** %s: failed to sign transaction with priv key %s", __func__, rawPrivKey);
 
     uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
     size_t len = BRTransactionSerialize(tx, buf, sizeof(buf));
 
+    BRTransactionFree(tx);
+    tx = BRTransactionParse(buf, len);
+
+    if (tx->inCount != 1)
+        r = 0, test_error_log("***FAILED*** %s: expected 1 input got %zu", __func__, tx->inCount);
+
+    if (tx->outCount != 2)
+        r = 0, test_error_log("***FAILED*** %s: expected 2 outputs got %zu", __func__, tx->outCount);
+
+    const char* expectedInputHash = "db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477";
+    if (strcmp(u256hex(tx->inputs[0].txHash), expectedInputHash) != 0)
+        r = 0, test_error_log("***FAILED*** %s: expected input hash %s got %s", __func__, expectedInputHash, u256hex(tx->inputs[0].txHash));
+
+    // On the test is 1976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac
+    // that means its 25 size (0x19 == 25) and the script is:
+    // 76a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac
+    size_t expectedScriptLen = 25;
+    char* expectedOutputScript = "76a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac";
+
+    if (strcmp(BRUInt8ToHex(tx->outputs[0].script, tx->outputs[0].scriptLen), expectedOutputScript) != 0)
+        r = 0, test_error_log("***FAILED*** %s: expected output(0)'s script asm %s got %s", __func__, expectedOutputScript, BRUInt8ToHex(tx->outputs[0].script, tx->outputs[0].scriptLen));
+
+    // Output 2 is 1976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac
+    // that means its size is 25 and the script is:
+    // 76a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac
+    expectedScriptLen = 25;
+    expectedOutputScript = "76a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac";
+
+    if (strcmp(BRUInt8ToHex(tx->outputs[1].script, tx->outputs[1].scriptLen), expectedOutputScript) != 0)
+        r = 0, test_error_log("***FAILED*** %s: expected output(0)'s script asm %s got %s", __func__, expectedOutputScript, BRUInt8ToHex(tx->outputs[1].script, tx->outputs[1].scriptLen));
+
     const char* expectedSerialization = "01000000000101db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477010000001716001479091972186c449eb1ded22b78e40d009bdf0089feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac02473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb012103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a2687392040000";
     if (strcmp(expectedSerialization, BRUInt8ToHex(buf, len)) != 0)
-        r = 0, test_error_log("***FAILED*** %s: result should be %s not %s", __func__, expectedSerialization, BRUInt8ToHex(buf, len));
+        r = 0, test_error_log("***FAILED*** %s: Expected:\n %s\n Got:\n %s\n", __func__, expectedSerialization, BRUInt8ToHex(buf, len));
 
     return r;
 }
