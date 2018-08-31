@@ -1960,8 +1960,8 @@ int BRSegwitTransactionTests2() {
     if (!BRTransactionIsSigned(tx))
         r = 0, test_error_log("***FAILED*** %s: Transaction isn't signed", __func__);
 
-    if (BRAddressEq(&BR_ADDRESS_NONE, &address))
-        r = 0, test_error_log("***FAILED*** %s: Failed to get ddress from script sig, got BR_ADDRESS_NONE", __func__);
+    if (!BRAddressEq(&BR_ADDRESS_NONE, &address)) // Witness addresses from script sig are empty
+        r = 0, test_error_log("***FAILED*** %s: addr should be BR_ADDRESS_NONE", __func__);
 
     uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
     size_t len = BRTransactionSerialize(tx, buf, sizeof(buf));
