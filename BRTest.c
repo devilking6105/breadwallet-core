@@ -1938,8 +1938,7 @@ int BRSegwitTransactionTests2() {
     size_t txLen = strlen(rawTx) + 1;
     uint8_t* buf6 = BRHexToUInt8(rawTx);
     BRKey keys[1];
-    size_t pkLen = 65;
-    uint8_t* pk[pkLen];
+    size_t pkLen;
     BRAddress address = BR_ADDRESS_NONE;
 
     BRTransactionFree(tx);
@@ -1950,7 +1949,9 @@ int BRSegwitTransactionTests2() {
 
     BRKeySetPrivKey(&keys[0], rawPrivKey);
     keys[0].compressed = 1;
-    BRKeyPubKey(&keys[0], pk, pkLen);
+
+    uint8_t pubKey[BRKeyPubKey(&keys[0], NULL, 0)];
+    pkLen = BRKeyPubKey(&keys[0], pubKey, sizeof(pubKey));
 
     if (!BRTransactionSign(tx, 0, keys, 1))
         r = 0, test_error_log("***FAILED*** %s: Failed to sign transaction with priv key %s", __func__, rawPrivKey);
@@ -2021,7 +2022,7 @@ int BRSegwitTransactionTests() {
 
     // Test unsigned transaction, we get this ready for signing.
     const char* rawTx = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
-    size_t txLen = strlen(rawTx) + 1;
+    size_t txLen = strlen(rawTx) / 2;
     uint8_t* buf6 = BRHexToUInt8(rawTx);
 
     BRTransactionFree(tx);
@@ -2096,7 +2097,7 @@ int BRSegwitTransactionTests() {
 
     rawTx = "01000000000101db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477010000001716001479091972186c449eb1ded22b78e40d009bdf0089feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac02473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb012103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a2687392040000";
 
-    txLen = strlen(rawTx) + 1;
+    txLen = strlen(rawTx) / 2;
     uint8_t* buf7 = BRHexToUInt8(rawTx);
 
     BRTransactionFree(tx);
@@ -2182,7 +2183,7 @@ int BRSegwitTransactionTests() {
     uint64_t amount = 1000;
 
     const char* serializedTx = "01000000000101000100000000000000000000000000000000000000000000000000000000000000000000171600144c9c3dfac4207d5d8cb89df5722cb3d712385e3fffffffff01e8030000000000001976a9144c9c3dfac4207d5d8cb89df5722cb3d712385e3f88ac02483045022100cfb07164b36ba64c1b1e8c7720a56ad64d96f6ef332d3d37f9cb3c96477dc44502200a464cd7a9cf94cd70f66ce4f4f0625ef650052c7afcfe29d7d7e01830ff91ed012103596d3451025c19dbbdeb932d6bf8bfb4ad499b95b6f88db8899efac102e5fc7100000000";
-    txLen = strlen(serializedTx) + 1;
+    txLen = strlen(serializedTx) / 2;
     uint8_t* buf8 = BRHexToUInt8(serializedTx);
 
     test_log("Parsing transaction: %s", serializedTx);
