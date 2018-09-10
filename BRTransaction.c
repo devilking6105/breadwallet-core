@@ -118,32 +118,36 @@ void BRTxInputSetWitness(BRTxInput *input, const uint8_t *witness, size_t witLen
     }
 }
 
-static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataLen, int useSegwit) {
+static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataLen) {
     size_t off = 0;
 
-    if (data && off + sizeof(UInt256) <= dataLen) memcpy(&data[off], &input->txHash, sizeof(UInt256)); // previous out
+    // Prevout (txhash + index)
+    if (data && off + sizeof(UInt256) <= dataLen) memcpy(&data[off], &input->txHash, sizeof(UInt256));
     off += sizeof(UInt256);
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], input->index);
     off += sizeof(uint32_t);
 
-    if (useSegwit) {
-        off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), input->scriptLen);
-        if (data && off + input->scriptLen <= dataLen) memcpy(&data[off], input->script, input->scriptLen); // script
-        off += input->scriptLen;
-    } else {
-        off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), input->sigLen);
-        if (data && off + input->sigLen <= dataLen) memcpy(&data[off], input->signature, input->sigLen); // sig
-        off += input->sigLen;
-    }
+    // If segwit we set the script code before calling this function we call:
+    //
+    // input.signature = input.script;
+    // input.sigLen = input.scriptLen;
 
+    // Script code
+    off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), input->sigLen);
+    if (data && off + input->sigLen <= dataLen) memcpy(&data[off], input->signature, input->sigLen); // sig
+    off += input->sigLen;
+
+    // Amount
     if (input->amount != 0) {
         if (data && off + sizeof(uint64_t) <= dataLen) UInt64SetLE(&data[off], input->amount);
-        off += sizeof(uint64_t);
-    }
+    } else UInt64SetLE(&data[off], 0);
+    off += sizeof(uint64_t);
 
+    // Sequence
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], input->sequence);
     off += sizeof(uint32_t);
-    return (! data || off <= dataLen) ? off : 0;
+
+    return (!data || off <= dataLen) ? off : 0;
 }
 
 void BRTxOutputSetAddress(BRTxOutput *output, const char *address) {
@@ -209,7 +213,7 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], tx->version); // tx version
     off += sizeof(uint32_t);
 
-    // Hash Prevouts (txhash + index) then SHA256_2 them
+    // Hash Prevouts (txhash + index) then SHA256_2 them, https://dev.visucore.com/bitcoin/doxygen/class_c_out_point.html
     if (! anyoneCanPay) {
         uint8_t buf[(sizeof(UInt256) + sizeof(uint32_t))*tx->inCount];
 
@@ -222,23 +226,30 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
     } else if (data && off + sizeof(UInt256) <= dataLen) UInt256Set(&data[off], UINT256_ZERO); // anyone-can-pay
     off += sizeof(UInt256);
 
-    // Hash Sequence
+    // Hash Sequence, sequences are stored in LE
     if (! anyoneCanPay && sigHash != SIGHASH_SINGLE && sigHash != SIGHASH_NONE) {
         uint8_t buf[sizeof(uint32_t)*tx->inCount];
 
         for (i = 0; i < tx->inCount; i++) UInt32SetLE(&buf[sizeof(uint32_t)*i], tx->inputs[i].sequence);
+
         if (data && off + sizeof(UInt256) <= dataLen) BRSHA256_2(&data[off], buf, sizeof(buf)); // sequence hash
     } else if (data && off + sizeof(UInt256) <= dataLen) UInt256Set(&data[off], UINT256_ZERO);
     off += sizeof(UInt256);
 
     // Get the input and it's data
-
+    //
+    // From https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki:
+    //
+    // The input being signed (replacing the scriptSig with scriptCode + amount)
+    // The prevout may already be contained in hashPrevout, and the nSequence
+    // may already be contain in hashSequence.
     input = tx->inputs[index];
+
     input.signature = input.script;
-    input.sigLen = input.sigLen;
+    input.sigLen = input.scriptLen;
 
     // Add prevout + scriptCode + amount + nSequence
-    off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), 1);
+    off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0));
 
     // Outputs
     if (sigHash != SIGHASH_SINGLE && sigHash != SIGHASH_NONE) {
@@ -297,7 +308,7 @@ static size_t _BRTransactionData(const BRTransaction *tx, uint8_t *data, size_t 
                 input.amount = 0;
             } else input.amount = 0;
 
-            off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), 0);
+            off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0));
         }
     } else {
         off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), 1);
@@ -305,7 +316,7 @@ static size_t _BRTransactionData(const BRTransaction *tx, uint8_t *data, size_t 
         input.signature = input.script; // TODO: handle OP_CODESEPARATOR
         input.sigLen = input.scriptLen;
         input.amount = 0;
-        off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), 0);
+        off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0));
     }
 
     if (sigHash != SIGHASH_SINGLE && sigHash != SIGHASH_NONE) { // SIGHASH_ALL outputs
