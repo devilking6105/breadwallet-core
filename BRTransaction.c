@@ -138,9 +138,7 @@ static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataL
     off += input->sigLen;
 
     // Amount
-    if (input->amount != 0) {
-        if (data && off + sizeof(uint64_t) <= dataLen) UInt64SetLE(&data[off], input->amount);
-    } else UInt64SetLE(&data[off], 0);
+    if (data && off + sizeof(uint64_t) <= dataLen) UInt64SetLE(&data[off], input->amount);
     off += sizeof(uint64_t);
 
     // Sequence
