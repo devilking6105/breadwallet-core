@@ -3055,10 +3055,16 @@ int BRCoreTests() {
     /*r = BRTransactionTests();*/
     /*r = BRWalletTests();*/
 
+#if BITCOIN_TESTNET
+    const char* network = "Testnet";
+#else
+    const char* network = "Mainnet";
+#endif
+
     if (r == 1) {
-        test_log("All test passed.");
+        test_log("All test passed. Network: %s (make sure the tests also pass for the other network)", network);
     } else {
-        test_log("Some / All test failed.");
+        test_log("Some / All test failed. Network: %s", network);
     }
 
     return r;
