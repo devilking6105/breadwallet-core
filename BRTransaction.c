@@ -622,8 +622,6 @@ uint64_t BRTransactionStandardFee(const BRTransaction *tx) {
 
 // checks if all signatures exist, but does not verify them
 int BRTransactionIsSigned(const BRTransaction *tx) {
-    assert(tx != NULL);
-
     for (size_t i = 0; tx && i < tx->inCount; i++) {
         if (! tx->inputs[i].signature || ! tx->inputs[i].witness) return 0;
     }
