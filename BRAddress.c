@@ -311,8 +311,29 @@ size_t BRAddressFromScriptSig(char *addr, size_t addrLen, const uint8_t *script,
 
 // writes the bitcoin address for a witness to addr
 // returns the number of bytes written, or addrLen needed if addr is NULL
-size_t BRAddressFromWitness(char *addr, size_t addrLen, const uint8_t *witness, size_t witLen) {
-    return 0; // TODO: XXX implement
+size_t BRAddressFromWitness(char *addr, size_t addrLen, uint8_t *witness, size_t witLen) {
+    // TODO FIXME This is incorrect.
+    uint8_t pubKey[20];
+    uint8_t redeemScript[20 + 1]; // pubKey + OP_0
+    uint8_t data[21];
+
+    if (witness && witLen >= 20) {
+        // Copy pubkey
+        memcpy(&witness[witLen - 20], &pubKey, 20);
+
+        redeemScript[0] = OP_0;
+        BRScriptPushData(&redeemScript[1], sizeof(redeemScript) - 1, pubKey, sizeof(pubKey));
+#if BITCOIN_TESTNET
+        data[0] = BITCOIN_SCRIPT_ADDRESS_TEST;
+#else
+        data[0] = BITCOIN_SCRIPT_ADDRESS;
+#endif
+        BRHash160(&data[1], redeemScript, sizeof(redeemScript));
+
+        addrLen = BRBase58CheckEncode(addr, addrLen, data, sizeof(data));
+    } else addrLen = 0;
+
+    return addrLen;
 }
 
 // writes the scriptPubKey for addr to script

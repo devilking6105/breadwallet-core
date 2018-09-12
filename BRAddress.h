@@ -96,7 +96,7 @@ size_t BRAddressFromScriptSig(char *addr, size_t addrLen, const uint8_t *script,
 
 // writes the bitcoin address for a witness to addr
 // returns the number of bytes written, or addrLen needed if addr is NULL
-size_t BRAddressFromWitness(char *addr, size_t addrLen, const uint8_t *witness, size_t witLen);
+size_t BRAddressFromWitness(char *addr, size_t addrLen, uint8_t *witness, size_t witLen);
 
 // writes the scriptPubKey for addr to script
 // returns the number of bytes written, or scriptLen needed if script is NULL
