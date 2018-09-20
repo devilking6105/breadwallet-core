@@ -36,6 +36,10 @@ extern "C" {
 
 #if BITCOIN_TESTNET
 #pragma message "testnet build"
+#else
+#if BITCOIN_REGTEST
+#pragma message "regtest build"
+#endif
 #endif
 
 // bitcoin address prefixes

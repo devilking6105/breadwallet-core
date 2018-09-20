@@ -1405,7 +1405,11 @@ BRPeerManager *BRPeerManagerNew(BRWallet *wallet, uint32_t earliestKeyTime,
 #if BITCOIN_TESTNET
     manager->params = &BRTestNetParams;
 #else
+#if BITCOIN_REGTEST
+    manager->params = &BRRegTestParams;
+#else
     manager->params = &BRMainNetParams;
+#endif
 #endif
 
     assert(manager->params != NULL);

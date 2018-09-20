@@ -31,7 +31,11 @@ extern "C" {
 #if BITCOIN_TESTNET
 #pragma message "Testnet Tests"
 #else
+#if BITCOIN_REGTEST
+#pragma message "Regtest Tests"
+#else
 #pragma message "Mainnet Tests"
+#endif
 #endif
 
 #define test_log(...) _test_log(__VA_ARGS__)
@@ -54,7 +58,11 @@ extern "C" {
 #if BITCOIN_TESTNET
 #define BR_CHAIN_PARAMS BRTestNetParams
 #else
+#if BITCOIN_REGTEST
+#define BR_CHAIN_PARAMS BRRegTestParams
+#else
 #define BR_CHAIN_PARAMS BRMainNetParams
+#endif
 #endif
 
 #define SKIP_BIP38 1
