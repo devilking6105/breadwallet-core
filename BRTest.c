@@ -1921,293 +1921,61 @@ int BRSegwitAddressTests() {
     return r;
 }
 
-int BRSegwitTransactionTests2() {
+int BRSegwitTransactionTests() {
     int r = 1;
-
-    BRTransaction *tx = BRTransactionNew();
-
-    test_log("Running tests for, segwit 2: %s", __func__);
 
     // Test only for mainnet
 #if BITCOIN_TESTNET
     return r;
 #endif
 
-    const char* rawTx = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
-    const char* rawPrivKey = "eb696a065ef48a2192da5b28b694f87544b30fae8327c4510137a922f32c6dcf";
-    size_t txLen = strlen(rawTx) + 1;
-    uint8_t* buf6 = BRHexToUInt8(rawTx);
     BRKey keys[1];
+    const char* rawPrivKey = "eb696a065ef48a2192da5b28b694f87544b30fae8327c4510137a922f32c6dcf";
     size_t pkLen;
     BRAddress address = BR_ADDRESS_NONE;
 
-    BRTransactionFree(tx);
-    tx = BRTransactionParse(buf6, txLen);
+    // Unsigned transaction
+    const char *unsignedRawTransaction = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
+    size_t txLen = strlen(unsignedRawTransaction) / 2;
+    uint8_t* buf = BRHexToUInt8(unsignedRawTransaction);
 
-    if (!BRPrivKeyIsValid(rawPrivKey))
-        r = 0, test_error_log("***FAILED*** %s: is not a valid format", __func__);
-
-    BRKeySetPrivKey(&keys[0], rawPrivKey);
-    keys[0].compressed = 1;
-
-    uint8_t pubKey[BRKeyPubKey(&keys[0], NULL, 0)];
-    pkLen = BRKeyPubKey(&keys[0], pubKey, sizeof(pubKey));
-
-    if (!BRTransactionSign(tx, 0, keys, 1))
-        r = 0, test_error_log("***FAILED*** %s: Failed to sign transaction with priv key %s", __func__, rawPrivKey);
-
-    BRAddressFromScriptSig(address.str, sizeof(address), tx->inputs[0].signature, tx->inputs[0].sigLen);
-
-    if (!BRTransactionIsSigned(tx))
-        r = 0, test_error_log("***FAILED*** %s: Transaction isn't signed", __func__);
-
-    if (!BRAddressEq(&BR_ADDRESS_NONE, &address)) // Witness addresses from script sig are empty
-        r = 0, test_error_log("***FAILED*** %s: addr should be BR_ADDRESS_NONE", __func__);
-
-    uint8_t buf[BRTransactionSerialize(tx, NULL, 0)];
-    size_t len = BRTransactionSerialize(tx, buf, sizeof(buf));
-
-    BRTransactionFree(tx);
-    tx = BRTransactionParse(buf, len);
-
-    if (tx->inCount != 1)
-        r = 0, test_error_log("***FAILED*** %s: expected 1 input got %zu", __func__, tx->inCount);
-
-    if (tx->outCount != 2)
-        r = 0, test_error_log("***FAILED*** %s: expected 2 outputs got %zu", __func__, tx->outCount);
-
-    const char* expectedInputHash = "db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477";
-    if (strcmp(u256hex(tx->inputs[0].txHash), expectedInputHash) != 0)
-        r = 0, test_error_log("***FAILED*** %s: expected input hash %s got %s", __func__, expectedInputHash, u256hex(tx->inputs[0].txHash));
-
-    // On the test is 1976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac
-    // that means its 25 size (0x19 == 25) and the script is:
-    // 76a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac
-    size_t expectedScriptLen = 25;
-    char* expectedOutputScript = "76a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac";
-
-    if (strcmp(BRUInt8ToHex(tx->outputs[0].script, tx->outputs[0].scriptLen), expectedOutputScript) != 0)
-        r = 0, test_error_log("***FAILED*** %s: expected output(0)'s script asm %s got %s", __func__, expectedOutputScript, BRUInt8ToHex(tx->outputs[0].script, tx->outputs[0].scriptLen));
-
-    // Output 2 is 1976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac
-    // that means its size is 25 and the script is:
-    // 76a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac
-    expectedScriptLen = 25;
-    expectedOutputScript = "76a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac";
-
-    if (strcmp(BRUInt8ToHex(tx->outputs[1].script, tx->outputs[1].scriptLen), expectedOutputScript) != 0)
-        r = 0, test_error_log("***FAILED*** %s: expected output(0)'s script asm %s got %s", __func__, expectedOutputScript, BRUInt8ToHex(tx->outputs[1].script, tx->outputs[1].scriptLen));
-
-    if (!tx || !BRTransactionIsSigned(tx)) {
-        r = 0;
-        
-        test_log("\n***FAILED*** %s: BRTransactionIsSigned() or tx is null", __func__);
-
-        return r; // with no tx there's no point on continuing
+    // Check if the buf equals the unsigned transaction
+    if (strcmp(BRUInt8ToHex(buf, txLen), unsignedRawTransaction) != 0) {
+        r = 0, test_error_log("***FAILED*** %s: Fail to parse tx. Got: %s expected %s", __func__, BRUInt8ToHex(buf, txLen), unsignedRawTransaction);
     }
 
-    // Final test of signing. it should serialize
-    const char* expectedSerialization = "01000000000101db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477010000001716001479091972186c449eb1ded22b78e40d009bdf0089feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac02473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb012103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a2687392040000";
-    if (strcmp(expectedSerialization, BRUInt8ToHex(buf, len)) != 0)
-        r = 0, test_error_log("***FAILED*** %s: Expected:\n %s\n Got:\n %s\n", __func__, expectedSerialization, BRUInt8ToHex(buf, len));
+    // Get the tx data struct
+    BRTransaction *unsignedTx = BRTransactionNew();
 
-    return r;
-}
+    BRTransactionFree(unsignedTx);
+    unsignedTx = BRTransactionParse(buf, txLen);
 
-int BRSegwitTransactionTests() {
-    int r = 1;
-
-    // BIP 143 tests for P2SH-P2WPKH
-    BRTransaction *tx = BRTransactionNew();
-
-    // Test unsigned transaction, we get this ready for signing.
-    const char* rawTx = "0100000001db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a54770100000000feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac92040000";
-    size_t txLen = strlen(rawTx) / 2;
-    uint8_t* buf6 = BRHexToUInt8(rawTx);
-
-    BRTransactionFree(tx);
-    tx = BRTransactionParse(buf6, txLen);
-
-    if (tx->version != 1)
-        r = 0, test_log("\n***FAILED*** %s: P2SH-P2WPKH parsing version", __func__);
-
-    if (tx->inCount != 1)
-        r = 0, test_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->inCount", __func__);
-
-    test_log("Input is : %s", u256hex(tx->inputs[0].txHash));
-
-    if (strcmp(u256hex(tx->inputs[0].txHash), "db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477") != 0) {
-        r = 0;
-        test_error_log("Transactions don't match!, got: %s, expected: %s",
-                 u256hex(tx->inputs[0].txHash),
-                 "db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477"
-                );
+    // Verify version version
+    if (unsignedTx->version != 0x01) {
+        r = 0, test_error_log("***FAILED*** %s: Wrong version. Got %i expected %i", __func__, unsignedTx->version, 1);
     }
 
-    if (tx->outCount != 2)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->outCount", __func__);
-
-    test_log("Ouput Address 1 is: %s", tx->outputs[0].address);
-
-#if BITCOIN_TESTNET
-    if (strcmp(tx->outputs[0].address, "mvVvBvBpq5f51q8bPygkcSAoVabq5heFTr") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: Output 1 addrs don't match! Expected %s, got %s", __func__, "mvVvBvBpq5f51q8bPygkcSAoVabq5heFTr", tx->outputs[0].address);
-#else
-    if (strcmp(tx->outputs[0].address, "1Fyxts6r24DpEieygQiNnWxUdb18ANa5p7") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: Output 1 addrs don't match! Expected %s, got %s", __func__, "1Fyxts6r24DpEieygQiNnWxUdb18ANa5p7", tx->outputs[0].address);
-#endif
-
-    test_log("Ouput Address 2 is: %s", tx->outputs[1].address);
-
-#if BITCOIN_TESTNET
-    if (strcmp(tx->outputs[1].address, "n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ", tx->outputs[1].address);
-#else
-    if (strcmp(tx->outputs[1].address, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8", tx->outputs[1].address);
-#endif
-
-    /*if ((int) BRTransactionSize(tx) != 119) {*/
-    /*r = 0, test_log("\n***FAILED*** %s: P2SH-P2WPKH incorrect tx size, expected %i got %i", __func__,*/
-    /*119, (int) BRTransactionSize(tx));*/
-    /*}*/
-
-    /*if ((int) BRTransactionVSize(tx) != 119) {*/
-    /*r = 0, test_log("\n***FAILED*** %s: P2SH-P2WPKH incorrect tx vsize, expected %i got %i", __func__,*/
-    /*119, (int) BRTransactionVSize(tx));*/
-    /*}*/
-
-    /*
-     * TODO HOLD, we should be able to have a valid TX hash for an unsigned tx.
-     *
-     * The following should be a test of this unsigned transaction,
-     * but this code doesn't support that, it always say it's signed, even though the signature is 0
-     *
-    if (strcmp(u256hex(tx->txHash),  "321a59707939041eeb0d524f34432c0c46ca3920f0964e6c23697581f176b6c0") != 0)
-        r = 0, test_log("\n***FAILED*** %s: TxHash expected: %s, got: %s",
-                __func__,
-                "321a59707939041eeb0d524f34432c0c46ca3920f0964e6c23697581f176b6c0",
-                u256hex(tx->txHash)
-                );
-     *
-     */
-
-    // Here's the raw transaction signed.
-    test_log("Test signed segwit transaction");
-
-    rawTx = "01000000000101db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477010000001716001479091972186c449eb1ded22b78e40d009bdf0089feffffff02b8b4eb0b000000001976a914a457b684d7f0d539a46a45bbc043f35b59d0d96388ac0008af2f000000001976a914fd270b1ee6abcaea97fea7ad0402e8bd8ad6d77c88ac02473044022047ac8e878352d3ebbde1c94ce3a10d057c24175747116f8288e5d794d12d482f0220217f36a485cae903c713331d877c1f64677e3622ad4010726870540656fe9dcb012103ad1d8e89212f0b92c74d23bb710c00662ad1470198ac48c43f7d6f93a2a2687392040000";
-
-    txLen = strlen(rawTx) / 2;
-    uint8_t* buf7 = BRHexToUInt8(rawTx);
-
-    BRTransactionFree(tx);
-    tx = BRTransactionParse(buf7, txLen);
-
-    if (tx->version != 1)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing version", __func__);
-
-    if (tx->inCount != 1)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->inCount, should be 1 got: %i", __func__, (int) tx->inCount);
-
-    test_log("Input 1: %s", u256hex(tx->inputs[0].txHash));
-
-    if (strcmp(u256hex(tx->inputs[0].txHash), "db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH Incorrect input 1. Should be 9f96ade4b41d5433f4eda31e1738ec2b36f6e7d1420d94a6af99801a88f7f7ff got: %s", __func__, u256hex(tx->inputs[0].txHash));
-
-    if (tx->outCount != 2)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->inCount, should be 2 got: %i", __func__, (int) tx->outCount);
-
-    test_log("Address 1: %s", tx->outputs[0].address);
-
-#if BITCOIN_TESTNET
-    if (strcmp(tx->outputs[0].address, "mvVvBvBpq5f51q8bPygkcSAoVabq5heFTr") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH output address should be mvVvBvBpq5f51q8bPygkcSAoVabq5heFTr got: %s", __func__, tx->outputs[0].address);
-#else
-    if (strcmp(tx->outputs[0].address, "1Fyxts6r24DpEieygQiNnWxUdb18ANa5p7") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: Output 1 addrs don't match! Expected %s, got %s", __func__, "1Fyxts6r24DpEieygQiNnWxUdb18ANa5p7", tx->outputs[0].address);
-#endif
-
-    test_log("Address 2: %s", tx->outputs[1].address);
-
-#if BITCOIN_TESTNET
-    if (strcmp(tx->outputs[1].address, "n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "n4bW2Nahtzqm4HfVgo9xbft9Z3Crw1veuJ", tx->outputs[1].address);
-#else
-    if (strcmp(tx->outputs[1].address, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8") != 0)
-        r = 0, test_error_log("\n***FAILED*** %s: Output 2 addrs don't match! Expected %s, got %s", __func__, "1Q5YjKVj5yQWHBBsyEBamkfph3cA6G9KK8", tx->outputs[1].address);
-#endif
-
-    if (tx->lockTime != 1170)
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH parsing tx->lockTime, expected 92040000 got %i", __func__, tx->lockTime);
-
-    if ((int) BRTransactionSize(tx) != 251) {
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH incorrect tx size, expected %i got %i", __func__,
-                        251, (int) BRTransactionSize(tx));
+    // Verify tx input count
+    if (unsignedTx->inCount != 1) {
+        r = 0, test_error_log("***FAILED*** %s: Wrong input count. Got %i expected %i", __func__, unsignedTx->version, 1);
     }
 
-    if ((int) BRTransactionVSize(tx) != 170) {
-        r = 0, test_error_log("\n***FAILED*** %s: P2SH-P2WPKH incorrect tx vsize, expected %i got %i", __func__,
-                        170, (int) BRTransactionVSize(tx));
+    BRTxInput *input = &unsignedTx->inputs[0];
+    const char* prevTxHash = "db6b1b20aa0fd7b23880be2ecbd4a98130974cf4748fb66092ac4d3ceb1a5477";
+
+    const char* txHashHex = u256hex(input->txHash);
+    if (strcmp(txHashHex, prevTxHash) != 0) {
+        r = 0, test_error_log("***FAILED*** %s: Wrong input[0] tx hash. Got %s expected %s", __func__, txHashHex, prevTxHash);
     }
 
-#if BITCOIN_TESTNET
-    // The following are mainnet only tests, since they are created with the test vectors...
-    return r;
-#endif
+    if (input->index != 1) {
+        r = 0, test_error_log("***FAILED*** %s: Wrong index on input[0]. Got %i expected %i", __func__, input->index, 1);
+    }
 
-    /*
-     * Valid p2sh-p2wpkh tx
-     */
-    BRKey key;
-    BRAddress addr;
-    size_t pkLen = 65;
-    uint8_t* pk[pkLen];
-
-    // On tests private keys are in format of L5AQtV2HDm4xGsseLokK2VAT2EtYKcTm3c7HwqnJBFt9LdaQULsM
-    // That's the compressed WIF format, we need uncompressed
-    if (!BRPrivKeyIsValid("5KcfVRvm1Az5pYvANFfp8b2EbifQryyMrXcQn3tx6VkJkWokgDz"))
-        r = 0, test_error_log("***FAILED*** %s: is not a valid format", __func__);
-
-    BRKeySetPrivKey(&key, "5KcfVRvm1Az5pYvANFfp8b2EbifQryyMrXcQn3tx6VkJkWokgDz");
-
-    // Set pubkey
-    key.compressed = 1;
-    BRKeyPubKey(&key, pk, pkLen);
-
-    test_log("Valid P2SH");
-
-    // Valid P2SH(P2WPKH)
-    const char* prevOutHash = "0000000000000000000000000000000000000000000000000000000000000100";
-    uint32_t prevOutIndex = 0;
-    const char* scriptPubKey = "HASH160 0x14 0xfe9c7dacc9fcfbf7e3b7d5ad06aa2b28c5a7b7e3 EQUAL"; /*OP_HASH160 + 20 + BRHash160(Brhash) OP_EQUAL;*/
-    uint64_t amount = 1000;
-
-    const char* serializedTx = "01000000000101000100000000000000000000000000000000000000000000000000000000000000000000171600144c9c3dfac4207d5d8cb89df5722cb3d712385e3fffffffff01e8030000000000001976a9144c9c3dfac4207d5d8cb89df5722cb3d712385e3f88ac02483045022100cfb07164b36ba64c1b1e8c7720a56ad64d96f6ef332d3d37f9cb3c96477dc44502200a464cd7a9cf94cd70f66ce4f4f0625ef650052c7afcfe29d7d7e01830ff91ed012103596d3451025c19dbbdeb932d6bf8bfb4ad499b95b6f88db8899efac102e5fc7100000000";
-    txLen = strlen(serializedTx) / 2;
-    uint8_t* buf8 = BRHexToUInt8(serializedTx);
-
-    test_log("Parsing transaction: %s", serializedTx);
-
-    /*BRKey keys[1];*/
-    /*keys[1] = key;*/
-
-    BRTransactionFree(tx);
-    tx = BRTransactionParse(buf8, txLen);
-
-    /*BRTransactionSign(tx, 0, keys, 1);*/
-
-    const char* parsedPrevOutHash = u256hex(UInt256Reverse(tx->inputs[0].txHash));
-    if (strcmp(parsedPrevOutHash, prevOutHash) != 0)
-        r = 0, test_error_log("***FAILED*** %s: got an invalid prev out tx hash, expected %s, got %s", __func__, prevOutHash, parsedPrevOutHash);
-
-    if (tx->inputs[0].index != 0)
-        r = 0, test_error_log("***FAILED*** %s: invalid index, got %i, expected 0", __func__, tx->inputs[0].index);
-
-    if ((size_t) tx->inputs[0].amount != (size_t) amount)
-        r = 0, test_error_log("***FAILED*** %s: Incorrect amount, got %zu, expected %zu", __func__, (size_t) tx->inputs[0].amount, (size_t) amount);
-
-    if (tx->inputs)
-        r = 0, test_error_log("***FAILED*** %s: ", __func__);
+    // Sequence 0xfffffffe
+    if (input->sequence != 0xfffffffe) {
+        r = 0, test_error_log("***FAILED*** %s: Wrong sequence on input[0]. Got %i expected %i", __func__, input->sequence, 0xfffffffe);
+    }
 
     return r;
 }
@@ -3049,7 +2817,6 @@ int BRCoreTests() {
     r = BRPaymentProtocolTests();
     r = BRSegwitAddressTests();
     r = BRSegwitTransactionTests();
-    r = BRSegwitTransactionTests2();
 
     /* FIXME THESE TESTS DO NOT PASS */
     /*r = BRTransactionTests();*/
