@@ -107,11 +107,14 @@ void BRTxInputSetSignature(BRTxInput *input, const uint8_t *signature, size_t si
 }
 
 void BRTxInputSetWitness(BRTxInput *input, const uint8_t *witness, size_t witLen) {
+    assert(input);
+    assert(witness);
+
     if (input->witness) array_free(input->witness);
     input->witness = NULL;
     input->witLen = 0;
 
-    if (witness) {
+    if (witLen) {
         input->witLen = witLen;
         array_new(input->witness, witLen);
         array_add_array(input->witness, witness, witLen);
