@@ -140,11 +140,7 @@ static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataL
     if (data && off + input->sigLen <= dataLen) memcpy(&data[off], input->signature, input->sigLen); // sig
     off += input->sigLen;
 
-    // Amount: If it is 0, is a FLAG! sent INTENTIONALLY! does not mean
-    // there are inputs with amount 0, means not to include them,
-    // of course there's no documentation about this library so nobody tells you
-    // until you debug it... Take a look at _BRTransactionData
-    // if you want more details, but yeah a big time sink.
+    // Amount: If it is 0, is a FLAG for non-segwit signing to continue working!
     if (input->amount > 0) {
         if (data && off + sizeof(uint64_t) <= dataLen) UInt64SetLE(&data[off], input->amount);
         off += sizeof(uint64_t);
