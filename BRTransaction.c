@@ -413,7 +413,7 @@ BRTransaction *BRTransactionParse(const uint8_t *buf, size_t bufLen) {
 
     array_set_count(tx->inputs, tx->inCount);
 
-    for (i = 0; tx && off <= bufLen && i < tx->inCount; i++) {
+    for (i = 0; off <= bufLen && i < tx->inCount; i++) {
         input = &tx->inputs[i];
         input->txHash = (off + sizeof(UInt256) <= bufLen) ? UInt256Get(&buf[off]) : UINT256_ZERO;
         off += sizeof(UInt256);
@@ -644,12 +644,12 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
     assert(tx != NULL);
     assert(keys != NULL || keysCount == 0);
 
-    for (i = 0; tx && i < keysCount; i++) {
+    for (i = 0; i < keysCount; i++) {
         if (! BRKeyAddress(&keys[i], addrs[i].str, sizeof(addrs[i]))) addrs[i] = BR_ADDRESS_NONE;
         if (! BRKeyWitnessAddress(&keys[i], witAddrs[i].str, sizeof(witAddrs[i]))) witAddrs[i] = BR_ADDRESS_NONE;
     }
 
-    for (i = 0; tx && i < tx->inCount; i++) {
+    for (i = 0; i < tx->inCount; i++) {
         BRTxInput *input = &tx->inputs[i];
 
         if (! BRAddressFromScriptPubKey(address.str, sizeof(address), input->script, input->scriptLen)) continue;
@@ -710,7 +710,7 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
         }
     }
 
-    if (tx && BRTransactionIsSigned(tx)) {
+    if (BRTransactionIsSigned(tx)) {
         uint8_t data[_BRTransactionData(tx, NULL, 0, SIZE_MAX, 0)];
         size_t len = _BRTransactionData(tx, data, sizeof(data), SIZE_MAX, 0);
 
