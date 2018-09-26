@@ -449,7 +449,8 @@ BRTransaction *BRTransactionParse(const uint8_t *buf, size_t bufLen) {
         off += sLen;
     }
 
-    for (i = 0, witnessOff = off; witnessFlag && off <= bufLen && i < tx->inCount; i++) {
+    witnessOff = off;
+    for (i = 0; witnessFlag && off <= bufLen && i < tx->inCount; i++) {
         input = &tx->inputs[i];
         count = BRVarInt(&buf[off], (off <= bufLen ? bufLen - off : 0), &len);
         off += len;
@@ -596,6 +597,7 @@ size_t BRTransactionVSize(const BRTransaction *tx) {
 
         baseTxSize += TX_INPUT_SIZE_BIP144;
         baseTxSize += input->scriptLen;
+        baseTxSize += BRVarIntSize(input->scriptLen);
         baseTxSize += input->sigLen;
         baseTxSize += sizeof(uint32_t); // input->sequence;
 
@@ -606,7 +608,6 @@ size_t BRTransactionVSize(const BRTransaction *tx) {
 
     for (size_t i = 0; i < tx->outCount; i++) {
         baseTxSize += TX_OUTPUT_SIZE_BIP144;
-        baseTxSize += sizeof(uint32_t); // Size of the index
     }
 
     if (witSize > 0) witSize += witnessMarkerSize + witnessFlagSize;
@@ -628,7 +629,7 @@ uint64_t BRTransactionStandardFee(const BRTransaction *tx) {
 // checks if all signatures exist, but does not verify them
 int BRTransactionIsSigned(const BRTransaction *tx) {
     for (size_t i = 0; tx && i < tx->inCount; i++) {
-        if (! tx->inputs[i].signature || ! tx->inputs[i].witness) return 0;
+        if (! (tx->inputs[i].signature || tx->inputs[i].witness)) return 0;
     }
 
     return (tx) ? 1 : 0;
