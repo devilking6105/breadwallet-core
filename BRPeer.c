@@ -47,8 +47,8 @@
 #define MAX_MSG_LENGTH     0x02000000
 #define MAX_GETDATA_HASHES 50000
 #define ENABLED_SERVICES   0ULL  // we don't provide full blocks to remote nodes
-#define PROTOCOL_VERSION   70015
-#define MIN_PROTO_VERSION  70015 // peers earlier than this protocol version not supported (need v0.9 txFee relay rules)
+#define PROTOCOL_VERSION   70013
+#define MIN_PROTO_VERSION  70002 // peers earlier than this protocol version not supported (need v0.9 txFee relay rules)
 #define LOCAL_HOST         ((UInt128) { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff, 0x7f, 0x00, 0x00, 0x01 })
 #define CONNECT_TIMEOUT    3.0
 #define MESSAGE_TIMEOUT    10.0
@@ -91,7 +91,6 @@ typedef enum {
     inv_filtered_block = 3,
     inv_witness_block = inv_block | WITNESS_FLAG,
     inv_witness_tx = inv_tx | WITNESS_FLAG,
-    inv_filtered_witness_block = inv_filtered_block | WITNESS_FLAG
 } inv_type;
 
 typedef struct {
@@ -587,7 +586,6 @@ static int _BRPeerAcceptNotfoundMessage(BRPeer *peer, const uint8_t *msg, size_t
             case inv_tx:
                 array_add(txHashes, hash);
                 break;
-            case inv_filtered_witness_block: // drop through
             case inv_witness_block: // drop through
             case inv_filtered_block: // drop through
             case inv_block:
@@ -1365,7 +1363,7 @@ void BRPeerSendInv(BRPeer *peer, const UInt256 txHashes[], size_t txCount) {
         off += BRVarIntSet(&msg[off], (off <= msgLen ? msgLen - off : 0), txCount);
 
         for (i = 0; i < txCount; i++) {
-            UInt32SetLE(&msg[off], inv_witness_tx);
+            UInt32SetLE(&msg[off], inv_tx);
             off += sizeof(uint32_t);
             UInt256Set(&msg[off], ctx->knownTxHashes[knownCount + i]);
             off += sizeof(UInt256);

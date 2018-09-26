@@ -709,7 +709,7 @@ static void _peerConnected(void *info) {
     } else if (BRPeerVersion(peer) >= 70011 && (peer->services & SERVICES_NODE_BLOOM) != SERVICES_NODE_BLOOM) {
         peer_log(peer, "node doesn't support SPV mode");
         BRPeerDisconnect(peer);
-    } else if (BRPeerVersion(peer) >= 70015 && (peer->services & SERVICES_NODE_WITNESS) != SERVICES_NODE_WITNESS) {
+    } else if ((peer->services & SERVICES_NODE_WITNESS) != SERVICES_NODE_WITNESS) {
         peer_log(peer, "node doesn't support segregated witness");
         BRPeerDisconnect(peer);
     } else if (manager->downloadPeer && // check if we should stick with the existing download peer
