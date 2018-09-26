@@ -543,36 +543,6 @@ void BRTransactionShuffleOutputs(BRTransaction *tx) {
     }
 }
 
-// size in bytes if signed, or estimated size assuming compact pubkey sigs
-size_t BRTransactionSize(const BRTransaction *tx) {
-    BRTxInput *input;
-    size_t size, witSize = 0;
-
-    assert(tx != NULL);
-    size = (tx) ? 8 + BRVarIntSize(tx->inCount) + BRVarIntSize(tx->outCount) : 0;
-
-    for (size_t i = 0; i < tx->inCount; i++) {
-        input = &tx->inputs[i];
-
-        if (input->signature && input->witness) {
-            size += sizeof(UInt256) + sizeof(uint32_t) + BRVarIntSize(input->sigLen) + input->sigLen + sizeof(uint32_t);
-            witSize += input->witLen;
-        } else if (input->script && input->scriptLen > 0 && input->script[0] == OP_0) { // estimated P2WPKH signature size
-            witSize += TX_INPUT_SIZE;
-        } else if (input->script && input->scriptLen > 0 && input->script[0] == OP_HASH160) { // est. P2SH-P2WPKH sig size
-            size += 23;
-            witSize += TX_INPUT_SIZE;
-        } else size += TX_INPUT_SIZE; // estimated signature size
-    }
-
-    for (size_t i = 0; i < tx->outCount; i++) {
-        size += sizeof(uint64_t) + BRVarIntSize(tx->outputs[i].scriptLen) + tx->outputs[i].scriptLen;
-    }
-
-    if (witSize > 0) witSize += 2 + tx->inCount;
-    return size + witSize;
-}
-
 // virtual transaction size as defined by BIP141: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki
 size_t BRTransactionVSize(const BRTransaction *tx) {
     BRTxInput *input;
