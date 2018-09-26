@@ -49,9 +49,9 @@ extern "C" {
 
 #define TX_FEE_PER_KB         191ULL     // standard tx fee per kb of tx size, rounded up to nearest kb, 1 satoshi per kb
 #define TX_OUTPUT_SIZE        34          // estimated size for a typical transaction output
-#define TX_OUTPUT_SIZE_BIP144 32          // estimated size for a typical transaction output
+#define TX_OUTPUT_SIZE_BIP144 31          // estimated size for a typical transaction output
 #define TX_INPUT_SIZE         148         // estimated size for a typical compact pubkey transaction input
-#define TX_INPUT_SIZE_BIP144  36
+#define TX_INPUT_SIZE_BIP144  41
 #define TX_MIN_OUTPUT_AMOUNT  (TX_FEE_PER_KB*3*(TX_OUTPUT_SIZE + TX_INPUT_SIZE)/1000) //no txout can be below this amount
 #define TX_MAX_SIZE           100000      // no tx can be larger than this size in bytes
 #define TX_FREE_MAX_SIZE      1000        // tx must not be larger than this size in bytes without a fee

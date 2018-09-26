@@ -676,9 +676,10 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
             sigLen = BRKeySign(&keys[j], sig, sizeof(sig) - 1, md);
             sig[sigLen++] = SIGHASH_ALL;
 
-            script[0] = sizeof(pkHash) + 2;
+            // TODO Verify this change.
+            /*script[0] = sizeof(pkHash) + 2;*/
 
-            scriptLen = BRScriptPushData(&script[1], sizeof(script) - 1, NULL, 0); // OP_0
+            scriptLen = BRScriptPushData(&script[0], sizeof(script), NULL, 0); // OP_0
             scriptLen += BRScriptPushData(&script[scriptLen], sizeof(script) - scriptLen, pkHash.u8, sizeof(pkHash));
 
             BRTxInputSetSignature(input, script, scriptLen);
@@ -697,7 +698,7 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
             scriptLen = BRScriptPushData(script, sizeof(script), sig, sigLen);
             scriptLen += BRScriptPushData(&script[scriptLen], sizeof(script) - scriptLen, pubKey, pkLen);
             BRTxInputSetSignature(input, script, scriptLen);
-            BRTxInputSetWitness(input, script, 0);
+            BRTxInputSetWitness(input, NULL, 0);
         } else { // pay-to-pubkey
             uint8_t data[_BRTransactionData(tx, NULL, 0, i, forkId | SIGHASH_ALL)];
             size_t dataLen = _BRTransactionData(tx, data, sizeof(data), i, forkId | SIGHASH_ALL);
@@ -707,7 +708,7 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
             sig[sigLen++] = forkId | SIGHASH_ALL;
             scriptLen = BRScriptPushData(script, sizeof(script), sig, sigLen);
             BRTxInputSetSignature(input, script, scriptLen);
-            BRTxInputSetWitness(input, script, 0);
+            BRTxInputSetWitness(input, NULL, 0);
         }
     }
 
