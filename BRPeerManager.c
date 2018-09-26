@@ -933,6 +933,9 @@ static void _peerRelayedTx(void *info, BRTransaction *tx) {
 
             // the transaction likely consumed one or more wallet addresses, so check that at least the next <gap limit>
             // unused addresses are still matched by the bloom filter
+            BRWalletUnusedAddrs(manager->wallet, addrs, SEQUENCE_GAP_LIMIT_RECEIVE, 0, 0);
+            BRWalletUnusedAddrs(manager->wallet, addrs + SEQUENCE_GAP_LIMIT_RECEIVE, SEQUENCE_GAP_LIMIT_CHANGE, 1, 0);
+
             BRWalletUnusedAddrs(manager->wallet, addrs, SEQUENCE_GAP_LIMIT_RECEIVE, 0, 1);
             BRWalletUnusedAddrs(manager->wallet, addrs + SEQUENCE_GAP_LIMIT_RECEIVE, SEQUENCE_GAP_LIMIT_CHANGE, 1, 1);
 
