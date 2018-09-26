@@ -288,7 +288,8 @@ size_t BRKeyAddress(BRKey *key, char *addr, size_t addrLen) {
 // https://bitcoincore.org/en/segwit_wallet_dev/#creation-of-p2sh-p2wpkh-address
 // returns the number of bytes written, or addrLen needed if addr is NULL
 size_t BRKeyWitnessAddress(BRKey *key, char *addr, size_t addrLen) {
-    // Only create witness addresses of compressed public keys
+    // Error if the key isn't compressed:
+    // "the public key used in P2SH-P2WPKH MUST be compressed"
     assert(key->compressed);
 
     UInt160 pubKeyHash = BRKeyHash160(key);
