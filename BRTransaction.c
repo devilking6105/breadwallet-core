@@ -248,7 +248,7 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
     // may already be contain in hashSequence.
     input = tx->inputs[index];
 
-    input.signature = input.script;
+    input.signature = input.script; // TODO: handle OP_CODESEPARATOR
     input.sigLen = input.scriptLen;
 
     // Add prevout + scriptCode + amount + nSequence
