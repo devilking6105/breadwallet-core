@@ -129,11 +129,6 @@ static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataL
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], input->index);
     off += sizeof(uint32_t);
 
-    // If segwit we set the script code before calling this function we call:
-    //
-    // input.signature = input.script;
-    // input.sigLen = input.scriptLen;
-
     // Script code
     off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), input->sigLen);
     if (data && off + input->sigLen <= dataLen) memcpy(&data[off], input->signature, input->sigLen); // sig
@@ -655,26 +650,15 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
         UInt256 md = UINT256_ZERO;
 
         if (elemsCount >= 1 && *elems[elemsCount - 1] == OP_EQUAL) { // pay-to-script-hash
-            uint8_t data[_BRTransactionWitnessData(tx, NULL, 0, i, SIGHASH_ALL)];
-            size_t dataLen = _BRTransactionWitnessData(tx, data, sizeof(data), i, SIGHASH_ALL);
-            UInt160 pkHash = BRKeyHash160(&keys[j]);
+            uint8_t data[_BRTransactionWitnessData(tx, NULL, 0, i, forkId | SIGHASH_ALL)];
+            size_t dataLen = _BRTransactionWitnessData(tx, data, sizeof(data), i, forkId | SIGHASH_ALL);
 
             BRSHA256_2(&md, data, dataLen);
-
             sigLen = BRKeySign(&keys[j], sig, sizeof(sig) - 1, md);
-            sig[sigLen++] = SIGHASH_ALL;
-
-            // TODO Verify this change.
-            /*script[0] = sizeof(pkHash) + 2;*/
-
-            scriptLen = BRScriptPushData(&script[0], sizeof(script), NULL, 0);
-            scriptLen += BRScriptPushData(&script[scriptLen], sizeof(script) - scriptLen, pkHash.u8, sizeof(pkHash));
-
-            BRTxInputSetSignature(input, script, scriptLen);
-
+            sig[sigLen++] = forkId | SIGHASH_ALL;
             scriptLen = BRScriptPushData(script, sizeof(script), sig, sigLen);
             scriptLen += BRScriptPushData(&script[scriptLen], sizeof(script) - scriptLen, pubKey, pkLen);
-
+            BRTxInputSetSignature(input, script, 0);
             BRTxInputSetWitness(input, script, scriptLen);
         } else if (elemsCount >= 2 && *elems[elemsCount - 2] == OP_EQUALVERIFY) { // pay-to-pubkey-hash
             uint8_t data[_BRTransactionData(tx, NULL, 0, i, forkId | SIGHASH_ALL)];
@@ -701,10 +685,12 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
     }
 
     if (BRTransactionIsSigned(tx)) {
-        uint8_t data[_BRTransactionData(tx, NULL, 0, SIZE_MAX, 0)];
-        size_t len = _BRTransactionData(tx, data, sizeof(data), SIZE_MAX, 0);
+        uint8_t data[BRTransactionSerialize(tx, NULL, 0)];
+        size_t len = BRTransactionSerialize(tx, data, sizeof(data));
+        BRTransaction *t = BRTransactionParse(data, len);
 
-        BRSHA256_2(&tx->txHash, data, len);
+        if (t) tx->txHash = t->txHash, tx->wtxHash = t->wtxHash;
+        if (t) BRTransactionFree(t);
 
         return 1;
     } else {
