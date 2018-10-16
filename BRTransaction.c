@@ -653,16 +653,18 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
             uint8_t data[_BRTransactionWitnessData(tx, NULL, 0, i, SIGHASH_ALL)];
             size_t dataLen = _BRTransactionWitnessData(tx, data, sizeof(data), i, SIGHASH_ALL);
             UInt160 pkHash = BRKeyHash160(&keys[j]);
+            uint8_t redeemScript[1 + BRScriptPushData(NULL, 0, pkHash.u8, sizeof(pkHash))];
             
             BRSHA256_2(&md, data, dataLen);
             sigLen = BRKeySign(&keys[j], sig, sizeof(sig) - 1, md);
             sig[sigLen++] = SIGHASH_ALL;
-            script[0] = sizeof(pkHash) + 2;
-            scriptLen = BRScriptPushData(&script[1], sizeof(script) - 1, NULL, 0);
-            scriptLen += BRScriptPushData(&script[scriptLen], sizeof(script) - scriptLen, pkHash.u8, sizeof(pkHash));
-            BRTxInputSetSignature(input, script, scriptLen);
+
+            redeemScript[0] = OP_0;
+            BRScriptPushData(&redeemScript[1], sizeof(redeemScript) - 1, pkHash.u8, sizeof(pkHash));
+            BRTxInputSetSignature(input, redeemScript, sizeof(redeemScript) - 1);
+
             scriptLen = BRScriptPushData(script, sizeof(script), sig, sigLen);
-            scriptLen += BRScriptPushData(&script[scriptLen], sizeof(script) - scriptLen, pubKey, pkLen);
+            scriptLen += BRScriptPushData(&script[0], sizeof(script) - scriptLen, pubKey, pkLen);
             BRTxInputSetWitness(input, script, scriptLen);
         } else if (elemsCount >= 2 && *elems[elemsCount - 2] == OP_EQUALVERIFY) { // pay-to-pubkey-hash
             uint8_t data[_BRTransactionData(tx, NULL, 0, i, forkId | SIGHASH_ALL)];
