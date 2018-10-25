@@ -556,8 +556,7 @@ void BRMD5(void *md16, const void *data, size_t len) {
 #define fmix32(h) ((h) ^= (h) >> 16, (h) *= 0x85ebca6b, (h) ^= (h) >> 13, (h) *= 0xc2b2ae35, (h) ^= (h) >> 16)
 
 // murmurHash3 (x86_32): https://code.google.com/p/smhasher/ - for non-cryptographic use only
-uint32_t BRMurmur3_32(const void *data, size_t dataLen, uint32_t seed)
-{
+uint32_t BRMurmur3_32(const void *data, size_t dataLen, uint32_t seed) {
     const uint8_t *d = data;
     uint32_t h = seed, k = 0;
     size_t i, count = dataLen/4;
