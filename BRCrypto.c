@@ -556,31 +556,30 @@ void BRMD5(void *md16, const void *data, size_t len) {
 #define fmix32(h) ((h) ^= (h) >> 16, (h) *= 0x85ebca6b, (h) ^= (h) >> 13, (h) *= 0xc2b2ae35, (h) ^= (h) >> 16)
 
 // murmurHash3 (x86_32): https://code.google.com/p/smhasher/ - for non-cryptographic use only
-uint32_t BRMurmur3_32(const void *data, size_t len, uint32_t seed) {
+uint32_t BRMurmur3_32(const void *data, size_t dataLen, uint32_t seed) {
+    const uint8_t *d = data;
     uint32_t h = seed, k = 0;
-    size_t i, count = len/4;
-
-    assert(data != NULL || len == 0);
-
-    for (i = 0; i < count; i++) {
-        k = le32(((const uint32_t *)data)[i])*C1;
+    size_t i, count = dataLen/4;
+    
+    assert(data != NULL || dataLen == 0);
+    
+    for (i = 0; i < count*4; i += 4) {
+        k = (((uint32_t)d[i + 3] << 24) | ((uint32_t)d[i + 2] << 16) |
+             ((uint32_t)d[i + 1] <<  8) | ((uint32_t)d[i]))*C1;
         k = rol32(k, 15)*C2;
         h ^= k;
         h = rol32(h, 13)*5 + 0xe6546b64;
     }
-
+    
     k = 0;
-
-    switch (len & 3) {
-    case 3:
-        k ^= ((const uint8_t *)data)[i*4 + 2] << 16; // fall through
-    case 2:
-        k ^= ((const uint8_t *)data)[i*4 + 1] << 8; // fall through
-    case 1:
-        k ^= ((const uint8_t *)data)[i*4], k *= C1, h ^= rol32(k, 15)*C2;
+    
+    switch (dataLen & 3) {
+        case 3: k ^= d[i + 2] << 16; // fall through
+        case 2: k ^= d[i + 1] << 8;  // fall through
+        case 1: k ^= d[i], k *= C1, h ^= rol32(k, 15)*C2;
     }
-
-    h ^= len;
+    
+    h ^= dataLen;
     fmix32(h);
     return h;
 }
