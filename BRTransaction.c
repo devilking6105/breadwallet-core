@@ -654,7 +654,6 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
             size_t dataLen = _BRTransactionWitnessData(tx, data, sizeof(data), i, SIGHASH_ALL);
             UInt160 pkHash = BRKeyHash160(&keys[j]);
             uint8_t redeemScript[1 + BRScriptPushData(NULL, 0, pkHash.u8, sizeof(pkHash))];
-            
             BRSHA256_2(&md, data, dataLen);
             sigLen = BRKeySign(&keys[j], sig, sizeof(sig) - 1, md);
             sig[sigLen++] = SIGHASH_ALL;

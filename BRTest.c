@@ -134,10 +134,6 @@ int BRArrayTests() {
     array_rm_range(a, 0, 4);        // [ 1, 2, 3 ]
     if (array_count(a) != 3 || a[0] != 1) r = 0, test_log("***FAILED*** %s: array_rm_range() test\n", __func__);
 
-    test_log("\n");
-    if (array_count(a) != 3)
-        r = 0; test_error_log("***FAILED*** %s: array_count(a) should be 3", __func__);       // 1, 2, 3,
-
     array_insert_array(a, 3, c, 2); // [ 1, 2, 3, 3, 2 ]
     if (array_count(a) != 5 || a[4] != 2)
         r = 0, test_log("***FAILED*** %s: array_insert_array() test 2\n", __func__);
