@@ -107,16 +107,17 @@ void BRTxInputSetSignature(BRTxInput *input, const uint8_t *signature, size_t si
 }
 
 void BRTxInputSetWitness(BRTxInput *input, const uint8_t *witness, size_t witLen) {
-    assert(input);
-
+    assert(input != NULL);
+    assert(witness != NULL || witLen == 0);
     if (input->witness) array_free(input->witness);
     input->witness = NULL;
     input->witLen = 0;
 
-    if (witLen) {
+    if (witness) {
         input->witLen = witLen;
         array_new(input->witness, witLen);
         array_add_array(input->witness, witness, witLen);
+        if (! input->address[0]) BRAddressFromWitness(input->address, sizeof(input->address), witness, witLen);
     }
 }
 
@@ -204,6 +205,7 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
     BRTxInput input;
     int anyoneCanPay = (hashType & SIGHASH_ANYONECANPAY), sigHash = (hashType & 0x1f);
     size_t i, off = 0;
+    uint8_t scriptCode[] = { 22, OP_0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
     // Version
     if (index >= tx->inCount) return 0;
@@ -244,6 +246,12 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
 
     input.signature = input.script; // TODO: handle OP_CODESEPARATOR
     input.sigLen = input.scriptLen;
+
+    if (input.scriptLen == 23 && input.script[0] == OP_HASH160 && input.script[1] == 20 && input.script[input.scriptLen - 1] == OP_EQUAL) { // P2SH-P2WPKH scriptCode
+        memcpy(&scriptCode[3], &input.script[2], 20);
+        input.signature = scriptCode;
+        input.sigLen = sizeof(scriptCode);
+    }
 
     // Add prevout + scriptCode + amount + nSequence
     off += _BRTxInputData(&input, (data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0));
@@ -653,14 +661,17 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
             uint8_t data[_BRTransactionWitnessData(tx, NULL, 0, i, SIGHASH_ALL)];
             size_t dataLen = _BRTransactionWitnessData(tx, data, sizeof(data), i, SIGHASH_ALL);
             UInt160 pkHash = BRKeyHash160(&keys[j]);
-            uint8_t redeemScript[1 + BRScriptPushData(NULL, 0, pkHash.u8, sizeof(pkHash))];
+            uint8_t redeemScript[sizeof(pkHash) + 3];
+
+            redeemScript[0] = 22;
+            redeemScript[1] = OP_0;
+            redeemScript[2] = 20;
+            memcpy(&redeemScript[3], pkHash.u8, sizeof(pkHash));
+            BRTxInputSetSignature(input, redeemScript, sizeof(redeemScript));
+
             BRSHA256_2(&md, data, dataLen);
             sigLen = BRKeySign(&keys[j], sig, sizeof(sig) - 1, md);
             sig[sigLen++] = SIGHASH_ALL;
-
-            redeemScript[0] = OP_0;
-            BRScriptPushData(&redeemScript[1], sizeof(redeemScript) - 1, pkHash.u8, sizeof(pkHash));
-            BRTxInputSetSignature(input, redeemScript, sizeof(redeemScript) - 1);
 
             scriptLen = BRScriptPushData(script, sizeof(script), sig, sigLen);
             scriptLen += BRScriptPushData(&script[0], sizeof(script) - scriptLen, pubKey, pkLen);
