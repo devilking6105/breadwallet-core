@@ -35,8 +35,7 @@ static BRTransaction *
 JNI_COPY_TRANSACTION (BRTransaction *tx) {
     if (com_breadwallet_core_BRCoreTransaction_JNI_COPIES_TRANSACTIONS && NULL != tx) {
         return BRTransactionCopy(tx);
-    }
-    else {
+    } else {
 #if defined (__ANDROID_NDK__)
         __android_log_print(ANDROID_LOG_DEBUG, "JNI", "FAILED TO COPY: %p", tx);
 #endif
@@ -69,9 +68,9 @@ static jmethodID transactionConstructor;
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_createJniCoreWallet
-        (JNIEnv *env, jclass thisClass,
-         jobjectArray objTransactionsArray,
-         jobject objMasterPubKey) {
+(JNIEnv *env, jclass thisClass,
+ jobjectArray objTransactionsArray,
+ jobject objMasterPubKey) {
 
     BRMasterPubKey *masterPubKey = (BRMasterPubKey *) getJNIReference(env, objMasterPubKey);
 
@@ -99,10 +98,10 @@ Java_com_breadwallet_core_BRCoreWallet_createJniCoreWallet
  * Signature: (Lcom/breadwallet/core/BRCoreWallet/Listener;)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreWallet_installListener
-        (JNIEnv *env, jobject thisObject, jobject listenerObject) {
+(JNIEnv *env, jobject thisObject, jobject listenerObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
 
-     // Get a WeakGlobalRef - 'weak' to allow for GC; 'global' to allow BRCore thread access
+    // Get a WeakGlobalRef - 'weak' to allow for GC; 'global' to allow BRCore thread access
     // TODO: If this is made a WeakGlobal then the App crashes.
     jobject listener = (*env)->NewGlobalRef (env, listenerObject);
 
@@ -122,7 +121,7 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreWallet_installListener
  */
 JNIEXPORT jobject JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getReceiveAddress
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
 
     BRAddress *address = (BRAddress *) malloc (sizeof (BRAddress));
@@ -137,7 +136,7 @@ Java_com_breadwallet_core_BRCoreWallet_getReceiveAddress
  * Signature: ()Lcom/breadwallet/core/BRCoreAddress;
  */
 JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_getLegacyAddress
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
 
     BRAddress *address = (BRAddress *) malloc (sizeof (BRAddress));
@@ -153,7 +152,7 @@ JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_getLegacyAddres
  */
 JNIEXPORT jobjectArray JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getAllAddresses
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
 
     // Get *all* addresses
@@ -188,7 +187,7 @@ Java_com_breadwallet_core_BRCoreWallet_getAllAddresses
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_containsAddress
-        (JNIEnv *env, jobject thisObject, jobject objAddress) {
+(JNIEnv *env, jobject thisObject, jobject objAddress) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRAddress *address = (BRAddress *) getJNIReference (env, objAddress);
 
@@ -202,7 +201,7 @@ Java_com_breadwallet_core_BRCoreWallet_containsAddress
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_addressIsUsed
-        (JNIEnv *env, jobject thisObject, jobject objAddress) {
+(JNIEnv *env, jobject thisObject, jobject objAddress) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRAddress *address = (BRAddress *) getJNIReference (env, objAddress);
 
@@ -216,7 +215,7 @@ Java_com_breadwallet_core_BRCoreWallet_addressIsUsed
  */
 JNIEXPORT jobjectArray JNICALL
 Java_com_breadwallet_core_BRCoreWallet_jniGetTransactions
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
     size_t transactionCount = BRWalletTransactions (wallet, NULL, 0);
@@ -229,8 +228,8 @@ Java_com_breadwallet_core_BRCoreWallet_jniGetTransactions
     //   We should not copy; but we need to deal with wallet-initiated 'free'
     for (int index = 0; index < transactionCount; index++) {
         jobject transactionObject =
-                (*env)->NewObject (env, transactionClass, transactionConstructor,
-                                   (jlong) JNI_COPY_TRANSACTION(transactions[index]));
+            (*env)->NewObject (env, transactionClass, transactionConstructor,
+                               (jlong) JNI_COPY_TRANSACTION(transactions[index]));
         assert (!(*env)->IsSameObject (env, transactionObject, NULL));
 
         (*env)->SetObjectArrayElement (env, transactionArray, index, transactionObject);
@@ -249,7 +248,7 @@ Java_com_breadwallet_core_BRCoreWallet_jniGetTransactions
  */
 JNIEXPORT jobjectArray JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getTransactionsConfirmedBefore
-        (JNIEnv *env, jobject thisObject, jlong blockHeight) {
+(JNIEnv *env, jobject thisObject, jlong blockHeight) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
     size_t transactionCount = BRWalletTxUnconfirmedBefore (wallet, NULL, 0, blockHeight);
@@ -260,8 +259,8 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionsConfirmedBefore
 
     for (int index = 0; index < transactionCount; index++) {
         jobject transactionObject =
-                (*env)->NewObject (env, transactionClass, transactionConstructor,
-                                   (jlong) JNI_COPY_TRANSACTION(transactions[index]));
+            (*env)->NewObject (env, transactionClass, transactionConstructor,
+                               (jlong) JNI_COPY_TRANSACTION(transactions[index]));
 
         (*env)->SetObjectArrayElement (env, transactionArray, index, transactionObject);
         (*env)->DeleteLocalRef (env, transactionObject);
@@ -279,7 +278,7 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionsConfirmedBefore
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getBalance
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     return (jlong) BRWalletBalance (wallet);
 }
@@ -291,7 +290,7 @@ Java_com_breadwallet_core_BRCoreWallet_getBalance
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getTotalSent
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     return (jlong) BRWalletTotalSent (wallet);
 }
@@ -303,7 +302,7 @@ Java_com_breadwallet_core_BRCoreWallet_getTotalSent
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getTotalReceived
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     return (jlong) BRWalletTotalReceived (wallet);
 }
@@ -315,7 +314,7 @@ Java_com_breadwallet_core_BRCoreWallet_getTotalReceived
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getFeePerKb
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     return (jlong) BRWalletFeePerKb (wallet);
 }
@@ -327,7 +326,7 @@ Java_com_breadwallet_core_BRCoreWallet_getFeePerKb
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCoreWallet_setFeePerKb
-        (JNIEnv *env, jobject thisObject, jlong feePerKb) {
+(JNIEnv *env, jobject thisObject, jlong feePerKb) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRWalletSetFeePerKb (wallet, feePerKb);
 }
@@ -338,7 +337,7 @@ Java_com_breadwallet_core_BRCoreWallet_setFeePerKb
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMaxFeePerKb
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     return MAX_FEE_PER_KB;
 }
 
@@ -348,7 +347,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMaxFeePerKb
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getDefaultFeePerKb
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     return DEFAULT_FEE_PER_KB;
 }
 
@@ -359,15 +358,15 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getDefaultFeePerK
  */
 JNIEXPORT jobject JNICALL
 Java_com_breadwallet_core_BRCoreWallet_createTransaction
-        (JNIEnv *env, jobject thisObject, jlong amount, jobject addressObject) {
+(JNIEnv *env, jobject thisObject, jlong amount, jobject addressObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference(env, thisObject);
     BRAddress *address = (BRAddress *) getJNIReference(env, addressObject);
 
     // transaction may be NULL - like if the wallet does not have a large enough balance
     // to cover the transaction amount
     BRTransaction *transaction = BRWalletCreateTransaction(wallet,
-                                                           (uint64_t) amount,
-                                                           (const char *) address->s);
+                                 (uint64_t) amount,
+                                 (const char *) address->s);
 
     return NULL == transaction
            ? NULL
@@ -380,7 +379,7 @@ Java_com_breadwallet_core_BRCoreWallet_createTransaction
  * Signature: ([Lcom/breadwallet/core/BRCoreTransactionOutput;)Lcom/breadwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_createTransactionForOutputs
-        (JNIEnv *env, jobject thisObject, jobjectArray outputsArray) {
+(JNIEnv *env, jobject thisObject, jobjectArray outputsArray) {
     BRWallet *wallet = (BRWallet *) getJNIReference(env, thisObject);
 
     size_t outputsCount = (size_t) (*env)->GetArrayLength (env, outputsArray);
@@ -410,10 +409,10 @@ JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_createTransacti
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_signTransaction
-        (JNIEnv *env, jobject thisObject,
-         jobject transactionObject,
-         jint forkId,
-         jbyteArray phraseByteArray) {
+(JNIEnv *env, jobject thisObject,
+ jobject transactionObject,
+ jint forkId,
+ jbyteArray phraseByteArray) {
     BRWallet *wallet = (BRWallet *) getJNIReference(env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference(env, transactionObject);
 
@@ -442,7 +441,7 @@ Java_com_breadwallet_core_BRCoreWallet_signTransaction
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_containsTransaction
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
     return (jboolean) BRWalletContainsTransaction (wallet, transaction);
@@ -455,7 +454,7 @@ Java_com_breadwallet_core_BRCoreWallet_containsTransaction
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_jniRegisterTransaction
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
 
@@ -470,7 +469,7 @@ Java_com_breadwallet_core_BRCoreWallet_jniRegisterTransaction
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCoreWallet_removeTransaction
-        (JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
+(JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
     uint8_t *hashData = (uint8_t *) (*env)->GetByteArrayElements(env, hashByteArray, 0);
@@ -485,10 +484,10 @@ Java_com_breadwallet_core_BRCoreWallet_removeTransaction
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCoreWallet_updateTransactions
-        (JNIEnv *env, jobject thisObject,
-         jobjectArray transactionsHashesArray,
-         jlong blockHeight,
-         jlong timestamp) {
+(JNIEnv *env, jobject thisObject,
+ jobjectArray transactionsHashesArray,
+ jlong blockHeight,
+ jlong timestamp) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
     size_t txCount = (size_t) (*env)->GetArrayLength (env, transactionsHashesArray);
@@ -511,7 +510,7 @@ Java_com_breadwallet_core_BRCoreWallet_updateTransactions
  */
 JNIEXPORT jobject JNICALL
 Java_com_breadwallet_core_BRCoreWallet_jniTransactionForHash
-        (JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
+(JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
     uint8_t *hashData = (uint8_t *) (*env)->GetByteArrayElements(env, hashByteArray, 0);
@@ -527,7 +526,7 @@ Java_com_breadwallet_core_BRCoreWallet_jniTransactionForHash
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_transactionIsValid
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
     return (jboolean) BRWalletTransactionIsValid (wallet, transaction);
@@ -540,7 +539,7 @@ Java_com_breadwallet_core_BRCoreWallet_transactionIsValid
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_transactionIsPending
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
     return (jboolean) BRWalletTransactionIsPending (wallet, transaction);
@@ -553,7 +552,7 @@ Java_com_breadwallet_core_BRCoreWallet_transactionIsPending
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_transactionIsVerified
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
     return (jboolean) BRWalletTransactionIsVerified (wallet, transaction);
@@ -567,7 +566,7 @@ Java_com_breadwallet_core_BRCoreWallet_transactionIsVerified
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getTransactionFee
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
     return BRWalletFeeForTx (wallet, transaction);
@@ -580,7 +579,7 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionFee
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getTransactionAmountSent
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
     return BRWalletAmountSentByTx (wallet, transaction);
@@ -593,7 +592,7 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionAmountSent
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getTransactionAmountReceived
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
     return BRWalletAmountReceivedFromTx (wallet, transaction);
@@ -606,7 +605,7 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionAmountReceived
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getBalanceAfterTransaction
-        (JNIEnv *env, jobject thisObject, jobject transactionObject) {
+(JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
     return (jlong) BRWalletBalanceAfterTx (wallet, transaction);
@@ -619,7 +618,7 @@ Java_com_breadwallet_core_BRCoreWallet_getBalanceAfterTransaction
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getFeeForTransactionSize
-        (JNIEnv *env, jobject thisObject, jlong size) {
+(JNIEnv *env, jobject thisObject, jlong size) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     return (jlong) BRWalletFeeForTxSize (wallet, (size_t) size);
 }
@@ -631,7 +630,7 @@ Java_com_breadwallet_core_BRCoreWallet_getFeeForTransactionSize
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_getFeeForTransactionAmount
-        (JNIEnv *env, jobject thisObject, jlong amount) {
+(JNIEnv *env, jobject thisObject, jlong amount) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     return (jlong) BRWalletFeeForTxAmount (wallet, (uint64_t) amount);
 }
@@ -642,7 +641,7 @@ Java_com_breadwallet_core_BRCoreWallet_getFeeForTransactionAmount
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMinOutputAmount
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     return (jlong) BRWalletMinOutputAmount (wallet);
 }
@@ -653,7 +652,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMinOutputAmoun
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMaxOutputAmount
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     return (jlong) BRWalletMaxOutputAmount (wallet);
 }
@@ -665,7 +664,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMaxOutputAmoun
  */
 JNIEXPORT void JNICALL
 Java_com_breadwallet_core_BRCoreWallet_disposeNative
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference(env, thisObject);
 
     if (NULL != wallet) {
@@ -681,7 +680,7 @@ Java_com_breadwallet_core_BRCoreWallet_disposeNative
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreWallet_initializeNative
-        (JNIEnv *env, jclass thisClass) {
+(JNIEnv *env, jclass thisClass) {
     addressClass = (*env)->FindClass(env, "com/breadwallet/core/BRCoreAddress");
     assert (NULL != addressClass);
     addressClass = (*env)->NewGlobalRef (env, addressClass);
@@ -723,9 +722,9 @@ balanceChanged(void *info, uint64_t balance) {
 
     // The onBalanceChanged callback
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "balanceChanged",
-                                 "(J)V");
+        lookupListenerMethod(env, listener,
+                             "balanceChanged",
+                             "(J)V");
     assert (NULL != listenerMethod);
 
     (*env)->CallVoidMethod(env, listener, listenerMethod, balance);
@@ -744,14 +743,14 @@ txAdded(void *info, BRTransaction *tx) {
 
     // The onTxAdded listener
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "onTxAdded",
-                                 "(Lcom/breadwallet/core/BRCoreTransaction;)V");
+        lookupListenerMethod(env, listener,
+                             "onTxAdded",
+                             "(Lcom/breadwallet/core/BRCoreTransaction;)V");
     assert (NULL != listenerMethod);
 
     // Create the BRCoreTransaction
     jobject transaction = (*env)->NewObject (env, transactionClass, transactionConstructor,
-                                             (jlong) JNI_COPY_TRANSACTION(tx));
+                          (jlong) JNI_COPY_TRANSACTION(tx));
 
     // Invoke the callback with the provided transaction
     (*env)->CallVoidMethod(env, listener,
@@ -763,7 +762,7 @@ txAdded(void *info, BRTransaction *tx) {
 
 static void
 txUpdated(void *info, const UInt256 txHashes[], size_t count, uint32_t blockHeight,
-                      uint32_t timestamp) {
+          uint32_t timestamp) {
 
     JNIEnv *env = getEnv();
     if (NULL == env) return;
@@ -773,9 +772,9 @@ txUpdated(void *info, const UInt256 txHashes[], size_t count, uint32_t blockHeig
 
     // The onTxUpdated callback
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "onTxUpdated",
-                                 "(Ljava/lang/String;II)V");
+        lookupListenerMethod(env, listener,
+                             "onTxUpdated",
+                             "(Ljava/lang/String;II)V");
     assert (NULL != listenerMethod);
 
     // Invoke the callback for each of txHashes.
@@ -801,9 +800,9 @@ txDeleted(void *info, UInt256 txHash, int notifyUser, int recommendRescan) {
 
     // The onTxDeleted callback
     jmethodID listenerMethod =
-            lookupListenerMethod(env, listener,
-                                 "onTxDeleted",
-                                 "(Ljava/lang/String;II)V");
+        lookupListenerMethod(env, listener,
+                             "onTxDeleted",
+                             "(Ljava/lang/String;II)V");
     assert (NULL != listenerMethod);
 
     // Invoke the callback for the provided txHash

@@ -143,14 +143,12 @@ int BRTransactionSign(BRTransaction *tx, int forkId, BRKey keys[], size_t keysCo
 int BRTransactionIsStandard(const BRTransaction *tx);
 
 // returns a hash value for tx suitable for use in a hashtable
-inline static size_t BRTransactionHash(const void *tx)
-{
+inline static size_t BRTransactionHash(const void *tx) {
     return (size_t)((const BRTransaction *)tx)->txHash.u32[0];
 }
 
 // true if tx and otherTx have equal txHash values
-inline static int BRTransactionEq(const void *tx, const void *otherTx)
-{
+inline static int BRTransactionEq(const void *tx, const void *otherTx) {
     return (tx == otherTx || UInt256Eq(((const BRTransaction *)tx)->txHash, ((const BRTransaction *)otherTx)->txHash));
 }
 

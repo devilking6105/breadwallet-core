@@ -28,21 +28,19 @@
 #define JNI_REFERENCE_ADDRESS_FIELD_TYPE "J" // long
 
 static jfieldID getJNIReferenceField (
-        JNIEnv *env,
-        jobject thisObject)
-{
+    JNIEnv *env,
+    jobject thisObject) {
     jclass thisClass = (*env)->GetObjectClass (env, thisObject);
     jfieldID thisFieldId = (*env)->GetFieldID(env, thisClass,
-                              JNI_REFERENCE_ADDRESS_FIELD_NAME,
-                              JNI_REFERENCE_ADDRESS_FIELD_TYPE);
+                           JNI_REFERENCE_ADDRESS_FIELD_NAME,
+                           JNI_REFERENCE_ADDRESS_FIELD_TYPE);
     (*env)->DeleteLocalRef (env, thisClass);
     return thisFieldId;
 }
 
 static jlong getJNIReferenceAddress (
-        JNIEnv *env,
-        jobject thisObject)
-{
+    JNIEnv *env,
+    jobject thisObject) {
     jfieldID coreBRKeyAddressField = getJNIReferenceField(env, thisObject);
     assert (NULL != coreBRKeyAddressField);
 
@@ -50,9 +48,8 @@ static jlong getJNIReferenceAddress (
 }
 
 extern void *getJNIReference (
-        JNIEnv *env,
-        jobject thisObject)
-{
+    JNIEnv *env,
+    jobject thisObject) {
     return (void *) getJNIReferenceAddress(env, thisObject);
 }
 
@@ -62,7 +59,7 @@ extern void *getJNIReference (
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreJniReference_disposeNative
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     void *reference = getJNIReference(env, thisObject);
 
     // Not always free(); could be BRPeerManagerFree()

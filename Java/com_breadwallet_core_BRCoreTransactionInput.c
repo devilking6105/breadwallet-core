@@ -34,11 +34,11 @@
  * Signature: ([BJJ[B[B[BJ)J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_createTransactionInput
-        (JNIEnv *env, jclass thisClass, jbyteArray hashByteArray, jlong index, jlong amount,
-         jbyteArray scriptByteArray,
-         jbyteArray signatureByteArray,
-         jbyteArray witnessByteArray,
-         jlong sequence) {
+(JNIEnv *env, jclass thisClass, jbyteArray hashByteArray, jlong index, jlong amount,
+ jbyteArray scriptByteArray,
+ jbyteArray signatureByteArray,
+ jbyteArray witnessByteArray,
+ jlong sequence) {
     BRTxInput *input = (BRTxInput *) calloc(1, sizeof(BRTxInput));
 
     size_t hashLen = (size_t) (*env)->GetArrayLength(env, hashByteArray);
@@ -53,27 +53,27 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_createT
     input->script = NULL;
     size_t scriptLen = (size_t) (*env)->GetArrayLength(env, scriptByteArray);
     const uint8_t *script = (const uint8_t *)
-            (0 == scriptLen
-             ? NULL
-             : (*env)->GetByteArrayElements(env, scriptByteArray, 0));
+                            (0 == scriptLen
+                             ? NULL
+                             : (*env)->GetByteArrayElements(env, scriptByteArray, 0));
     BRTxInputSetScript(input, script, scriptLen);
 
     // signature
     input->signature = NULL;
     size_t signatureLen = (size_t) (*env)->GetArrayLength(env, signatureByteArray);
     const uint8_t *signature = (const uint8_t *)
-            (0 == signatureLen
-             ? NULL
-             : (*env)->GetByteArrayElements(env, signatureByteArray, 0));
+                               (0 == signatureLen
+                                ? NULL
+                                : (*env)->GetByteArrayElements(env, signatureByteArray, 0));
     BRTxInputSetSignature(input, signature, signatureLen);
 
     // witness
     input->witness = NULL;
     size_t witnessLen = (size_t) (*env)->GetArrayLength(env, witnessByteArray);
     const uint8_t *witness = (const uint8_t *)
-            (0 == witnessLen
-             ? NULL
-             : (*env)->GetByteArrayElements(env, witnessByteArray, 0));
+                             (0 == witnessLen
+                              ? NULL
+                              : (*env)->GetByteArrayElements(env, witnessByteArray, 0));
     BRTxInputSetWitness(input, witness, witnessLen);
 
     input->sequence = (uint32_t) (sequence == -1 ? TXIN_SEQUENCE : sequence);
@@ -87,9 +87,9 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_createT
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getAddress
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRTxInput *input = (BRTxInput *) getJNIReference (env, thisObject);
-    
+
     size_t addressLen = sizeof (input->address);
     char address[1 + addressLen];
     memcpy (address, input->address, addressLen);
@@ -104,9 +104,9 @@ JNIEXPORT jstring JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getAd
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_setAddress
-        (JNIEnv *env, jobject thisObject , jstring addressObject) {
+(JNIEnv *env, jobject thisObject, jstring addressObject) {
     BRTxInput *input = (BRTxInput *) getJNIReference (env, thisObject);
-    
+
     size_t addressLen = sizeof (input->address);
 
     size_t addressDataLen = (size_t) (*env)->GetStringLength (env, addressObject);
@@ -124,14 +124,14 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_setAddre
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getHash
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRTxInput *input = (BRTxInput *) getJNIReference (env, thisObject);
 
     size_t hashLen = sizeof (UInt256);
     jbyteArray hashByteArray = (*env)->NewByteArray (env, hashLen);
-    (*env)->SetByteArrayRegion (env, hashByteArray, 0, (jsize) hashLen, 
+    (*env)->SetByteArrayRegion (env, hashByteArray, 0, (jsize) hashLen,
                                 (const jbyte *) input->txHash.u8);
-    
+
     return hashByteArray;
 }
 
@@ -141,7 +141,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_ge
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getIndex
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRTxInput *input = (BRTxInput *) getJNIReference (env, thisObject);
     return (jlong) input->index;
 }
@@ -152,7 +152,7 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getInde
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getAmount
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRTxInput *input = (BRTxInput *) getJNIReference (env, thisObject);
     return (jlong) input->amount;
 }
@@ -163,13 +163,13 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getAmou
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getScript
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRTxInput *input = (BRTxInput *) getJNIReference (env, thisObject);
-    
+
     jbyteArray scriptByteArray = (*env)->NewByteArray (env, (jsize) input->scriptLen);
     (*env)->SetByteArrayRegion (env, scriptByteArray, 0, (jsize) input->scriptLen,
                                 (const jbyte *) input->script);
-    
+
     return scriptByteArray;
 }
 
@@ -179,7 +179,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_ge
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getSignature
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRTxInput *input = (BRTxInput *) getJNIReference (env, thisObject);
 
     jbyteArray signatureByteArray = (*env)->NewByteArray (env, (jsize) input->sigLen);
@@ -195,7 +195,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_ge
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreTransactionInput_getSequence
-        (JNIEnv *env, jobject thisObject) {
+(JNIEnv *env, jobject thisObject) {
     BRTxInput *input = (BRTxInput *) getJNIReference (env, thisObject);
     return (jlong) input->sequence;
 }
