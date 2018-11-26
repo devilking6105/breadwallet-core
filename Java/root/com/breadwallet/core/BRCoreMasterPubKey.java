@@ -64,8 +64,8 @@ public class BRCoreMasterPubKey extends BRCoreJniReference {
      */
     public BRCoreMasterPubKey (byte[] bytes, boolean isPaperKey) {
         this (isPaperKey
-                ? createJniCoreMasterPubKeyFromPhrase(bytes)
-                : createJniCoreMasterPubKeyFromSerialization(bytes));
+              ? createJniCoreMasterPubKeyFromPhrase(bytes)
+              : createJniCoreMasterPubKeyFromSerialization(bytes));
     }
 
     private BRCoreMasterPubKey (long jniReferenceAddress) {

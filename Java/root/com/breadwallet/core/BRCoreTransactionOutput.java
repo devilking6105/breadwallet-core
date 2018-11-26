@@ -36,7 +36,7 @@ public class BRCoreTransactionOutput extends BRCoreJniReference {
     }
 
     protected static native long createTransactionOutput(long amount,
-                                                         byte[] script);
+            byte[] script);
 
     public native String getAddress();
 

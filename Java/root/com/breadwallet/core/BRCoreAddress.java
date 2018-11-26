@@ -30,8 +30,8 @@ package com.breadwallet.core;
 public class BRCoreAddress extends BRCoreJniReference {
     public static BRCoreAddress createAddress (String address) {
         return null == address || address.isEmpty()
-                ? null
-                : new BRCoreAddress (address);
+               ? null
+               : new BRCoreAddress (address);
     }
 
     public BRCoreAddress (String address) {

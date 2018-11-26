@@ -40,8 +40,7 @@ public abstract class BRCoreJniReference {
      */
     protected long jniReferenceAddress;
 
-    protected BRCoreJniReference (long jniReferenceAddress)
-    {
+    protected BRCoreJniReference (long jniReferenceAddress) {
         this.jniReferenceAddress = jniReferenceAddress;
     }
 

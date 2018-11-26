@@ -1383,26 +1383,41 @@ static void _dummyThreadCleanup(void *info) {
 }
 
 // returns a newly allocated BRPeerManager struct that must be freed by calling BRPeerManagerFree()
-BRPeerManager *BRPeerManagerNew(const BRChainParams *params, BRWallet *wallet, uint32_t earliestKeyTime,
-                                BRMerkleBlock *blocks[], size_t blocksCount, const BRPeer peers[], size_t peersCount) {
+// BRChainParams was removed from being a parameter since we only need Bitcoin and Bitcoin Testnet
+// chain params. This data is taken statically from BRChainParams.h.
+BRPeerManager *BRPeerManagerNew(BRWallet *wallet, uint32_t earliestKeyTime,
+                                BRMerkleBlock *blocks[], size_t blocksCount,
+                                const BRPeer peers[], size_t peersCount) {
     BRPeerManager *manager = calloc(1, sizeof(*manager));
     BRMerkleBlock orphan, *block = NULL;
 
     assert(manager != NULL);
-    assert(params != NULL);
-    assert(params->standardPort != 0);
     assert(wallet != NULL);
     assert(blocks != NULL || blocksCount == 0);
     assert(peers != NULL || peersCount == 0);
-    manager->params = params;
+
+#if BITCOIN_TESTNET
+    manager->params = &BRTestNetParams;
+#else
+    manager->params = &BRMainNetParams;
+#endif
+
+    assert(manager->params != NULL);
+    assert(manager->params->standardPort != 0);
+
     manager->wallet = wallet;
     manager->earliestKeyTime = earliestKeyTime;
     manager->averageTxPerBlock = 1400;
     manager->maxConnectCount = PEER_MAX_CONNECTIONS;
+
     array_new(manager->peers, peersCount);
+
     if (peers) array_add_array(manager->peers, peers, peersCount);
+
     qsort(manager->peers, array_count(manager->peers), sizeof(*manager->peers), _peerTimestampCompare);
+
     array_new(manager->connectedPeers, PEER_MAX_CONNECTIONS);
+
     manager->blocks = BRSetNew(BRMerkleBlockHash, BRMerkleBlockEq, blocksCount);
     manager->orphans = BRSetNew(_BRPrevBlockHash, _BRPrevBlockEq, blocksCount); // orphans are indexed by prevBlock
     manager->checkpoints = BRSetNew(_BRBlockHeightHash, _BRBlockHeightEq, 100); // checkpoints are indexed by height
@@ -1441,8 +1456,11 @@ BRPeerManager *BRPeerManagerNew(const BRChainParams *params, BRWallet *wallet, u
     array_new(manager->txRequests, 10);
     array_new(manager->publishedTx, 10);
     array_new(manager->publishedTxHashes, 10);
+
     pthread_mutex_init(&manager->lock, NULL);
+
     manager->threadCleanup = _dummyThreadCleanup;
+
     return manager;
 }
 
@@ -1488,6 +1506,17 @@ void BRPeerManagerSetFixedPeer(BRPeerManager *manager, UInt128 address, uint16_t
     });
     array_clear(manager->peers);
     pthread_mutex_unlock(&manager->lock);
+}
+
+// true if currently connected to at least one peer
+int BRPeerManagerIsConnected(BRPeerManager *manager) {
+    int isConnected;
+
+    assert(manager != NULL);
+    pthread_mutex_lock(&manager->lock);
+    isConnected = manager->isConnected;
+    pthread_mutex_unlock(&manager->lock);
+    return isConnected;
 }
 
 // current connect status

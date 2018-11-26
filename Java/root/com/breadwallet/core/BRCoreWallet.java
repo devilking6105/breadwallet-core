@@ -82,7 +82,7 @@ public class BRCoreWallet extends BRCoreJniReference
     }
 
     protected static native long createJniCoreWallet (BRCoreTransaction[] transactions,
-                                                      BRCoreMasterPubKey masterPubKey);
+            BRCoreMasterPubKey masterPubKey);
 
     protected native void installListener (Listener listener);
 
@@ -216,7 +216,7 @@ public class BRCoreWallet extends BRCoreJniReference
         // We mark as 'registered' if not a copy.
         if (null != transaction)
             transaction.isRegistered = transaction.isRegistered
-                || !BRCoreTransaction.JNI_COPIES_TRANSACTIONS;
+                                       || !BRCoreTransaction.JNI_COPIES_TRANSACTIONS;
 
         return transaction;
     }
@@ -247,14 +247,13 @@ public class BRCoreWallet extends BRCoreJniReference
      * @param tx
      * @return
      */
-    public long getTransactionAmount (BRCoreTransaction tx)
-    {
+    public long getTransactionAmount (BRCoreTransaction tx) {
         long amountSent = getTransactionAmountSent(tx);
         long amountReceived = getTransactionAmountReceived(tx);
 
         return amountSent == 0
-                ? amountReceived
-                : -1 * (amountSent - amountReceived - getTransactionFee(tx));
+               ? amountReceived
+               : -1 * (amountSent - amountReceived - getTransactionFee(tx));
     }
 
     public native long getTransactionFee (BRCoreTransaction tx);
@@ -273,10 +272,10 @@ public class BRCoreWallet extends BRCoreJniReference
      * @param transaction
      * @return
      */
-    public BRCoreAddress getTransactionAddress (BRCoreTransaction transaction){
+    public BRCoreAddress getTransactionAddress (BRCoreTransaction transaction) {
         return getTransactionAmount(transaction) > 0
-                ? getTransactionAddressInputs(transaction)   // we received -> from inputs
-                : getTransactionAddressOutputs(transaction); // we sent     -> to outputs
+               ? getTransactionAddressInputs(transaction)   // we received -> from inputs
+               : getTransactionAddressOutputs(transaction); // we sent     -> to outputs
     }
 
     /**
@@ -328,6 +327,8 @@ public class BRCoreWallet extends BRCoreJniReference
 
     protected static native void initializeNative ();
 
-    static { initializeNative(); }
+    static {
+        initializeNative();
+    }
 }
 

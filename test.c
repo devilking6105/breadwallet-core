@@ -981,7 +981,6 @@ int BRChachaTests() {
     BRChacha20(out3, key3, iv3, msg3, sizeof(msg3) - 1, 42);
     if (memcmp(cipher3, out3, sizeof(out3)) != 0)
         r = 0, fprintf(stderr, "***FAILED*** %s: BRChacha20() cipher test 3\n", __func__);
-
     BRChacha20(out3, key3, iv3, out3, sizeof(out3), 42);
     if (memcmp(msg3, out3, sizeof(out3)) != 0)
         r = 0, fprintf(stderr, "***FAILED*** %s: BRChacha20() de-cipher test 3\n", __func__);
@@ -1013,7 +1012,6 @@ int BRAuthEncryptTests() {
                                         sizeof(ad1) - 1);
     if (len != sizeof(msg1) - 1 || memcmp(msg1, out1, len) != 0)
         r = 0, fprintf(stderr, "***FAILED*** %s: BRChacha20Poly1305AEADDecrypt() cipher test 1\n", __func__);
-
     const char msg2[] = "Internet-Drafts are draft documents valid for a maximum of six months and may be updated, "
                         "replaced, or obsoleted by other documents at any time. It is inappropriate to use Internet-Drafts as reference "
                         "material or to cite them other than as /“work in progress./”",

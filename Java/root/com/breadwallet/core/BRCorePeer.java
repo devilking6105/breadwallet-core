@@ -140,12 +140,12 @@ public class BRCorePeer extends BRCoreJniReference {
     }
 
     private static native long createJniCorePeerNatural (byte[] peerAddress,
-                                                            int peerPort,
-                                                            long timeStamp);
+            int peerPort,
+            long timeStamp);
 
     private static native long createJniCorePeer (byte[] peerAddress,
-                                                  byte[] peerPort,
-                                                  byte[] timeStamp);
+            byte[] peerPort,
+            byte[] timeStamp);
 
     private static native long createJniCorePeerMagic(long magicNumber);
 }

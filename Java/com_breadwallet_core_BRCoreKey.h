@@ -227,7 +227,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreKey_sign
  * Class:     com_breadwallet_core_BRCoreKey
  * Method:    verify
  * Signature: ([B[B)Z
- */
+             */
 JNIEXPORT jboolean JNICALL Java_com_breadwallet_core_BRCoreKey_verify
 (JNIEnv *, jobject, jbyteArray, jbyteArray);
 
