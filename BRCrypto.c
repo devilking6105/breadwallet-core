@@ -190,7 +190,7 @@ void BRSHA256(void *md32, const void *data, size_t dataLen) {
 }
 
 // double-sha-256 = sha-256(sha-256(x))
-void BRSHA256_2(void *md32, const void *data, size_t len) {
+void BRSHA256_2(void *md32, const void *data, size_t dataLen) {
     uint8_t t[32];
 
     assert(md32 != NULL);
