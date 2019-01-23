@@ -41,8 +41,9 @@ public class BRCoreTransactionInput extends BRCoreJniReference {
     public BRCoreTransactionInput (byte[] hash, long index, long amount,
                                    byte[] script,
                                    byte[] signature,
+                                   byte[] witness,
                                    long sequence) {
-        this (createTransactionInput(hash, index, amount, script, signature, sequence));
+        this (createTransactionInput(hash, index, amount, script, signature, witness, sequence));
     }
 
     public BRCoreTransactionInput(long jniReferenceAddress) {
@@ -50,9 +51,10 @@ public class BRCoreTransactionInput extends BRCoreJniReference {
     }
 
     protected static native long createTransactionInput (byte[] hash, long index, long amount,
-            byte[] script,
-            byte[] signature,
-            long sequence);
+                                                         byte[] script,
+                                                         byte[] signature,
+                                                         byte[] witness,
+                                                         long sequence);
 
     public native String getAddress ();
 

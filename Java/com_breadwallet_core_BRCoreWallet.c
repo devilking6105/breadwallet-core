@@ -132,6 +132,21 @@ Java_com_breadwallet_core_BRCoreWallet_getReceiveAddress
 
 /*
  * Class:     com_breadwallet_core_BRCoreWallet
+ * Method:    getLegacyAddress
+ * Signature: ()Lcom/breadwallet/core/BRCoreAddress;
+ */
+JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_getLegacyAddress
+(JNIEnv *env, jobject thisObject) {
+    BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
+
+    BRAddress *address = (BRAddress *) malloc (sizeof (BRAddress));
+    *address = BRWalletLegacyAddress (wallet);
+
+    return (*env)->NewObject (env, addressClass, addressConstructor, (jlong) address);
+}
+
+/*
+ * Class:     com_breadwallet_core_BRCoreWallet
  * Method:    getAllAddresses
  * Signature: ()[Lcom/breadwallet/core/BRCoreAddress;
  */
@@ -686,10 +701,15 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreWallet_initializeNative
 //
 static jmethodID
 lookupListenerMethod (JNIEnv *env, jobject listener, char *name, char *type) {
-    return (*env)->GetMethodID(env,
-                               (*env)->GetObjectClass(env, listener),
-                               name,
-                               type);
+    // Class with desired method.
+    jclass listenerClass = (*env)->GetObjectClass(env, listener);
+
+    // Method, if found.
+    jmethodID listenerMethod = (*env)->GetMethodID(env, listenerClass, name, type);
+
+    // Clean up and return.
+    (*env)->DeleteLocalRef (env, listenerClass);
+    return listenerMethod;
 }
 
 static void

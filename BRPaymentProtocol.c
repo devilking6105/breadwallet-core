@@ -571,7 +571,7 @@ BRPaymentProtocolRequest *BRPaymentProtocolRequestParse(const uint8_t *buf, size
             req->pkiDataLen = _ProtoBufBytes(&req->pkiData, data, dataLen);
             break;
         case request_details:
-            req->details = BRPaymentProtocolDetailsParse(data, dataLen);
+            req->details = (data) ? BRPaymentProtocolDetailsParse(data, dataLen) : NULL;
             break;
         case request_signature:
             req->sigLen = _ProtoBufBytes(&req->signature, data, dataLen);
@@ -757,7 +757,7 @@ BRPaymentProtocolPayment *BRPaymentProtocolPaymentParse(const uint8_t *buf, size
 
         switch (key >> 3) {
         case payment_transactions:
-            tx = BRTransactionParse(data, dLen);
+            tx = (data) ? BRTransactionParse(data, dLen) : NULL;
             break;
         case payment_refund_to:
             out = _BRPaymentProtocolOutputParse(data, dLen);
@@ -878,7 +878,7 @@ BRPaymentProtocolACK *BRPaymentProtocolACKParse(const uint8_t *buf, size_t bufLe
 
         switch (key >> 3) {
         case ack_payment:
-            ack->payment = BRPaymentProtocolPaymentParse(data, dataLen);
+            ack->payment = (data) ? BRPaymentProtocolPaymentParse(data, dataLen) : NULL;
             break;
         case ack_memo:
             _ProtoBufString(&ack->memo, data, dataLen);
@@ -1234,15 +1234,6 @@ void BRPaymentProtocolMessageFree(BRPaymentProtocolMessage *msg) {
     free(msg);
 }
 
-static void _BRECDH(void *out32, BRKey *privKey, BRKey *pubKey) {
-    uint8_t p[65];
-    size_t pLen = BRKeyPubKey(pubKey, p, sizeof(p));
-
-    if (pLen == 65) p[0] = (p[64] % 2) ? 0x03 : 0x02; // convert to compressed pubkey format
-    BRSecp256k1PointMul((BRECPoint *)p, &privKey->secret); // calculate shared secret ec-point
-    memcpy(out32, &p[1], 32); // unpack the x coordinate
-}
-
 static void _BRPaymentProtocolEncryptedMessageCEK(BRPaymentProtocolEncryptedMessage *msg, void *cek32, void *iv12,
         BRKey *privKey) {
     uint8_t secret[32], seed[512/8], K[256/8], V[256/8], pk[65], rpk[65],
@@ -1253,7 +1244,7 @@ static void _BRPaymentProtocolEncryptedMessageCEK(BRPaymentProtocolEncryptedMess
            rpkLen = BRKeyPubKey(&msg->receiverPubKey, rpk, sizeof(rpk));
     BRKey *pubKey = (pkLen != rpkLen || memcmp(pk, rpk, pkLen) != 0) ? &msg->receiverPubKey : &msg->senderPubKey;
 
-    _BRECDH(secret, privKey, pubKey);
+    BRKeyECDH(privKey, secret, pubKey);
     BRSHA512(seed, secret, sizeof(secret));
     mem_clean(secret, sizeof(secret));
     BRHMACDRBG(cek32, 32, K, V, BRSHA256, 256/8, seed, sizeof(seed), nonce, sizeof(nonce), NULL, 0);

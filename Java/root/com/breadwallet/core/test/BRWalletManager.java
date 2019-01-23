@@ -305,6 +305,15 @@ public class BRWalletManager extends BRCoreWalletManager {
             BRCoreAddress.bcashDecodeBitcoin("bitcoincash:qzc93708k7x0w3gr32thxc5fla38xf8x8vq8h33fva"));
         asserting (addrX2.isValid());
 
+
+        String bitcoinAddr8 = "n2gzmWpFmcyC1WamqXvZs4kFf16sJD5MNN";
+        String bitcashAddr8 = "qr5yphdxvy8f5gycmpe32kmmxna3hl4g5uvh59hkcn";
+
+        System.out.println ("      Coin/Cash Loop");
+        for (int i = 0; i < 100; i++) {
+            assert (bitcoinAddr8.equals(BRCoreAddress.bcashDecodeBitcoin(bitcashAddr8)));
+            assert (bitcashAddr8.equals(BRCoreAddress.bcashEncodeBitcoin(bitcoinAddr8)));
+        }
         //
         //
         //
@@ -339,6 +348,19 @@ public class BRWalletManager extends BRCoreWalletManager {
         System.out.println("               PaperKey: " + Arrays.toString(new String(paperKeyBytes).getBytes()));
         asserting (Arrays.equals(paperKeyBytes, new String (paperKeyBytes).getBytes()));
         asserting (0 != paperKeyBytes[paperKeyBytes.length - 1]);
+
+        System.out.println("        SeedFromPhrase:");
+        for (int i = 0; i < 10; i++) {
+            byte[] seed1 = BRCoreKey.getSeedFromPhrase(paperKeyBytes);
+            byte[] seed2 = BRCoreKey.getSeedFromPhrase(paperKeyBytes);
+            if (i < 2) {
+                System.out.println("            @ " + i + " seed1: " + Arrays.toString(seed1));
+                System.out.println("            @ " + i + " seed2: " + Arrays.toString(seed2));
+            }
+            else System.out.println("            @ " + i + "...");
+            asserting(Arrays.equals(seed1, seed2));
+        }
+
         //
         //
         //
@@ -391,9 +413,14 @@ public class BRWalletManager extends BRCoreWalletManager {
         System.out.println("        Key/Addr Sign:");
 
         key = new BRCoreKey(secret, true);
+        key.getPubKey();
 
-        byte[] messageDigest = BRCoreKey.encodeSHA256("Everything should be made as simple as possible, but not simpler.");
+        byte[] message = "Everything should be made as simple as possible, but not simpler.".getBytes();
+        byte[] messageDigest = BRCoreKey.encodeSHA256(message);
         System.out.println ("            messageDigest: " + Arrays.toString((messageDigest)));
+
+        byte[] messageDigestDouble = BRCoreKey.encodeSHA256Double(message);
+        System.out.println ("            messageDigestDouble: " + Arrays.toString((messageDigestDouble)));
 
         byte[] signature = key.sign(messageDigest);
         System.out.println ("            signature    : " + Arrays.toString((signature)));
@@ -419,6 +446,57 @@ public class BRWalletManager extends BRCoreWalletManager {
 
 
          */
+
+        // Compact Sign
+        System.out.println("        Compact Sign:");
+
+        byte[] compactSig = key.compactSign(message);
+        BRCoreKey keyCompactSigRecovered = BRCoreKey.compactSignRecoverKey(message, compactSig);
+        System.out.println ("            compact signature         : " + Arrays.toString(compactSig));
+        System.out.println ("            compact signature (I key) : " + Arrays.toString(key.getPubKey()));
+        System.out.println ("            compact signature (R key) : " + Arrays.toString(keyCompactSigRecovered.getPubKey()));
+        asserting (Arrays.equals(key.getPubKey(), keyCompactSigRecovered.getPubKey()));
+
+        // Encrypt/Decrypt
+        System.out.println("        Encrypt/Decrypt:");
+        BRCoreKey privKey = new BRCoreKey("a1a8cae79e17cb4ddb4fb6871fcc87f3ee5cbb1049a168657d2c3493d79bfa16");
+        byte[] publicKeyBytes = BRCoreKey.decodeHex("02d404943960a71535a79679f1cf1df80e70597c05b05722839b38ebc8803af517");
+        assert (33 == publicKeyBytes.length);
+
+        byte[] sampleInputData = BRCoreKey.decodeHex ("b5647811e4472f3ebbadaa9812807785c7ebc04e36d3b6508af7494068fba174");
+        byte[] nonce  = BRCoreKey.decodeHex("123456789012345678901234");
+        assert (12 == nonce.length);
+
+        byte[] encryptedBytes = privKey.encryptNative(sampleInputData, nonce);
+        byte[] decryptedBytes = privKey.decryptNative(encryptedBytes, nonce);
+        System.out.println ("            sample    data : " + Arrays.toString(sampleInputData));
+        System.out.println ("            encrypted data : " + Arrays.toString(encryptedBytes));
+        System.out.println ("            decrypted data : " + Arrays.toString(decryptedBytes));
+        asserting (Arrays.equals(sampleInputData, decryptedBytes));
+
+        //
+        System.out.println("        Shared Key Encrypt/Decrypt:");
+        byte[] encryptedBytesShared = privKey.encryptUsingSharedSecret(publicKeyBytes, sampleInputData, nonce);
+        byte[] decryptedBytesShared = privKey.decryptUsingSharedSecret(publicKeyBytes, encryptedBytesShared, nonce);
+        System.out.println ("            sample    data : " + Arrays.toString(sampleInputData));
+        System.out.println ("            encrypted data : " + Arrays.toString(encryptedBytesShared));
+        System.out.println ("            decrypted data : " + Arrays.toString(decryptedBytesShared));
+        asserting (Arrays.equals(sampleInputData, decryptedBytesShared));
+
+        System.out.println("        Pairing Key:");
+        String identifier = "tail recursion for the win";
+        BRCoreKey pairingKey = privKey.getPairingKey(identifier.getBytes());
+        System.out.println ("            identifier: " + identifier);
+        System.out.println ("            pairingKey: " + Arrays.toString(pairingKey.getPubKey()));
+
+        // Base58
+        System.out.println("        Base58:");
+        String message58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+        byte[] decodedMessage = BRCoreKey.decodeBase58(message58);
+        String encodedMessage = BRCoreKey.encodeBase58(decodedMessage);
+        System.out.println ("            decoded : " + Arrays.toString(decodedMessage));
+        System.out.println ("            encoded : " + encodedMessage);
+        asserting (message58.equals(encodedMessage));
     }
 
 
@@ -452,7 +530,7 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         BRCoreTransaction transaction = new BRCoreTransaction();
         transaction.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, script, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, script, new byte[]{}, new byte[]{}, 4294967295L));
         transaction.addOutput(
             new BRCoreTransactionOutput(100000000L, script));
         transaction.addOutput(
@@ -491,15 +569,15 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         transaction = new BRCoreTransaction();
         transaction.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, script, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, script, new byte[]{}, new byte[]{}, 4294967295L));
         transaction.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, script, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, script, new byte[]{}, new byte[]{}, 4294967295L));
         transaction.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, script, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, script, new byte[]{}, new byte[]{}, 4294967295L));
         transaction.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, script, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, script, new byte[]{}, new byte[]{}, 4294967295L));
         transaction.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, script, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, script, new byte[]{}, new byte[]{}, 4294967295L));
 
         transaction.addOutput(
             new BRCoreTransactionOutput(4900000000L, script));
@@ -639,8 +717,7 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         BRCoreWallet.Listener walletListener = getWalletListener();
 
-        BRCoreWallet w = new BRCoreWallet(new BRCoreTransaction[] {}, mpk, walletListener);
-        asserting(null != w);
+        BRCoreWallet w = createWallet(new BRCoreTransaction[]{}, mpk, walletListener);
         BRCoreAddress recvAddr = w.getReceiveAddress();
 
         // A random addr
@@ -661,7 +738,7 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         tx = new BRCoreTransaction();
         tx.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, inScript, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, inScript, new byte[]{}, new byte[]{}, 4294967295L));
         tx.addOutput(
             new BRCoreTransactionOutput(SATOSHIS, outScript));
         w.signTransaction(tx, 0x00, phrase);
@@ -679,7 +756,7 @@ public class BRWalletManager extends BRCoreWalletManager {
         System.out.println("        LockTime");
         tx = new BRCoreTransaction();
         tx.addInput(
-            new BRCoreTransactionInput(inHash, 1, 1, inScript, new byte[] {}, 4294967295L - 1));
+                new BRCoreTransactionInput(inHash, 1, 1, inScript, new byte[]{}, new byte[]{}, 4294967295L - 1));
         tx.addOutput(
             new BRCoreTransactionOutput(SATOSHIS, outScript));
         tx.setLockTime(1000);
@@ -704,7 +781,7 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         tx = new BRCoreTransaction();
         tx.addInput (
-            new BRCoreTransactionInput(inHash, 0, 1, inScript, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, inScript, new byte[]{}, new byte[]{}, 4294967295L));
         tx.addOutput(
             new BRCoreTransactionOutput(SATOSHIS, outScript));
         tx.sign(k, 0x00);
@@ -713,7 +790,7 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         System.out.println("            Init w/ One SATOSHI");
 
-        w = new BRCoreWallet(new BRCoreTransaction[] { tx }, mpk, walletListener);
+        w = createWallet(new BRCoreTransaction[] { tx }, mpk, walletListener);
         asserting (SATOSHIS == w.getBalance());
         asserting (w.getAllAddresses().length == 1 + SEQUENCE_GAP_LIMIT_EXTERNAL + SEQUENCE_GAP_LIMIT_INTERNAL);
 
@@ -756,11 +833,11 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         byte[] mpkSerialized = mpk.serialize();
         mpk = new BRCoreMasterPubKey(mpkSerialized, false);
-        w = new BRCoreWallet(new BRCoreTransaction[] {}, mpk, walletListener);
+        w = createWallet(new BRCoreTransaction[]{}, mpk, walletListener);
 
         tx = new BRCoreTransaction();
         tx.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, inScript, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, inScript, new byte[]{}, new byte[]{}, 4294967295L));
         tx.addOutput(
             new BRCoreTransactionOutput(SATOSHIS, outScript));
         w.signTransaction(tx, 0x00, phrase);
@@ -828,7 +905,7 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         BRCoreTransaction tx = new BRCoreTransaction();
         tx.addInput(
-            new BRCoreTransactionInput(inHash, 0, 1, inScript, new byte[] {}, 4294967295L));
+                new BRCoreTransactionInput(inHash, 0, 1, inScript, new byte[]{}, new byte[]{}, 4294967295L));
         tx.addOutput(
             new BRCoreTransactionOutput(SATOSHIS, outScript));
 
@@ -850,8 +927,7 @@ public class BRWalletManager extends BRCoreWalletManager {
 
         BRCoreMasterPubKey mpk = new BRCoreMasterPubKey(phrase, true);
 
-        BRCoreWallet w = new BRCoreWallet(new BRCoreTransaction[] {}, mpk, getWalletListener());
-        asserting(null != w);
+        BRCoreWallet w = createWallet(new BRCoreTransaction[]{}, mpk, getWalletListener());
 
         System.out.println("            Peers");
 
@@ -956,6 +1032,18 @@ public class BRWalletManager extends BRCoreWalletManager {
 
             }
         };
+    }
+
+    private static BRCoreWallet createWallet (BRCoreTransaction[] transactions,
+                                              BRCoreMasterPubKey masterPubKey,
+                                              BRCoreWallet.Listener listener) {
+        try {
+            return new BRCoreWallet(transactions, masterPubKey, listener);
+        }
+        catch (BRCoreWallet.WalletExecption ex) {
+            asserting (false);
+            return null;
+        }
     }
 
     private static byte[] getMerkleBlockBytes () {

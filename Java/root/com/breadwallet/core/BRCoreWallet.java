@@ -29,7 +29,10 @@ import java.lang.ref.WeakReference;
 /**
  *
  */
-public class BRCoreWallet extends BRCoreJniReference {
+public class BRCoreWallet extends BRCoreJniReference
+{
+    public class WalletExecption extends Exception {}
+
     public interface Listener {
         // func balanceChanged(_ balance: UInt64)
         void balanceChanged(long balance);
@@ -59,8 +62,15 @@ public class BRCoreWallet extends BRCoreJniReference {
     //
     public BRCoreWallet(BRCoreTransaction[] transactions,
                         BRCoreMasterPubKey masterPubKey,
-                        Listener listener) {
+                        Listener listener)
+        throws WalletExecption
+    {
         super (createJniCoreWallet(transactions, masterPubKey));
+
+        // If we don't have a proper Core Wallet, raise an exception
+        if (0 == this.jniReferenceAddress)
+            throw new WalletExecption();
+
         assert (null != listener);
         this.listener = new WeakReference<>(listener);
 
@@ -79,6 +89,10 @@ public class BRCoreWallet extends BRCoreJniReference {
     // returns the first unused external address
     // BRAddress BRWalletReceiveAddress(BRWallet *wallet);
     public native BRCoreAddress getReceiveAddress ();
+
+    // returns the first unused external address (legacy pay-to-pubkey-hash)
+    // BRAddress BRWalletLegacyAddress(BRWallet *wallet);
+    public native BRCoreAddress getLegacyAddress ();
 
     // writes all addresses previously genereated with BRWalletUnusedAddrs() to addrs
     // returns the number addresses written, or total number available if addrs is NULL

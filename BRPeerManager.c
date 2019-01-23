@@ -1225,6 +1225,7 @@ static void _peerRelayedBlock(void *info, BRMerkleBlock *block) {
         peer_log(peer, "chain fork reached height %"PRIu32, block->height);
         BRSetAdd(manager->blocks, block);
 
+        // TODO: calculate chain work and use that instead of block height to determine longest chain
         if (block->height > manager->lastBlock->height) { // check if fork is now longer than main chain
             b = block;
             b2 = manager->lastBlock;
@@ -1288,8 +1289,8 @@ static void _peerRelayedBlock(void *info, BRMerkleBlock *block) {
     j = (i > 0) ? saveBlocks[i - 1]->height % BLOCK_DIFFICULTY_INTERVAL : 0;
     if (j > 0) i -= (i > BLOCK_DIFFICULTY_INTERVAL - j) ? BLOCK_DIFFICULTY_INTERVAL - j : i;
     assert(i == 0 || (saveBlocks[i - 1]->height % BLOCK_DIFFICULTY_INTERVAL) == 0);
-    pthread_mutex_unlock(&manager->lock);
     if (i > 0 && manager->saveBlocks) manager->saveBlocks(manager->info, (i > 1 ? 1 : 0), saveBlocks, i);
+    pthread_mutex_unlock(&manager->lock);
 
     if (block && block->height != BLOCK_UNKNOWN_HEIGHT && block->height >= BRPeerLastBlock(peer) &&
             manager->txStatusUpdate) {
@@ -1634,35 +1635,110 @@ void BRPeerManagerDisconnect(BRPeerManager *manager) {
     }
 }
 
+static int _BRPeerManagerRescan (BRPeerManager *manager, BRMerkleBlock *newLastBlock) {
+    if (NULL == newLastBlock) return 0;
+
+    manager->lastBlock = newLastBlock;
+
+    if (manager->downloadPeer) { // disconnect the current download peer so a new random one will be selected
+        for (size_t i = array_count(manager->peers); i > 0; i--) {
+            if (BRPeerEq(&manager->peers[i - 1], manager->downloadPeer)) array_rm(manager->peers, i - 1);
+        }
+
+        BRPeerDisconnect(manager->downloadPeer);
+    }
+
+    manager->syncStartHeight = 0; // a syncStartHeight of 0 indicates that syncing hasn't started yet
+    return 1;
+}
+
 // rescans blocks and transactions after earliestKeyTime (a new random download peer is also selected due to the
 // possibility that a malicious node might lie by omitting transactions that match the bloom filter)
 void BRPeerManagerRescan(BRPeerManager *manager) {
     assert(manager != NULL);
     pthread_mutex_lock(&manager->lock);
 
+    int needConnect = 0;
     if (manager->isConnected) {
+        BRMerkleBlock *newLastBlock = NULL;
+
         // start the chain download from the most recent checkpoint that's at least a week older than earliestKeyTime
         for (size_t i = manager->params->checkpointsCount; i > 0; i--) {
             if (i - 1 == 0 || manager->params->checkpoints[i - 1].timestamp + 7*24*60*60 < manager->earliestKeyTime) {
                 UInt256 hash = UInt256Reverse(manager->params->checkpoints[i - 1].hash);
 
-                manager->lastBlock = BRSetGet(manager->blocks, &hash);
+                newLastBlock = BRSetGet(manager->blocks, &hash);
                 break;
             }
         }
 
-        if (manager->downloadPeer) { // disconnect the current download peer so a new random one will be selected
-            for (size_t i = array_count(manager->peers); i > 0; i--) {
-                if (BRPeerEq(&manager->peers[i - 1], manager->downloadPeer)) array_rm(manager->peers, i - 1);
-            }
+        needConnect = _BRPeerManagerRescan(manager, newLastBlock);
+    }
+    pthread_mutex_unlock(&manager->lock);
+    if (needConnect) BRPeerManagerConnect(manager);
+}
 
-            BRPeerDisconnect(manager->downloadPeer);
+// rescans blocks and transactions after the last hardcoded checkpoint
+void BRPeerManagerRescanFromLastHardcodedCheckpoint(BRPeerManager *manager) {
+    assert(manager != NULL);
+    pthread_mutex_lock(&manager->lock);
+
+    int needConnect = 0;
+    if (manager->isConnected) {
+        size_t i = manager->params->checkpointsCount;
+        if (i > 0) {
+            UInt256 hash = UInt256Reverse(manager->params->checkpoints[i - 1].hash);
+            needConnect = _BRPeerManagerRescan(manager, BRSetGet (manager->blocks, &hash));
+        }
+    }
+    pthread_mutex_unlock(&manager->lock);
+    if (needConnect) BRPeerManagerConnect(manager);
+}
+
+static BRMerkleBlock *_BRPeerManagerLookupBlockFromBlockNumber (BRPeerManager *manager, uint32_t blockNumber) {
+    BRMerkleBlock *block = manager->lastBlock;
+
+    // walk the chain, looking for blockNumber
+    while (block) {
+        if (block->height == blockNumber) return block;
+        block = BRSetGet (manager->blocks, &block->prevBlock);
+    }
+
+    // blockNumber not in the (abbreviated) chain - look through checkpoints
+    for (int i = 0; i < manager->params->checkpointsCount; i++)
+        if (manager->params->checkpoints[i].height == blockNumber) {
+            UInt256 hash = UInt256Reverse(manager->params->checkpoints[i].hash);
+            return BRSetGet(manager->blocks, &hash);
         }
 
-        manager->syncStartHeight = 0; // a syncStartHeight of 0 indicates that syncing hasn't started yet
-        pthread_mutex_unlock(&manager->lock);
-        BRPeerManagerConnect(manager);
-    } else pthread_mutex_unlock(&manager->lock);
+    return NULL;
+}
+
+// rescans blocks and transactions from after the blockNumber.  If blockNumber is not known, then
+// rescan from the just prior checkpoint.
+void BRPeerManagerRescanFromBlockNumber(BRPeerManager *manager, uint32_t blockNumber) {
+    assert(manager != NULL);
+    pthread_mutex_lock(&manager->lock);
+
+    int needConnect = 0;
+    if (manager->isConnected) {
+        BRMerkleBlock *block = _BRPeerManagerLookupBlockFromBlockNumber(manager, blockNumber);
+
+        // If there was no block, find the preceeding hardcoded checkpoint.
+        if (NULL == block) {
+            for (size_t i = manager->params->checkpointsCount; i > 0; i--) {
+                if (i - 1 == 0 || manager->params->checkpoints[i - 1].height < blockNumber) {
+                    UInt256 hash = UInt256Reverse(manager->params->checkpoints[i - 1].hash);
+                    block = BRSetGet(manager->blocks, &hash);
+                    break;
+                }
+            }
+        }
+
+        needConnect = _BRPeerManagerRescan(manager, block);
+    }
+    pthread_mutex_unlock(&manager->lock);
+    if (needConnect) BRPeerManagerConnect(manager);
 }
 
 // the (unverified) best block height reported by connected peers
