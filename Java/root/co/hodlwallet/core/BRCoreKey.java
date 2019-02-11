@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-package com.breadwallet.core;
+package co.hodlwallet.core;
 
 
 import java.util.Arrays;

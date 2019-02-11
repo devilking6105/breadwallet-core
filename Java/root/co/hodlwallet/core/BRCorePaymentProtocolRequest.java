@@ -22,49 +22,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.breadwallet.core;
+package co.hodlwallet.core;
 
-public class BRCorePaymentProtocolInvoiceRequest extends BRCoreJniReference {
-    public BRCorePaymentProtocolInvoiceRequest(byte[] data) {
-        super(createPaymentProtocolInvoiceRequest(data));
+public class BRCorePaymentProtocolRequest extends BRCoreJniReference {
+    //
+    //
+    //
+    public BRCorePaymentProtocolRequest(byte[] data) {
+        super(createPaymentProtocolRequest(data));
     }
 
-    public BRCorePaymentProtocolInvoiceRequest (BRCoreKey senderPublicKey, long amount,
-            String pkiType, byte[] pkiData,
-            String memo, String notifyURL,
-            byte[] signature) {
-        super (createPaymentProtocolInvoiceRequestFull(senderPublicKey, amount,
-                pkiType, pkiData,
-                memo, notifyURL,
-                signature));
-    }
+    public native String getNetwork();
 
-    public BRCoreKey getSenderPublicKey () {
-        return new BRCoreKey (getSenderPublicKeyReference());
-    }
+    public native BRCoreTransactionOutput[] getOutputs ();
 
-    protected native long getSenderPublicKeyReference ();
+    public native long getTime ();
 
-    public native long getAmount ();
+    public native long getExpires();
+
+    public native String getMemo();
+
+    public native String getPaymentURL ();
+
+    public native byte[] getMerchantData ();
+
+    public native long getVersion ();
 
     public native String getPKIType ();
 
     public native byte[] getPKIData ();
 
-    public native String getMemo ();
-
-    public native String getNotifyURL ();
-
     public native byte[] getSignature ();
 
-    private static native long createPaymentProtocolInvoiceRequest(byte[] data);
+    public native byte[] getDigest ();
 
-    private static native long createPaymentProtocolInvoiceRequestFull(BRCoreKey senderPublicKey, long amount,
-            String pkiType, byte[] pkiData,
-            String memo, String notifyURL,
-            byte[] signature);
+    public native byte[][] getCerts ();
+
+    private static native long createPaymentProtocolRequest(byte[] data);
 
     public native byte[] serialize ();
 
     public native void disposeNative ();
+
+    protected static native void initializeNative ();
+
+    static {
+        initializeNative();
+    }
 }

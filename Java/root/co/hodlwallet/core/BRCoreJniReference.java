@@ -1,7 +1,7 @@
 /*
  * BreadWallet
  *
- * Created by Ed Gamble <ed@breadwallet.com> on 2/1/18.
+ * Created by Ed Gamble <ed@breadwallet.com> on 1/22/18.
  * Copyright (c) 2018 breadwallet LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,36 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.breadwallet.core;
+package co.hodlwallet.core;
 
-public class BRCorePaymentProtocolACK extends BRCoreJniReference {
-    public BRCorePaymentProtocolACK(byte[] data) {
-        this(createPaymentProtocolACK(data));
+/**
+ *
+ */
+public abstract class BRCoreJniReference {
+
+    protected static boolean SHOW_FINALIZE = false;
+    /**
+     * C Pointer (as a Java long) to the underlying Breadwallet Core entity allocated from the
+     * C heap memory.  The referenced Core entity is used to implement native functions that
+     * call Core functions (and thus expect a Core entity).
+     *
+     * The address must be determined in a subclass specific way and thus must be provided in the
+     * subclasses constructor.
+     */
+    protected long jniReferenceAddress;
+
+    protected BRCoreJniReference (long jniReferenceAddress) {
+        this.jniReferenceAddress = jniReferenceAddress;
     }
 
-    protected BRCorePaymentProtocolACK(long jniReferenceAddress) {
-        super (jniReferenceAddress);
+    //
+    //
+    //
+    protected void finalize () throws Throwable {
+        if (SHOW_FINALIZE) System.err.println("Finalize: " + toString());
+        dispose ();
     }
 
-    public native String getCustomerMemo ();
-
-    public native byte[] getMerchantData ();
-
-    public native BRCoreTransaction[] getTransactions ();
-
-    public native BRCoreTransactionOutput[] getRefundTo ();
-
-    public native String getMerchantMemo ();
-
-    private static native long createPaymentProtocolACK(byte[] data);
-
-    public native byte[] serialize ();
+    public void dispose () {
+        disposeNative ();
+    }
 
     public native void disposeNative ();
 
-    protected static native void initializeNative ();
-
-    static {
-        initializeNative();
+    public String toString() {
+        return getClass().getName() + "@" + Integer.toHexString(hashCode()) + " JNI=" + Long.toHexString(jniReferenceAddress);
     }
 }

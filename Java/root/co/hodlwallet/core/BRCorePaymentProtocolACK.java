@@ -1,7 +1,7 @@
 /*
  * BreadWallet
  *
- * Created by Ed Gamble <ed@breadwallet.com> on 1/22/18.
+ * Created by Ed Gamble <ed@breadwallet.com> on 2/1/18.
  * Copyright (c) 2018 breadwallet LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,41 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.breadwallet.core;
+package co.hodlwallet.core;
 
-/**
- *
- */
-public class BRCoreChainParams extends BRCoreJniReference {
+public class BRCorePaymentProtocolACK extends BRCoreJniReference {
+    public BRCorePaymentProtocolACK(byte[] data) {
+        this(createPaymentProtocolACK(data));
+    }
 
-    private BRCoreChainParams (long jniReferenceAddress) {
+    protected BRCorePaymentProtocolACK(long jniReferenceAddress) {
         super (jniReferenceAddress);
     }
 
-    //
-    public native int getJniMagicNumber ();
+    public native String getCustomerMemo ();
 
-    //
-    //
-    //
+    public native byte[] getMerchantData ();
 
-    public static BRCoreChainParams mainnetChainParams =
-        new BRCoreChainParams(createJniMainnetChainParams());
+    public native BRCoreTransaction[] getTransactions ();
 
-    private static native long createJniMainnetChainParams ();
+    public native BRCoreTransactionOutput[] getRefundTo ();
 
-    public static BRCoreChainParams testnetChainParams =
-        new BRCoreChainParams(createJniTestnetChainParams());
+    public native String getMerchantMemo ();
 
-    private static native long createJniTestnetChainParams ();
+    private static native long createPaymentProtocolACK(byte[] data);
 
-    public static BRCoreChainParams mainnetBcashChainParams =
-        new BRCoreChainParams(createJniMainnetBcashChainParams());
+    public native byte[] serialize ();
 
-    private static native long createJniMainnetBcashChainParams();
+    public native void disposeNative ();
 
-    public static BRCoreChainParams testnetBcashChainParams =
-        new BRCoreChainParams(createJniTestnetBcashChainParams());
+    protected static native void initializeNative ();
 
-    private static native long createJniTestnetBcashChainParams();
+    static {
+        initializeNative();
+    }
 }

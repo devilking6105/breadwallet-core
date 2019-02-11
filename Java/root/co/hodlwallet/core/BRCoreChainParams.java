@@ -22,51 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.breadwallet.core;
+package co.hodlwallet.core;
 
-public class BRCorePaymentProtocolRequest extends BRCoreJniReference {
-    //
-    //
-    //
-    public BRCorePaymentProtocolRequest(byte[] data) {
-        super(createPaymentProtocolRequest(data));
+/**
+ *
+ */
+public class BRCoreChainParams extends BRCoreJniReference {
+
+    private BRCoreChainParams (long jniReferenceAddress) {
+        super (jniReferenceAddress);
     }
 
-    public native String getNetwork();
+    //
+    public native int getJniMagicNumber ();
 
-    public native BRCoreTransactionOutput[] getOutputs ();
+    //
+    //
+    //
 
-    public native long getTime ();
+    public static BRCoreChainParams mainnetChainParams =
+        new BRCoreChainParams(createJniMainnetChainParams());
 
-    public native long getExpires();
+    private static native long createJniMainnetChainParams ();
 
-    public native String getMemo();
+    public static BRCoreChainParams testnetChainParams =
+        new BRCoreChainParams(createJniTestnetChainParams());
 
-    public native String getPaymentURL ();
+    private static native long createJniTestnetChainParams ();
 
-    public native byte[] getMerchantData ();
+    public static BRCoreChainParams mainnetBcashChainParams =
+        new BRCoreChainParams(createJniMainnetBcashChainParams());
 
-    public native long getVersion ();
+    private static native long createJniMainnetBcashChainParams();
 
-    public native String getPKIType ();
+    public static BRCoreChainParams testnetBcashChainParams =
+        new BRCoreChainParams(createJniTestnetBcashChainParams());
 
-    public native byte[] getPKIData ();
-
-    public native byte[] getSignature ();
-
-    public native byte[] getDigest ();
-
-    public native byte[][] getCerts ();
-
-    private static native long createPaymentProtocolRequest(byte[] data);
-
-    public native byte[] serialize ();
-
-    public native void disposeNative ();
-
-    protected static native void initializeNative ();
-
-    static {
-        initializeNative();
-    }
+    private static native long createJniTestnetBcashChainParams();
 }

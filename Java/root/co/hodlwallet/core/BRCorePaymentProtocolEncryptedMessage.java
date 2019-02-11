@@ -22,31 +22,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.breadwallet.core;
+package co.hodlwallet.core;
 
-
-public class BRCorePaymentProtocolPayment extends BRCoreJniReference {
-    public BRCorePaymentProtocolPayment(byte[] data) {
-        super(createPaymentProtocolPayment(data));
+public class BRCorePaymentProtocolEncryptedMessage extends BRCoreJniReference {
+    public BRCorePaymentProtocolEncryptedMessage (byte[] data) {
+        super (createPaymentProtocolEncryptedMessage (data));
     }
 
-    public native byte[] getMerchantData ();
+    public native byte[] getMessage ();
 
-    public native BRCoreTransaction[] getTransactions ();
+    public BRCoreKey getReceiverPublicKey () {
+        return new BRCoreKey (getReceiverPublicKeyReference());
+    }
 
-    public native BRCoreTransactionOutput[] getRefundTo ();
+    public native long getReceiverPublicKeyReference ();
 
-    public native String getMerchantMemo ();
+    public BRCoreKey getSenderPublicKey () {
+        return new BRCoreKey (getSenderPublicKeyReference());
+    }
 
-    private static native long createPaymentProtocolPayment(byte[] data);
+    public native long getSenderPublicKeyReference ();
+
+    public native long getNonce ();
+
+    public native byte[] getSignature ();
+
+    public native byte[] getIdentifier ();
+
+    public native long getStatusCode ();
+
+    public native String getStatusMessage ();
+
+    private static native long createPaymentProtocolEncryptedMessage (byte[] data);
 
     public native byte[] serialize ();
 
     public native void disposeNative ();
-
-    protected static native void initializeNative ();
-
-    static {
-        initializeNative();
-    }
 }
