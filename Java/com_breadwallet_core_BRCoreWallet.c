@@ -64,13 +64,14 @@ static jmethodID transactionConstructor;
 /*
  * Class:     com_breadwallet_core_BRCoreWallet
  * Method:    createJniCoreWallet
- * Signature: ([Lcom/breadwallet/core/BRCoreTransaction;Lcom/breadwallet/core/BRCoreMasterPubKey;Lcom/breadwallet/core/BRCoreWallet/Listener;)J
+ * Signature: ([Lcom/breadwallet/core/BRCoreTransaction;Lcom/breadwallet/core/BRCoreMasterPubKey;I)J
  */
 JNIEXPORT jlong JNICALL
 Java_com_breadwallet_core_BRCoreWallet_createJniCoreWallet
-(JNIEnv *env, jclass thisClass,
- jobjectArray objTransactionsArray,
- jobject objMasterPubKey) {
+        (JNIEnv *env, jclass thisClass,
+         jobjectArray objTransactionsArray,
+         jobject objMasterPubKey,
+         jint forkId) {
 
     BRMasterPubKey *masterPubKey = (BRMasterPubKey *) getJNIReference(env, objMasterPubKey);
 
@@ -85,7 +86,7 @@ Java_com_breadwallet_core_BRCoreWallet_createJniCoreWallet
         (*env)->DeleteLocalRef (env, objTransaction);
     }
 
-    BRWallet *wallet = BRWalletNew(transactions, transactionsCount, *masterPubKey);
+    BRWallet *wallet = BRWalletNew(transactions, transactionsCount, *masterPubKey, forkId);
 
     if (NULL != transactions) free (transactions);
 
@@ -405,14 +406,13 @@ JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_createTransacti
 /*
  * Class:     com_breadwallet_core_BRCoreWallet
  * Method:    signTransaction
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;I[B)Z
+ * Signature: (Lcom/breadwallet/core/BRCoreTransaction;[B)Z
  */
 JNIEXPORT jboolean JNICALL
 Java_com_breadwallet_core_BRCoreWallet_signTransaction
-(JNIEnv *env, jobject thisObject,
- jobject transactionObject,
- jint forkId,
- jbyteArray phraseByteArray) {
+        (JNIEnv *env, jobject thisObject,
+         jobject transactionObject,
+         jbyteArray phraseByteArray) {
     BRWallet *wallet = (BRWallet *) getJNIReference(env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference(env, transactionObject);
 
@@ -429,7 +429,7 @@ Java_com_breadwallet_core_BRCoreWallet_signTransaction
     BRBIP39DeriveKey (&seed, phrase, NULL);
 
     // Sign with the seed
-    return (jboolean) (1 == BRWalletSignTransaction(wallet, transaction, forkId, &seed, sizeof(seed))
+    return (jboolean) (1 == BRWalletSignTransaction(wallet, transaction, &seed, sizeof(seed))
                        ? JNI_TRUE
                        : JNI_FALSE);
 }
