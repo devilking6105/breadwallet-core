@@ -399,7 +399,7 @@ Java_co_hodlwallet_core_BRCorePeerManager_createCorePeerManager
         (*env)->DeleteLocalRef (env, objPeer);
     }
 
-    BRPeerManager *result = BRPeerManagerNew(params, wallet, earliestKeyTime,
+    BRPeerManager *result = BRPeerManagerNew(wallet, earliestKeyTime,
                             blocks, blocksCount,
                             peers, peersCount);
 
