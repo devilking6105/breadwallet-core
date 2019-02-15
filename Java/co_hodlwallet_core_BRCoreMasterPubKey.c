@@ -27,14 +27,14 @@
 #include "BRBIP39Mnemonic.h"
 #include "BRBIP32Sequence.h"
 #include "BRCoreJni.h"
-#include "com_breadwallet_core_BRCoreMasterPubKey.h"
+#include "co_hodlwallet_core_BRCoreMasterPubKey.h"
 
 /*
- * Class:     com_breadwallet_core_BRCoreMasterPubKey
+ * Class:     co_hodlwallet_core_BRCoreMasterPubKey
  * Method:    serialize
  * Signature: ()[B
  */
-JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_serialize
+JNIEXPORT jbyteArray JNICALL Java_co_hodlwallet_core_BRCoreMasterPubKey_serialize
 (JNIEnv *env, jobject thisObject) {
     BRMasterPubKey *key = (BRMasterPubKey *) getJNIReference (env, thisObject);
 
@@ -46,11 +46,11 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_serial
 
 
 /*
- * Class:     com_breadwallet_core_BRCoreMasterPubKey
+ * Class:     co_hodlwallet_core_BRCoreMasterPubKey
  * Method:    getPubKey
  * Signature: ()[B
  */
-JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_getPubKey
+JNIEXPORT jbyteArray JNICALL Java_co_hodlwallet_core_BRCoreMasterPubKey_getPubKey
 (JNIEnv *env, jobject thisObject) {
     BRMasterPubKey *key = (BRMasterPubKey *) getJNIReference (env, thisObject);
 
@@ -62,12 +62,12 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMasterPubKey_getPub
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMasterPubKey
+ * Class:     co_hodlwallet_core_BRCoreMasterPubKey
  * Method:    createPubKey
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMasterPubKey_createPubKey
+Java_co_hodlwallet_core_BRCoreMasterPubKey_createPubKey
 (JNIEnv *env, jobject thisObject) {
     BRMasterPubKey *mpk = (BRMasterPubKey *) getJNIReference (env, thisObject);
 
@@ -83,7 +83,7 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_createPubKey
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromPhrase
+Java_co_hodlwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromPhrase
 (JNIEnv *env, jclass thisClass,
  jbyteArray phrase) {
 
@@ -142,12 +142,12 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromPhrase
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMasterPubKey
+ * Class:     co_hodlwallet_core_BRCoreMasterPubKey
  * Method:    createJniCoreMasterPubKeyFromPubKey
  * Signature: ([B)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromSerialization
+Java_co_hodlwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromSerialization
 (JNIEnv *env, jclass thisClass,
  jbyteArray serialization) {
     jsize serializationLength = (*env)->GetArrayLength (env, serialization);
@@ -161,12 +161,12 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_createJniCoreMasterPubKeyFromSerial
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMasterPubKey
+ * Class:     co_hodlwallet_core_BRCoreMasterPubKey
  * Method:    bip32BitIDKey
  * Signature: ([BILjava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL
-Java_com_breadwallet_core_BRCoreMasterPubKey_bip32BitIDKey
+Java_co_hodlwallet_core_BRCoreMasterPubKey_bip32BitIDKey
 (JNIEnv *env, jclass thisClass, jbyteArray seed, jint index, jstring strUri) {
     int seedLength = (*env)->GetArrayLength(env, seed);
     const char *uri = (*env)->GetStringUTFChars(env, strUri, NULL);
@@ -186,12 +186,12 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_bip32BitIDKey
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMasterPubKey
+ * Class:     co_hodlwallet_core_BRCoreMasterPubKey
  * Method:    validateRecoveryPhrase
  * Signature: ([Ljava/lang/String;Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreMasterPubKey_validateRecoveryPhrase
+Java_co_hodlwallet_core_BRCoreMasterPubKey_validateRecoveryPhrase
 (JNIEnv *env, jclass thisClass, jobjectArray stringArray, jstring jPhrase) {
     int wordsCount = (*env)->GetArrayLength(env, stringArray);
     char *wordList[wordsCount];
@@ -215,12 +215,12 @@ Java_com_breadwallet_core_BRCoreMasterPubKey_validateRecoveryPhrase
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMasterPubKey
+ * Class:     co_hodlwallet_core_BRCoreMasterPubKey
  * Method:    generatePaperKey
  * Signature: ([B[Ljava/lang/String;)[B
  */
 JNIEXPORT jbyteArray JNICALL
-Java_com_breadwallet_core_BRCoreMasterPubKey_generatePaperKey
+Java_co_hodlwallet_core_BRCoreMasterPubKey_generatePaperKey
 (JNIEnv *env, jclass thisClass, jbyteArray seed, jobjectArray stringArray) {
 
     int wordsCount = (*env)->GetArrayLength(env, stringArray);

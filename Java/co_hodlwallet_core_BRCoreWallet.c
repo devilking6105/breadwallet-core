@@ -28,12 +28,12 @@
 #include "BRCoreJni.h"
 #include "BRTransaction.h"
 #include "BRPeerManager.h"
-#include "com_breadwallet_core_BRCoreWallet.h"
-#include "com_breadwallet_core_BRCoreTransaction.h"
+#include "co_hodlwallet_core_BRCoreWallet.h"
+#include "co_hodlwallet_core_BRCoreTransaction.h"
 
 static BRTransaction *
 JNI_COPY_TRANSACTION (BRTransaction *tx) {
-    if (com_breadwallet_core_BRCoreTransaction_JNI_COPIES_TRANSACTIONS && NULL != tx) {
+    if (co_hodlwallet_core_BRCoreTransaction_JNI_COPIES_TRANSACTIONS && NULL != tx) {
         return BRTransactionCopy(tx);
     } else {
 #if defined (__ANDROID_NDK__)
@@ -62,12 +62,12 @@ static jmethodID transactionConstructor;
 
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    createJniCoreWallet
- * Signature: ([Lcom/breadwallet/core/BRCoreTransaction;Lcom/breadwallet/core/BRCoreMasterPubKey;I)J
+ * Signature: ([Lco/_hodlwallet/core/BRCoreTransaction;Lco/_hodlwallet/core/BRCoreMasterPubKey;I)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_createJniCoreWallet
+Java_co_hodlwallet_core_BRCoreWallet_createJniCoreWallet
         (JNIEnv *env, jclass thisClass,
          jobjectArray objTransactionsArray,
          jobject objMasterPubKey,
@@ -94,11 +94,11 @@ Java_com_breadwallet_core_BRCoreWallet_createJniCoreWallet
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    installListener
- * Signature: (Lcom/breadwallet/core/BRCoreWallet/Listener;)V
+ * Signature: (Lco/_hodlwallet/core/BRCoreWallet/Listener;)V
  */
-JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreWallet_installListener
+JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCoreWallet_installListener
 (JNIEnv *env, jobject thisObject, jobject listenerObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
 
@@ -116,12 +116,12 @@ JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreWallet_installListener
 
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getReceiveAddress
- * Signature: ()Lcom/breadwallet/core/BRCoreAddress;
+ * Signature: ()Lco/_hodlwallet/core/BRCoreAddress;
  */
 JNIEXPORT jobject JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getReceiveAddress
+Java_co_hodlwallet_core_BRCoreWallet_getReceiveAddress
 (JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
 
@@ -132,11 +132,11 @@ Java_com_breadwallet_core_BRCoreWallet_getReceiveAddress
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getLegacyAddress
- * Signature: ()Lcom/breadwallet/core/BRCoreAddress;
+ * Signature: ()Lco/_hodlwallet/core/BRCoreAddress;
  */
-JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_getLegacyAddress
+JNIEXPORT jobject JNICALL Java_co_hodlwallet_core_BRCoreWallet_getLegacyAddress
 (JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
 
@@ -147,12 +147,12 @@ JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_getLegacyAddres
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getAllAddresses
- * Signature: ()[Lcom/breadwallet/core/BRCoreAddress;
+ * Signature: ()[Lco/_hodlwallet/core/BRCoreAddress;
  */
 JNIEXPORT jobjectArray JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getAllAddresses
+Java_co_hodlwallet_core_BRCoreWallet_getAllAddresses
 (JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
 
@@ -182,12 +182,12 @@ Java_com_breadwallet_core_BRCoreWallet_getAllAddresses
 
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    containsAddress
- * Signature: (Lcom/breadwallet/core/BRCoreAddress;)Z
+ * Signature: (Lco/_hodlwallet/core/BRCoreAddress;)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreWallet_containsAddress
+Java_co_hodlwallet_core_BRCoreWallet_containsAddress
 (JNIEnv *env, jobject thisObject, jobject objAddress) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRAddress *address = (BRAddress *) getJNIReference (env, objAddress);
@@ -196,12 +196,12 @@ Java_com_breadwallet_core_BRCoreWallet_containsAddress
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    addressIsUsed
- * Signature: (Lcom/breadwallet/core/BRCoreAddress;)Z
+ * Signature: (Lco/_hodlwallet/core/BRCoreAddress;)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreWallet_addressIsUsed
+Java_co_hodlwallet_core_BRCoreWallet_addressIsUsed
 (JNIEnv *env, jobject thisObject, jobject objAddress) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRAddress *address = (BRAddress *) getJNIReference (env, objAddress);
@@ -210,12 +210,12 @@ Java_com_breadwallet_core_BRCoreWallet_addressIsUsed
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    jniGetTransactions
- * Signature: ()[Lcom/breadwallet/core/BRCoreTransaction;
+ * Signature: ()[Lco/_hodlwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobjectArray JNICALL
-Java_com_breadwallet_core_BRCoreWallet_jniGetTransactions
+Java_co_hodlwallet_core_BRCoreWallet_jniGetTransactions
 (JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
@@ -243,12 +243,12 @@ Java_com_breadwallet_core_BRCoreWallet_jniGetTransactions
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getTransactionsConfirmedBefore
- * Signature: (J)[Lcom/breadwallet/core/BRCoreTransaction;
+ * Signature: (J)[Lco/_hodlwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobjectArray JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getTransactionsConfirmedBefore
+Java_co_hodlwallet_core_BRCoreWallet_getTransactionsConfirmedBefore
 (JNIEnv *env, jobject thisObject, jlong blockHeight) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
@@ -273,92 +273,92 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionsConfirmedBefore
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getBalance
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getBalance
+Java_co_hodlwallet_core_BRCoreWallet_getBalance
 (JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     return (jlong) BRWalletBalance (wallet);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getTotalSend
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getTotalSent
+Java_co_hodlwallet_core_BRCoreWallet_getTotalSent
 (JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     return (jlong) BRWalletTotalSent (wallet);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getTotalReceived
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getTotalReceived
+Java_co_hodlwallet_core_BRCoreWallet_getTotalReceived
 (JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     return (jlong) BRWalletTotalReceived (wallet);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getFeePerKb
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getFeePerKb
+Java_co_hodlwallet_core_BRCoreWallet_getFeePerKb
 (JNIEnv *env, jobject thisObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     return (jlong) BRWalletFeePerKb (wallet);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    setFeePerKb
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL
-Java_com_breadwallet_core_BRCoreWallet_setFeePerKb
+Java_co_hodlwallet_core_BRCoreWallet_setFeePerKb
 (JNIEnv *env, jobject thisObject, jlong feePerKb) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRWalletSetFeePerKb (wallet, feePerKb);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getMaxFeePerKb
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMaxFeePerKb
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreWallet_getMaxFeePerKb
 (JNIEnv *env, jobject thisObject) {
     return MAX_FEE_PER_KB;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getDefaultFeePerKb
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getDefaultFeePerKb
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreWallet_getDefaultFeePerKb
 (JNIEnv *env, jobject thisObject) {
     return DEFAULT_FEE_PER_KB;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    createTransaction
- * Signature: (JLcom/breadwallet/core/BRCoreAddress;)Lcom/breadwallet/core/BRCoreTransaction;
+ * Signature: (JLco/_hodlwallet/core/BRCoreAddress;)Lco/_hodlwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobject JNICALL
-Java_com_breadwallet_core_BRCoreWallet_createTransaction
+Java_co_hodlwallet_core_BRCoreWallet_createTransaction
 (JNIEnv *env, jobject thisObject, jlong amount, jobject addressObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference(env, thisObject);
     BRAddress *address = (BRAddress *) getJNIReference(env, addressObject);
@@ -375,11 +375,11 @@ Java_com_breadwallet_core_BRCoreWallet_createTransaction
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    createTransactionForOutputs
- * Signature: ([Lcom/breadwallet/core/BRCoreTransactionOutput;)Lcom/breadwallet/core/BRCoreTransaction;
+ * Signature: ([Lco/_hodlwallet/core/BRCoreTransactionOutput;)Lco/_hodlwallet/core/BRCoreTransaction;
  */
-JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_createTransactionForOutputs
+JNIEXPORT jobject JNICALL Java_co_hodlwallet_core_BRCoreWallet_createTransactionForOutputs
 (JNIEnv *env, jobject thisObject, jobjectArray outputsArray) {
     BRWallet *wallet = (BRWallet *) getJNIReference(env, thisObject);
 
@@ -404,12 +404,12 @@ JNIEXPORT jobject JNICALL Java_com_breadwallet_core_BRCoreWallet_createTransacti
 
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    signTransaction
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;[B)Z
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;[B)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreWallet_signTransaction
+Java_co_hodlwallet_core_BRCoreWallet_signTransaction
         (JNIEnv *env, jobject thisObject,
          jobject transactionObject,
          jbyteArray phraseByteArray) {
@@ -435,12 +435,12 @@ Java_com_breadwallet_core_BRCoreWallet_signTransaction
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    containsTransaction
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)Z
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreWallet_containsTransaction
+Java_co_hodlwallet_core_BRCoreWallet_containsTransaction
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -448,12 +448,12 @@ Java_com_breadwallet_core_BRCoreWallet_containsTransaction
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    jniRegisterTransaction
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)Z
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreWallet_jniRegisterTransaction
+Java_co_hodlwallet_core_BRCoreWallet_jniRegisterTransaction
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -463,12 +463,12 @@ Java_com_breadwallet_core_BRCoreWallet_jniRegisterTransaction
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    removeTransaction
  * Signature: ([B)V
  */
 JNIEXPORT void JNICALL
-Java_com_breadwallet_core_BRCoreWallet_removeTransaction
+Java_co_hodlwallet_core_BRCoreWallet_removeTransaction
 (JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
@@ -478,12 +478,12 @@ Java_com_breadwallet_core_BRCoreWallet_removeTransaction
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    updateTransactions
  * Signature: ([[BJJ)V
  */
 JNIEXPORT void JNICALL
-Java_com_breadwallet_core_BRCoreWallet_updateTransactions
+Java_co_hodlwallet_core_BRCoreWallet_updateTransactions
 (JNIEnv *env, jobject thisObject,
  jobjectArray transactionsHashesArray,
  jlong blockHeight,
@@ -504,12 +504,12 @@ Java_com_breadwallet_core_BRCoreWallet_updateTransactions
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    jniTransactionForHash
- * Signature: ([B)Lcom/breadwallet/core/BRCoreTransaction;
+ * Signature: ([B)Lco/_hodlwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobject JNICALL
-Java_com_breadwallet_core_BRCoreWallet_jniTransactionForHash
+Java_co_hodlwallet_core_BRCoreWallet_jniTransactionForHash
 (JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
 
@@ -520,12 +520,12 @@ Java_com_breadwallet_core_BRCoreWallet_jniTransactionForHash
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    transactionIsValid
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)I
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)I
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreWallet_transactionIsValid
+Java_co_hodlwallet_core_BRCoreWallet_transactionIsValid
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -533,12 +533,12 @@ Java_com_breadwallet_core_BRCoreWallet_transactionIsValid
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    transactionIsPending
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)I
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)I
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreWallet_transactionIsPending
+Java_co_hodlwallet_core_BRCoreWallet_transactionIsPending
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -546,12 +546,12 @@ Java_com_breadwallet_core_BRCoreWallet_transactionIsPending
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    transactionIsVerified
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)I
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)I
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreWallet_transactionIsVerified
+Java_co_hodlwallet_core_BRCoreWallet_transactionIsVerified
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet  *wallet  = (BRWallet  *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -560,12 +560,12 @@ Java_com_breadwallet_core_BRCoreWallet_transactionIsVerified
 
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    transactionFee
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)J
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getTransactionFee
+Java_co_hodlwallet_core_BRCoreWallet_getTransactionFee
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -573,12 +573,12 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionFee
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    transactionAmountSent
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)J
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getTransactionAmountSent
+Java_co_hodlwallet_core_BRCoreWallet_getTransactionAmountSent
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -586,12 +586,12 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionAmountSent
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    transactionAmountReceived
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)J
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getTransactionAmountReceived
+Java_co_hodlwallet_core_BRCoreWallet_getTransactionAmountReceived
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -599,12 +599,12 @@ Java_com_breadwallet_core_BRCoreWallet_getTransactionAmountReceived
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getBalanceAfterTransaction
- * Signature: (Lcom/breadwallet/core/BRCoreTransaction;)J
+ * Signature: (Lco/_hodlwallet/core/BRCoreTransaction;)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getBalanceAfterTransaction
+Java_co_hodlwallet_core_BRCoreWallet_getBalanceAfterTransaction
 (JNIEnv *env, jobject thisObject, jobject transactionObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     BRTransaction *transaction = (BRTransaction *) getJNIReference (env, transactionObject);
@@ -612,58 +612,58 @@ Java_com_breadwallet_core_BRCoreWallet_getBalanceAfterTransaction
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getFeeForTransactionSize
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getFeeForTransactionSize
+Java_co_hodlwallet_core_BRCoreWallet_getFeeForTransactionSize
 (JNIEnv *env, jobject thisObject, jlong size) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     return (jlong) BRWalletFeeForTxSize (wallet, (size_t) size);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getFeeForTransactionAmount
  * Signature: (J)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreWallet_getFeeForTransactionAmount
+Java_co_hodlwallet_core_BRCoreWallet_getFeeForTransactionAmount
 (JNIEnv *env, jobject thisObject, jlong amount) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     return (jlong) BRWalletFeeForTxAmount (wallet, (uint64_t) amount);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getMinOutputAmount
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMinOutputAmount
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreWallet_getMinOutputAmount
 (JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     return (jlong) BRWalletMinOutputAmount (wallet);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getMaxOutputAmount
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreWallet_getMaxOutputAmount
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreWallet_getMaxOutputAmount
 (JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference (env, thisObject);
     return (jlong) BRWalletMaxOutputAmount (wallet);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    disposeNative
  * Signature: ()V
  */
 JNIEXPORT void JNICALL
-Java_com_breadwallet_core_BRCoreWallet_disposeNative
+Java_co_hodlwallet_core_BRCoreWallet_disposeNative
 (JNIEnv *env, jobject thisObject) {
     BRWallet *wallet = (BRWallet *) getJNIReference(env, thisObject);
 
@@ -675,20 +675,20 @@ Java_com_breadwallet_core_BRCoreWallet_disposeNative
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreWallet
+ * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    initializeNative
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreWallet_initializeNative
+JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCoreWallet_initializeNative
 (JNIEnv *env, jclass thisClass) {
-    addressClass = (*env)->FindClass(env, "com/breadwallet/core/BRCoreAddress");
+    addressClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCoreAddress");
     assert (NULL != addressClass);
     addressClass = (*env)->NewGlobalRef (env, addressClass);
 
     addressConstructor = (*env)->GetMethodID(env, addressClass, "<init>", "(J)V");
     assert (NULL != addressConstructor);
 
-    transactionClass = (*env)->FindClass (env, "com/breadwallet/core/BRCoreTransaction");
+    transactionClass = (*env)->FindClass (env, "co/_hodlwallet/core/BRCoreTransaction");
     assert (NULL != transactionClass);
     transactionClass = (*env)->NewGlobalRef (env, transactionClass);
 
@@ -745,7 +745,7 @@ txAdded(void *info, BRTransaction *tx) {
     jmethodID listenerMethod =
         lookupListenerMethod(env, listener,
                              "onTxAdded",
-                             "(Lcom/breadwallet/core/BRCoreTransaction;)V");
+                             "(Lco/_hodlwallet/core/BRCoreTransaction;)V");
     assert (NULL != listenerMethod);
 
     // Create the BRCoreTransaction

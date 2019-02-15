@@ -22,17 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef _Included_com_breadwallet_core_BRCorePaymentProtocol
-#define _Included_com_breadwallet_core_BRCorePaymentProtocol
+#ifndef _Included_co_hodlwallet_core_BRCorePaymentProtocol
+#define _Included_co_hodlwallet_core_BRCorePaymentProtocol
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "com_breadwallet_core_BRCorePaymentProtocolRequest.h"
-#include "com_breadwallet_core_BRCorePaymentProtocolPayment.h"
-#include "com_breadwallet_core_BRCorePaymentProtocolACK.h"
-#include "com_breadwallet_core_BRCorePaymentProtocolInvoiceRequest.h"
-#include "com_breadwallet_core_BRCorePaymentProtocolMessage.h"
-#include "com_breadwallet_core_BRCorePaymentProtocolEncryptedMessage.h"
+#include "co_hodlwallet_core_BRCorePaymentProtocolRequest.h"
+#include "co_hodlwallet_core_BRCorePaymentProtocolPayment.h"
+#include "co_hodlwallet_core_BRCorePaymentProtocolACK.h"
+#include "co_hodlwallet_core_BRCorePaymentProtocolInvoiceRequest.h"
+#include "co_hodlwallet_core_BRCorePaymentProtocolMessage.h"
+#include "co_hodlwallet_core_BRCorePaymentProtocolEncryptedMessage.h"
 #ifdef __cplusplus
 }
 #endif

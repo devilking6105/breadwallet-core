@@ -23,15 +23,15 @@
 #include <assert.h>
 #include "BRCoreJni.h"
 #include "BRMerkleBlock.h"
-#include "com_breadwallet_core_BRCoreMerkleBlock.h"
+#include "co_hodlwallet_core_BRCoreMerkleBlock.h"
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    createJniCoreMerkleBlock
  * Signature: ([BI)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_createJniCoreMerkleBlock
+Java_co_hodlwallet_core_BRCoreMerkleBlock_createJniCoreMerkleBlock
 (JNIEnv *env, jclass thisClass,
  jbyteArray blockArray,
  jint blockHeight) {
@@ -49,11 +49,11 @@ Java_com_breadwallet_core_BRCoreMerkleBlock_createJniCoreMerkleBlock
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    createJniCoreMerkleBlockEmpty
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreMerkleBlock_createJniCoreMerkleBlockEmpty
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreMerkleBlock_createJniCoreMerkleBlockEmpty
 (JNIEnv *env, jclass thisClass) {
     // Test only
     BRMerkleBlock *block = BRMerkleBlockNew();
@@ -63,12 +63,12 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreMerkleBlock_createJniCor
 
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getBlockHash
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getBlockHash
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getBlockHash
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
 
@@ -80,24 +80,24 @@ Java_com_breadwallet_core_BRCoreMerkleBlock_getBlockHash
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getVersion
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getVersion
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getVersion
 (JNIEnv *env, jobject thisObject)  {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
     return (jlong) block->version;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getPrevBlockHash
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getPrevBlockHash
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getPrevBlockHash
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
 
@@ -109,12 +109,12 @@ Java_com_breadwallet_core_BRCoreMerkleBlock_getPrevBlockHash
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getRootBlockHash
  * Signature: ()[B
  */
 JNIEXPORT jbyteArray JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getRootBlockHash
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getRootBlockHash
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
 
@@ -126,71 +126,71 @@ Java_com_breadwallet_core_BRCoreMerkleBlock_getRootBlockHash
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getTimestamp
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getTimestamp
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getTimestamp
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
     return (jlong) block->timestamp;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getTarget
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getTarget
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getTarget
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
     return (jlong) block->target;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getNonce
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getNonce
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getNonce
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
     return (jlong) block->nonce;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getTransactionCount
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getTransactionCount
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getTransactionCount
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
     return (jlong) block->totalTx;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    getHeight
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_getHeight
+Java_co_hodlwallet_core_BRCoreMerkleBlock_getHeight
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
     return (jlong) block->height;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    serialize
  * Signature: ()[B
  */
-JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMerkleBlock_serialize
+JNIEXPORT jbyteArray JNICALL Java_co_hodlwallet_core_BRCoreMerkleBlock_serialize
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
 
@@ -208,24 +208,24 @@ JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreMerkleBlock_seriali
 
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    isValid
  * Signature: (J)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_isValid
+Java_co_hodlwallet_core_BRCoreMerkleBlock_isValid
 (JNIEnv *env, jobject thisObject, jlong currentTime) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
     return (jboolean) BRMerkleBlockIsValid (block, (uint32_t) currentTime);
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    containsTransactionHash
  * Signature: ([B)Z
  */
 JNIEXPORT jboolean JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_containsTransactionHash
+Java_co_hodlwallet_core_BRCoreMerkleBlock_containsTransactionHash
 (JNIEnv *env, jobject thisObject, jbyteArray hashByteArray) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
 
@@ -234,12 +234,12 @@ Java_com_breadwallet_core_BRCoreMerkleBlock_containsTransactionHash
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreMerkleBlock
+ * Class:     co_hodlwallet_core_BRCoreMerkleBlock
  * Method:    disposeNative
  * Signature: ()V
  */
 JNIEXPORT void JNICALL
-Java_com_breadwallet_core_BRCoreMerkleBlock_disposeNative
+Java_co_hodlwallet_core_BRCoreMerkleBlock_disposeNative
 (JNIEnv *env, jobject thisObject) {
     BRMerkleBlock *block = (BRMerkleBlock *) getJNIReference(env, thisObject);
     if (NULL != block) BRMerkleBlockFree(block);

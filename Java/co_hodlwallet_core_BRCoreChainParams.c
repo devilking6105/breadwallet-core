@@ -25,25 +25,25 @@
 #include "BRCoreJni.h"
 #include "BRChainParams.h"
 #include "bcash/BRBCashParams.h"
-#include "com_breadwallet_core_BRCoreChainParams.h"
+#include "co_hodlwallet_core_BRCoreChainParams.h"
 
 /*
- * Class:     com_breadwallet_core_BRCoreChainParams
+ * Class:     co_hodlwallet_core_BRCoreChainParams
  * Method:    getJniMagicNumber
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_breadwallet_core_BRCoreChainParams_getJniMagicNumber
+JNIEXPORT jint JNICALL Java_co_hodlwallet_core_BRCoreChainParams_getJniMagicNumber
 (JNIEnv *env, jobject thisObject) {
     BRChainParams *params = (BRChainParams *) getJNIReference(env, thisObject);
     return params->magicNumber;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreChainParams
+ * Class:     co_hodlwallet_core_BRCoreChainParams
  * Method:    createJniMainnetChainParams
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniMainnetChainParams
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreChainParams_createJniMainnetChainParams
 (JNIEnv *env, jclass thisClass) {
     BRChainParams *result = (BRChainParams *) calloc (1, sizeof (BRChainParams));
     memcpy (result, &BRMainNetParams, sizeof (BRChainParams));
@@ -51,11 +51,11 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniMai
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreChainParams
+ * Class:     co_hodlwallet_core_BRCoreChainParams
  * Method:    createJniTestnetChainParams
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniTestnetChainParams
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreChainParams_createJniTestnetChainParams
 (JNIEnv *env, jclass thisClass) {
     BRChainParams *result = (BRChainParams *) calloc (1, sizeof (BRChainParams));
     memcpy (result, &BRTestNetParams, sizeof (BRChainParams));
@@ -63,11 +63,11 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniTes
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreChainParams
+ * Class:     co_hodlwallet_core_BRCoreChainParams
  * Method:    createJniMainnetBcashChainParams
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniMainnetBcashChainParams
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreChainParams_createJniMainnetBcashChainParams
 (JNIEnv *env, jclass thisClass) {
     BRChainParams *result = (BRChainParams *) calloc (1, sizeof (BRChainParams));
     memcpy (result, &BRBCashParams, sizeof (BRChainParams));
@@ -75,11 +75,11 @@ JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniMai
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreChainParams
+ * Class:     co_hodlwallet_core_BRCoreChainParams
  * Method:    createJniTestnetBcashChainParams
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_breadwallet_core_BRCoreChainParams_createJniTestnetBcashChainParams
+JNIEXPORT jlong JNICALL Java_co_hodlwallet_core_BRCoreChainParams_createJniTestnetBcashChainParams
 (JNIEnv *env, jclass thisClass) {
     BRChainParams *result = (BRChainParams *) calloc(1, sizeof(BRChainParams));
     memcpy(result, &BRBCashTestNetParams, sizeof(BRChainParams));

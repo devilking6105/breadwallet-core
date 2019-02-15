@@ -54,11 +54,11 @@ extern void *getJNIReference (
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreJniReference
+ * Class:     co_hodlwallet_core_BRCoreJniReference
  * Method:    disposeNative
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreJniReference_disposeNative
+JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCoreJniReference_disposeNative
 (JNIEnv *env, jobject thisObject) {
     void *reference = getJNIReference(env, thisObject);
 

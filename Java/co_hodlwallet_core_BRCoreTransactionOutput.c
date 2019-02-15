@@ -25,15 +25,15 @@
 #include <assert.h>
 #include <malloc.h>
 #include <BRTransaction.h>
-#include "com_breadwallet_core_BRCoreTransactionOutput.h"
+#include "co_hodlwallet_core_BRCoreTransactionOutput.h"
 
 /*
- * Class:     com_breadwallet_core_BRCoreTransactionOutput
+ * Class:     co_hodlwallet_core_BRCoreTransactionOutput
  * Method:    createTransactionOutput
  * Signature: (J[B)J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreTransactionOutput_createTransactionOutput
+Java_co_hodlwallet_core_BRCoreTransactionOutput_createTransactionOutput
 (JNIEnv *env, jclass thisClass,
  jlong amount,
  jbyteArray scriptByteArray) {
@@ -54,12 +54,12 @@ Java_com_breadwallet_core_BRCoreTransactionOutput_createTransactionOutput
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreTransactionOutput
+ * Class:     co_hodlwallet_core_BRCoreTransactionOutput
  * Method:    getAddress
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL
-Java_com_breadwallet_core_BRCoreTransactionOutput_getAddress
+Java_co_hodlwallet_core_BRCoreTransactionOutput_getAddress
 (JNIEnv *env, jobject thisObject) {
     BRTxOutput *output = (BRTxOutput *) getJNIReference (env, thisObject);
 
@@ -72,12 +72,12 @@ Java_com_breadwallet_core_BRCoreTransactionOutput_getAddress
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreTransactionOutput
+ * Class:     co_hodlwallet_core_BRCoreTransactionOutput
  * Method:    setAddress
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL
-Java_com_breadwallet_core_BRCoreTransactionOutput_setAddress
+Java_co_hodlwallet_core_BRCoreTransactionOutput_setAddress
 (JNIEnv *env, jobject thisObject, jstring addressObject) {
     BRTxOutput *output = (BRTxOutput *) getJNIReference (env, thisObject);
 
@@ -93,34 +93,34 @@ Java_com_breadwallet_core_BRCoreTransactionOutput_setAddress
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreTransactionOutput
+ * Class:     co_hodlwallet_core_BRCoreTransactionOutput
  * Method:    getAmount
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL
-Java_com_breadwallet_core_BRCoreTransactionOutput_getAmount
+Java_co_hodlwallet_core_BRCoreTransactionOutput_getAmount
 (JNIEnv *env, jobject thisObject) {
     BRTxOutput *output = (BRTxOutput *) getJNIReference (env, thisObject);
     return (jlong) output->amount;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreTransactionOutput
+ * Class:     co_hodlwallet_core_BRCoreTransactionOutput
  * Method:    setAmount
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_setAmount
+JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCoreTransactionOutput_setAmount
 (JNIEnv *env, jobject thisObject, jlong amount) {
     BRTxOutput *output = (BRTxOutput *) getJNIReference (env, thisObject);
     output->amount = (uint64_t) amount;
 }
 
 /*
- * Class:     com_breadwallet_core_BRCoreTransactionOutput
+ * Class:     co_hodlwallet_core_BRCoreTransactionOutput
  * Method:    getScript
  * Signature: ()[B
  */
-JNIEXPORT jbyteArray JNICALL Java_com_breadwallet_core_BRCoreTransactionOutput_getScript
+JNIEXPORT jbyteArray JNICALL Java_co_hodlwallet_core_BRCoreTransactionOutput_getScript
 (JNIEnv *env, jobject thisObject) {
     BRTxOutput *output = (BRTxOutput *) getJNIReference (env, thisObject);
 
