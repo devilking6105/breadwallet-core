@@ -158,7 +158,7 @@ static int _BRWalletContainsTx(BRWallet *wallet, const BRTransaction *tx) {
 }
 
 static void _BRWalletUpdateBalance(BRWallet *wallet) {
-    int isInvalid, isPending;
+    int isInvalid, isPending = 0;
     uint64_t balance = 0, prevBalance = 0;
     time_t now = time(NULL);
     size_t i, j;
@@ -216,7 +216,6 @@ static void _BRWalletUpdateBalance(BRWallet *wallet) {
             if (isPending) {
                 BRSetAdd(wallet->pendingTx, tx);
                 array_add(wallet->balanceHist, balance);
-                continue;
             }
         }
 
@@ -230,11 +229,16 @@ static void _BRWalletUpdateBalance(BRWallet *wallet) {
 
                 if (pkh && BRSetContains(wallet->allPKH, pkh)) {
                     BRSetAdd(wallet->usedPKH, (void *)pkh);
-                    array_add(wallet->utxos, ((const BRUTXO) { tx->txHash, (uint32_t)j }));
-                    balance += tx->outputs[j].amount;
+                    
+                    if (!isPending) {
+                        array_add(wallet->utxos, ((const BRUTXO) { tx->txHash, (uint32_t)j }));
+                        balance += tx->outputs[j].amount;
+                    }
                 }
             }
         }
+        
+        if (isPending) continue;
 
         // transaction ordering is not guaranteed, so check the entire UTXO set against the entire spent output set
         for (j = array_count(wallet->utxos); j > 0; j--) {
@@ -251,6 +255,7 @@ static void _BRWalletUpdateBalance(BRWallet *wallet) {
     }
 
     assert(array_count(wallet->balanceHist) == array_count(wallet->transactions));
+
     wallet->balance = balance;
 }
 
