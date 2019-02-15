@@ -129,7 +129,7 @@ FORCE:
 #
 
 # (cd ${APP}/app/build/intermediates/classes/debug/com/hodlallet/core; for class in BRCore*.class; do \
-#     javah -jni -d ${APP}/app/src/main/cpp/hodlwallet-core/Java/ \
+#     javah -jni -d ${APP}/app/src/main/jni/hodlwallet-core/Java/ \
 #	-classpath ${APP}/app/build/intermediates/classes/debug/ \
 #	co.hodlwallet.core.${class%%.class}; \
 #	done)
