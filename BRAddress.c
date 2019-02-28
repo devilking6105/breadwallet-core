@@ -413,25 +413,40 @@ int BRAddressHash160(void *md20, const char *addr) {
     return r;
 }
 
-// returns true if addr is a valid bitcoin address
-int BRAddressIsValid(const char *addr) {
+int BRAddressIsValidLegacy(const char *addr) {
     uint8_t data[42];
     char hrp[84];
     int r = 0;
-
+    
     assert(addr != NULL);
-
-    if (BRBase58CheckDecode(data, sizeof(data), addr) == 21) {
-        r = (data[0] == BITCOIN_PUBKEY_ADDRESS || data[0] == BITCOIN_SCRIPT_ADDRESS);
-#if BITCOIN_TESTNET
-        r = (data[0] == BITCOIN_PUBKEY_ADDRESS_TEST || data[0] == BITCOIN_SCRIPT_ADDRESS_TEST);
-#endif
-    } else if (BRBech32Decode(hrp, data, addr) > 2) {
+    
+    if (BRBech32Decode(hrp, data, addr) > 2) {
         r = (strcmp(hrp, "bc") == 0 && (data[0] != OP_0 || data[1] == 20 || data[1] == 32));
 #if BITCOIN_TESTNET
         r = (strcmp(hrp, "tb") == 0 && (data[0] != OP_0 || data[1] == 20 || data[1] == 32));
 #endif
     }
-
+    
     return r;
+}
+
+int BRAddressIsValidBech32(const char *addr) {
+    uint8_t data[42];
+    int r = 0;
+    
+    assert(addr != NULL);
+    
+    if (BRBase58CheckDecode(data, sizeof(data), addr) == 21) {
+        r = (data[0] == BITCOIN_PUBKEY_ADDRESS || data[0] == BITCOIN_SCRIPT_ADDRESS);
+#if BITCOIN_TESTNET
+        r = (data[0] == BITCOIN_PUBKEY_ADDRESS_TEST || data[0] == BITCOIN_SCRIPT_ADDRESS_TEST);
+#endif
+    }
+    
+    return r;
+}
+
+// returns true if addr is a valid bitcoin address
+int BRAddressIsValid(const char *addr) {
+    return BRAddressIsValidBech32(addr) || BRAddressIsValidLegacy(addr);
 }

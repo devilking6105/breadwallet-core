@@ -114,6 +114,8 @@ size_t BRAddressScriptPubKey(uint8_t *script, size_t scriptLen, const char *addr
 int BRAddressHash160(void *md20, const char *addr);
 
 // returns true if addr is a valid bitcoin address
+int BRAddressIsValidBech32(const char *addr);
+int BRAddressIsValidLegacy(const char *addr);
 int BRAddressIsValid(const char *addr);
 
 // returns a hash value for addr suitable for use in a hashtable

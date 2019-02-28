@@ -42,8 +42,8 @@ inline static int _pkhEq(const void *pkh, const void *otherPkh) {
 }
 
 inline static uint64_t _txFee(uint64_t feePerKb, size_t size) {
-    uint64_t standardFee = size*TX_FEE_PER_KB/1000,       // standard fee based on tx size
-             fee = (((size*feePerKb/1000) + 99)/100)*100; // fee using feePerKb, rounded up to nearest 100 satoshi
+    uint64_t standardFee = ((size * TX_FEE_PER_KB) + 999) / 1000, // standard fee based on tx size
+             fee = ((size * feePerKb) + 999) / 1000;              // fee using feePerKb, rounded up to nearest 100 satoshi
 
     return (fee > standardFee) ? fee : standardFee;
 }
@@ -1133,7 +1133,7 @@ uint64_t BRWalletMaxOutputAmount(BRWallet *wallet) {
     BRTransaction *tx;
     BRUTXO *o;
     uint64_t fee, amount = 0;
-    size_t i, txSize, cpfpSize = 0, inCount = 0;
+    size_t i, txSize = 0, cpfpSize = 0, inCount = 0;
 
     assert(wallet != NULL);
     pthread_mutex_lock(&wallet->lock);
@@ -1144,6 +1144,12 @@ uint64_t BRWalletMaxOutputAmount(BRWallet *wallet) {
         if (! tx || o->n >= tx->outCount) continue;
         inCount++;
         amount += tx->outputs[o->n].amount;
+        
+        if (BRAddressIsValidLegacy(tx->outputs[o->n].address)) {
+            txSize += TX_INPUT_SIZE;
+        } else if (BRAddressIsValidBech32(tx->outputs[o->n].address)) {
+            txSize += TX_INPUT_SIZE_BIP144;
+        }
 
 //        // size of unconfirmed, non-change inputs for child-pays-for-parent fee
 //        // don't include parent tx with more than 10 inputs or 10 outputs
@@ -1151,7 +1157,7 @@ uint64_t BRWalletMaxOutputAmount(BRWallet *wallet) {
 //            ! _BRWalletTxIsSend(wallet, tx)) cpfpSize += BRTransactionVSize(tx);
     }
 
-    txSize = 8 + BRVarIntSize(inCount) + TX_INPUT_SIZE*inCount + BRVarIntSize(2) + TX_OUTPUT_SIZE*2;
+    txSize += 8 + BRVarIntSize(inCount) + BRVarIntSize(2) + TX_OUTPUT_SIZE_BIP144*2;
     fee = _txFee(wallet->feePerKb, txSize + cpfpSize);
     pthread_mutex_unlock(&wallet->lock);
 
