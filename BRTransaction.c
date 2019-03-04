@@ -30,7 +30,6 @@
 #include <inttypes.h>
 #include <limits.h>
 #include <time.h>
-#include <unistd.h>
 
 #define TX_VERSION           0x00000001
 #define TX_LOCKTIME          0x00000000
@@ -39,23 +38,6 @@
 #define SIGHASH_SINGLE       0x03 // sign one of the outputs, I don't care where the other outputs go
 #define SIGHASH_ANYONECANPAY 0x80 // let other people add inputs, I don't care where the rest of the bitcoins come from
 #define SIGHASH_FORKID       0x40 // use BIP143 digest method (for b-cash/b-gold signatures)
-
-// returns a random number less than upperBound, for non-cryptographic use only
-uint32_t BRRand(uint32_t upperBound) {
-    static int first = 1;
-    uint32_t r;
-
-    // seed = (((FNV_OFFSET xor time)*FNV_PRIME) xor pid)*FNV_PRIME
-    if (first) srand((((0x811C9dc5 ^ (unsigned)time(NULL))*0x01000193) ^ (unsigned)getpid())*0x01000193);
-    first = 0;
-    if (upperBound == 0 || upperBound > BR_RAND_MAX) upperBound = BR_RAND_MAX;
-
-    do { // to avoid modulo bias, find a rand value not less than 0x100000000 % upperBound
-        r = rand();
-    } while (r < ((0xffffffff - upperBound*2) + 1) % upperBound); // (((0xffffffff - x*2) + 1) % x) == (0x100000000 % x)
-
-    return r % upperBound;
-}
 
 void BRTxInputSetAddress(BRTxInput *input, const char *address) {
     assert(input != NULL);
@@ -120,7 +102,10 @@ void BRTxInputSetWitness(BRTxInput *input, const uint8_t *witness, size_t witLen
     }
 }
 
-static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataLen) {
+// serializes a tx input for a signature pre-image
+// set input->amount to 0 to skip serializing the input amount in non-witness signatures
+static size_t _BRTxInputData(const BRTxInput *input, uint8_t *data, size_t dataLen)
+{
     size_t off = 0;
 
     if (data && off + sizeof(UInt256) <= dataLen) memcpy(&data[off], &input->txHash, sizeof(UInt256)); // previous out
@@ -173,7 +158,10 @@ void BRTxOutputSetScript(BRTxOutput *output, const uint8_t *script, size_t scrip
     }
 }
 
-static size_t _BRTransactionOutputData(const BRTransaction *tx, uint8_t *data, size_t dataLen, size_t index) {
+// serializes the tx output at index for a signature pre-image
+// an index of SIZE_MAX will serialize all tx outputs for SIGHASH_ALL signatures
+static size_t _BRTransactionOutputData(const BRTransaction *tx, uint8_t *data, size_t dataLen, size_t index)
+{
     BRTxOutput *output;
     size_t i, off = 0;
 
@@ -197,9 +185,8 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
     BRTxInput input;
     int anyoneCanPay = (hashType & SIGHASH_ANYONECANPAY), sigHash = (hashType & 0x1f);
     size_t i, off = 0;
-    uint8_t scriptCode[] = { OP_DUP, OP_HASH160, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                             OP_EQUALVERIFY, OP_CHECKSIG
-                           };
+    uint8_t scriptCode[] = { OP_DUP, OP_HASH160, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                             0, 0, 0, 0, 0, 0, 0, 0, 0, OP_EQUALVERIFY, OP_CHECKSIG };
 
     if (index >= tx->inCount) return 0;
     if (data && off + sizeof(uint32_t) <= dataLen) UInt32SetLE(&data[off], tx->version); // tx version
@@ -266,8 +253,8 @@ static size_t _BRTransactionWitnessData(const BRTransaction *tx, uint8_t *data, 
 static size_t _BRTransactionData(const BRTransaction *tx, uint8_t *data, size_t dataLen, size_t index, int hashType) {
     BRTxInput input;
     int anyoneCanPay = (hashType & SIGHASH_ANYONECANPAY), sigHash = (hashType & 0x1f), witnessFlag = 0;
-    size_t count, i, off = 0;
-
+    size_t i, count, len, woff, off = 0;
+    
     if (hashType & SIGHASH_FORKID) return _BRTransactionWitnessData(tx, data, dataLen, index, hashType);
     if (anyoneCanPay && index >= tx->inCount) return 0;
 
@@ -324,7 +311,12 @@ static size_t _BRTransactionData(const BRTransaction *tx, uint8_t *data, size_t 
 
     for (i = 0; witnessFlag && i < tx->inCount; i++) {
         input = tx->inputs[i];
-        count = BRScriptElements(NULL, 0, input.witness, input.witLen);
+
+        for (count = 0, woff = 0; woff < input.witLen; count++) {
+            woff += BRVarInt(&input.witness[woff], input.witLen - woff, &len);
+            woff += len;
+        }
+        
         off += BRVarIntSet((data ? &data[off] : NULL), (off <= dataLen ? dataLen - off : 0), count);
         if (data && off + input.witLen <= dataLen) memcpy(&data[off], input.witness, input.witLen);
         off += input.witLen;
@@ -400,7 +392,7 @@ BRTransaction *BRTransactionParse(const uint8_t *buf, size_t bufLen) {
     if (tx->inCount == 0 && off + 1 <= bufLen) witnessFlag = buf[off++];
 
     if (witnessFlag) {
-        tx->inCount = BRVarInt(&buf[off], (off <= bufLen ? bufLen - off : 0), &len);
+        tx->inCount = (size_t)BRVarInt(&buf[off], (off <= bufLen ? bufLen - off : 0), &len);
         off += len;
     }
 
@@ -444,11 +436,11 @@ BRTransaction *BRTransactionParse(const uint8_t *buf, size_t bufLen) {
 
     for (i = 0, witnessOff = off; witnessFlag && off <= bufLen && i < tx->inCount; i++) {
         input = &tx->inputs[i];
-        count = BRVarInt(&buf[off], (off <= bufLen ? bufLen - off : 0), &len);
+        count = (size_t)BRVarInt(&buf[off], (off <= bufLen ? bufLen - off : 0), &len);
         off += len;
 
         for (j = 0, sLen = 0; j < count; j++) {
-            sLen += BRVarInt(&buf[off + sLen], (off + sLen <= bufLen ? bufLen - (off + sLen) : 0), &len);
+            sLen += (size_t)BRVarInt(&buf[off + sLen], (off + sLen <= bufLen ? bufLen - (off + sLen) : 0), &len);
             sLen += len;
         }
 
