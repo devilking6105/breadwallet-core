@@ -25,26 +25,26 @@ JNI_OBJS=$(JNI_SRCS:.c=.o)
 # JNI Header Files that we are interest in keeping (that are not empty)
 JNI_HDRS=$(JNI_SRCS:.c=.h)
 
-JAVA_SRCS=root/co/hodlwallet/core/BRCoreAddress.java \
-	root/co/hodlwallet/core/BRCoreChainParams.java \
-	root/co/hodlwallet/core/BRCoreJniReference.java \
-	root/co/hodlwallet/core/BRCoreKey.java \
-	root/co/hodlwallet/core/BRCoreMasterPubKey.java \
-	root/co/hodlwallet/core/BRCoreMerkleBlock.java \
-	root/co/hodlwallet/core/BRCorePaymentProtocolEncryptedMessage.java \
-	root/co/hodlwallet/core/BRCorePaymentProtocolInvoiceRequest.java \
-	root/co/hodlwallet/core/BRCorePaymentProtocolMessage.java \
-	root/co/hodlwallet/core/BRCorePaymentProtocolPayment.java \
-	root/co/hodlwallet/core/BRCorePaymentProtocolACK.java \
-	root/co/hodlwallet/core/BRCorePaymentProtocolRequest.java \
-	root/co/hodlwallet/core/BRCorePeer.java \
-	root/co/hodlwallet/core/BRCorePeerManager.java \
-	root/co/hodlwallet/core/BRCoreTransaction.java \
-	root/co/hodlwallet/core/BRCoreTransactionInput.java \
-	root/co/hodlwallet/core/BRCoreTransactionOutput.java \
-	root/co/hodlwallet/core/BRCoreWallet.java \
-	root/co/hodlwallet/core/BRCoreWalletManager.java \
-	root/co/hodlwallet/core/test/BRWalletManager.java
+JAVA_SRCS=co/hodlwallet/core/BRCoreAddress.java \
+	co/hodlwallet/core/BRCoreChainParams.java \
+	co/hodlwallet/core/BRCoreJniReference.java \
+	co/hodlwallet/core/BRCoreKey.java \
+	co/hodlwallet/core/BRCoreMasterPubKey.java \
+	co/hodlwallet/core/BRCoreMerkleBlock.java \
+	co/hodlwallet/core/BRCorePaymentProtocolEncryptedMessage.java \
+	co/hodlwallet/core/BRCorePaymentProtocolInvoiceRequest.java \
+	co/hodlwallet/core/BRCorePaymentProtocolMessage.java \
+	co/hodlwallet/core/BRCorePaymentProtocolPayment.java \
+	co/hodlwallet/core/BRCorePaymentProtocolACK.java \
+	co/hodlwallet/core/BRCorePaymentProtocolRequest.java \
+	co/hodlwallet/core/BRCorePeer.java \
+	co/hodlwallet/core/BRCorePeerManager.java \
+	co/hodlwallet/core/BRCoreTransaction.java \
+	co/hodlwallet/core/BRCoreTransactionInput.java \
+	co/hodlwallet/core/BRCoreTransactionOutput.java \
+	co/hodlwallet/core/BRCoreWallet.java \
+	co/hodlwallet/core/BRCoreWalletManager.java \
+	co/hodlwallet/core/test/BRWalletManager.java
 
 JAVA_OBJS=$(JAVA_SRCS:.java=.class)
 
