@@ -144,7 +144,7 @@ public class BRCoreTransaction extends BRCoreJniReference {
      *
      * @param input
      */
-    public native void addInput (co.hodlwallet.core.BRTransactionInput input);
+    public native void addInput (BRCoreTransactionInput input);
 
     /**
      *
