@@ -88,7 +88,7 @@ PROJECT_DIR=<....>/app
 JNI_DIR=${PROJECT_DIR}/src/main/jni/breadwallet-core/Java/
 CLASSPATH=${PROJECT_DIR}/build/intermediates/classes/debug/
 
-(cd ~/Code/hodl-wallet-android/app/build/intermediates/classes/debug/co/hodlwallet/core; \
+(cd ~/Code/hodl-wallet-android/app/build/intermediates/jniLibs/hodl/debug/co/hodlwallet/core; \
  for class in BRCore*.class; \
    do javah -jni -d ${JNI_DIR} -classpath ${CLASSPATH} co.hodlwallet.core.${class%%.class}; \
    done)

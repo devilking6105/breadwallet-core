@@ -365,14 +365,14 @@ Java_co_hodlwallet_core_BRCoreTransaction_disposeNative
  */
 JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCoreTransaction_initializeNative
 (JNIEnv *env, jclass thisClass) {
-    transactionInputClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCoreTransactionInput");
+    transactionInputClass = (*env)->FindClass(env, "co/hodlwallet/core/BRCoreTransactionInput");
     assert (NULL != transactionInputClass);
     transactionInputClass = (*env)->NewGlobalRef (env, transactionInputClass);
 
     transactionInputConstructor = (*env)->GetMethodID(env, transactionInputClass, "<init>", "(J)V");
     assert (NULL != transactionInputConstructor);
 
-    transactionOutputClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCoreTransactionOutput");
+    transactionOutputClass = (*env)->FindClass(env, "co/hodlwallet/core/BRCoreTransactionOutput");
     assert(NULL != transactionOutputClass);
     transactionOutputClass = (*env)->NewGlobalRef (env, transactionOutputClass);
 

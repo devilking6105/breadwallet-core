@@ -458,14 +458,14 @@ Java_co_hodlwallet_core_BRCorePeerManager_disposeNative
  */
 JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCorePeerManager_initializeNative
 (JNIEnv *env, jclass thisClass) {
-    blockClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCoreMerkleBlock");
+    blockClass = (*env)->FindClass(env, "co/hodlwallet/core/BRCoreMerkleBlock");
     assert (NULL != blockClass);
     blockClass = (*env)->NewGlobalRef (env, blockClass);
 
     blockConstructor = (*env)->GetMethodID(env, blockClass, "<init>", "(J)V");
     assert (NULL != blockConstructor);
 
-    peerClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCorePeer");
+    peerClass = (*env)->FindClass(env, "co/hodlwallet/core/BRCorePeer");
     assert (NULL != peerClass);
     peerClass = (*env)->NewGlobalRef (env, peerClass);
 
@@ -553,7 +553,7 @@ saveBlocks(void *info, int replace, BRMerkleBlock *blocks[], size_t blockCount) 
     jmethodID listenerMethod =
         lookupListenerMethod(env, listener,
                              "saveBlocks",
-                             "(Z[Lco/_hodlwallet/core/BRCoreMerkleBlock;)V");
+                             "(Z[Lco/hodlwallet/core/BRCoreMerkleBlock;)V");
     assert (NULL != listenerMethod);
 
     // Create the Java BRCoreMerkleBlock array
@@ -585,7 +585,7 @@ savePeers(void *info, int replace, const BRPeer peers[], size_t count) {
     jmethodID listenerMethod =
         lookupListenerMethod(env, listener,
                              "savePeers",
-                             "(Z[Lco/_hodlwallet/core/BRCorePeer;)V");
+                             "(Z[Lco/hodlwallet/core/BRCorePeer;)V");
     assert (NULL != listenerMethod);
 
     jobjectArray peerArray = (*env)->NewObjectArray(env, count, peerClass, 0);

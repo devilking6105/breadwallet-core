@@ -64,7 +64,7 @@ static jmethodID transactionConstructor;
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    createJniCoreWallet
- * Signature: ([Lco/_hodlwallet/core/BRCoreTransaction;Lco/_hodlwallet/core/BRCoreMasterPubKey;I)J
+ * Signature: ([Lco/hodlwallet/core/BRCoreTransaction;Lco/hodlwallet/core/BRCoreMasterPubKey;I)J
  */
 JNIEXPORT jlong JNICALL
 Java_co_hodlwallet_core_BRCoreWallet_createJniCoreWallet
@@ -96,7 +96,7 @@ Java_co_hodlwallet_core_BRCoreWallet_createJniCoreWallet
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    installListener
- * Signature: (Lco/_hodlwallet/core/BRCoreWallet/Listener;)V
+ * Signature: (Lco/hodlwallet/core/BRCoreWallet/Listener;)V
  */
 JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCoreWallet_installListener
 (JNIEnv *env, jobject thisObject, jobject listenerObject) {
@@ -118,7 +118,7 @@ JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCoreWallet_installListener
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getReceiveAddress
- * Signature: ()Lco/_hodlwallet/core/BRCoreAddress;
+ * Signature: ()Lco/hodlwallet/core/BRCoreAddress;
  */
 JNIEXPORT jobject JNICALL
 Java_co_hodlwallet_core_BRCoreWallet_getReceiveAddress
@@ -134,7 +134,7 @@ Java_co_hodlwallet_core_BRCoreWallet_getReceiveAddress
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getLegacyAddress
- * Signature: ()Lco/_hodlwallet/core/BRCoreAddress;
+ * Signature: ()Lco/hodlwallet/core/BRCoreAddress;
  */
 JNIEXPORT jobject JNICALL Java_co_hodlwallet_core_BRCoreWallet_getLegacyAddress
 (JNIEnv *env, jobject thisObject) {
@@ -149,7 +149,7 @@ JNIEXPORT jobject JNICALL Java_co_hodlwallet_core_BRCoreWallet_getLegacyAddress
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getAllAddresses
- * Signature: ()[Lco/_hodlwallet/core/BRCoreAddress;
+ * Signature: ()[Lco/hodlwallet/core/BRCoreAddress;
  */
 JNIEXPORT jobjectArray JNICALL
 Java_co_hodlwallet_core_BRCoreWallet_getAllAddresses
@@ -184,7 +184,7 @@ Java_co_hodlwallet_core_BRCoreWallet_getAllAddresses
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    containsAddress
- * Signature: (Lco/_hodlwallet/core/BRCoreAddress;)Z
+ * Signature: (Lco/hodlwallet/core/BRCoreAddress;)Z
  */
 JNIEXPORT jboolean JNICALL
 Java_co_hodlwallet_core_BRCoreWallet_containsAddress
@@ -198,7 +198,7 @@ Java_co_hodlwallet_core_BRCoreWallet_containsAddress
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    addressIsUsed
- * Signature: (Lco/_hodlwallet/core/BRCoreAddress;)Z
+ * Signature: (Lco/hodlwallet/core/BRCoreAddress;)Z
  */
 JNIEXPORT jboolean JNICALL
 Java_co_hodlwallet_core_BRCoreWallet_addressIsUsed
@@ -212,7 +212,7 @@ Java_co_hodlwallet_core_BRCoreWallet_addressIsUsed
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    jniGetTransactions
- * Signature: ()[Lco/_hodlwallet/core/BRCoreTransaction;
+ * Signature: ()[Lco/hodlwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobjectArray JNICALL
 Java_co_hodlwallet_core_BRCoreWallet_jniGetTransactions
@@ -245,7 +245,7 @@ Java_co_hodlwallet_core_BRCoreWallet_jniGetTransactions
 /*
  * Class:     co_hodlwallet_core_BRCoreWallet
  * Method:    getTransactionsConfirmedBefore
- * Signature: (J)[Lco/_hodlwallet/core/BRCoreTransaction;
+ * Signature: (J)[Lco/hodlwallet/core/BRCoreTransaction;
  */
 JNIEXPORT jobjectArray JNICALL
 Java_co_hodlwallet_core_BRCoreWallet_getTransactionsConfirmedBefore
@@ -681,14 +681,14 @@ Java_co_hodlwallet_core_BRCoreWallet_disposeNative
  */
 JNIEXPORT void JNICALL Java_co_hodlwallet_core_BRCoreWallet_initializeNative
 (JNIEnv *env, jclass thisClass) {
-    addressClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCoreAddress");
+    addressClass = (*env)->FindClass(env, "co/hodlwallet/core/BRCoreAddress");
     assert (NULL != addressClass);
     addressClass = (*env)->NewGlobalRef (env, addressClass);
 
     addressConstructor = (*env)->GetMethodID(env, addressClass, "<init>", "(J)V");
     assert (NULL != addressConstructor);
 
-    transactionClass = (*env)->FindClass (env, "co/_hodlwallet/core/BRCoreTransaction");
+    transactionClass = (*env)->FindClass (env, "co/hodlwallet/core/BRCoreTransaction");
     assert (NULL != transactionClass);
     transactionClass = (*env)->NewGlobalRef (env, transactionClass);
 
@@ -745,7 +745,7 @@ txAdded(void *info, BRTransaction *tx) {
     jmethodID listenerMethod =
         lookupListenerMethod(env, listener,
                              "onTxAdded",
-                             "(Lco/_hodlwallet/core/BRCoreTransaction;)V");
+                             "(Lco/hodlwallet/core/BRCoreTransaction;)V");
     assert (NULL != listenerMethod);
 
     // Create the BRCoreTransaction

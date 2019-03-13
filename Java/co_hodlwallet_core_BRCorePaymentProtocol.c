@@ -40,7 +40,7 @@ jmethodID transactionOutputConstructor;
 
 static void commonStaticInitialize(JNIEnv *env) {
     //
-    transactionClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCoreTransaction");
+    transactionClass = (*env)->FindClass(env, "co/hodlwallet/core/BRCoreTransaction");
     assert (NULL != transactionClass);
     transactionClass = (*env)->NewGlobalRef(env, transactionClass);
 
@@ -48,7 +48,7 @@ static void commonStaticInitialize(JNIEnv *env) {
     assert (NULL != transactionConstructor);
 
     //
-    transactionInputClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCoreTransactionInput");
+    transactionInputClass = (*env)->FindClass(env, "co/hodlwallet/core/BRCoreTransactionInput");
     assert (NULL != transactionInputClass);
     transactionInputClass = (*env)->NewGlobalRef(env, transactionInputClass);
 
@@ -56,7 +56,7 @@ static void commonStaticInitialize(JNIEnv *env) {
     assert (NULL != transactionInputConstructor);
 
     //
-    transactionOutputClass = (*env)->FindClass(env, "co/_hodlwallet/core/BRCoreTransactionOutput");
+    transactionOutputClass = (*env)->FindClass(env, "co/hodlwallet/core/BRCoreTransactionOutput");
     assert(NULL != transactionOutputClass);
     transactionOutputClass = (*env)->NewGlobalRef(env, transactionOutputClass);
 
